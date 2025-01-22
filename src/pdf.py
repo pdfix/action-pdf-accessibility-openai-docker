@@ -60,7 +60,7 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
         elem_obj_id = elem.GetObject().GetId()
         elem_id = elem.GetId()
         elem_type = elem.GetType(False)
-        elem_type_mapped = elem.GetType(True)
+        # elem_type_mapped = elem.GetType(True)
 
         page_num = elem.GetPageNumber(0)
         if page_num == -1:
@@ -69,7 +69,7 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
                 if page_num != -1:
                     break
 
-        id = f"{elem_type} [obj: {elem_obj_id}]"
+        id = f"{elem_type} [obj: {elem_obj_id}, id: {elem_id}]"
 
         # get the object page number (it may be written in child objects)
         if page_num == -1:
@@ -80,7 +80,7 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
             )
             return
 
-        id += ", page: " + str(page_num + 1)
+        id = f"{elem_type} [obj: {elem_obj_id}, id: {elem_id}, page: {page_num + 1}]"
 
         # get image bbox
         bbox = PdfRect()
@@ -147,109 +147,56 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
         print("Error: " + str(e))
 
 
-def set_table_summary(
-    elem: PdsStructElement,
-    doc: PdfDoc,
-) -> None:
-    img = "table_" + str(elem.GetObject().GetId()) + ".jpg"
-    print("[" + img + "] table found with an id " + img)
-
-    # get the object page number (it may be written in child objects)
-    pages = elem.GetNumPages()
-    if pages == 0:
-        print("[" + img + "] table found but can't determine the page number")
-        return
-
-    page_num = elem.GetPageNumber(0)
-    if page_num == -1:
-        print("[" + img + "] unable to retrieve the page number from tag")
-        return
-
-    bbox = elem.GetBBox(page_num)
-    # check bounding box
-    if bbox.left == bbox.right or bbox.top == bbox.bottom:
-        print("[" + img + "] table found but no BBox attribute was set")
-        return
-
-    data = render_page(doc, page_num, bbox, 1)
-    with open(img, "wb") as bf:
-        bf.write(data)
-
-    response = table_summary(img, api_key, lang)
-
-    # print(response.message.content)
-    summary = response.message.content
-
-    if not summary or summary == "":
-        print("[" + img + "] no summary generated")
-        return
-
-    attr_dict = None
-    for index in reversed(range(elem.GetNumAttrObjects())):
-        attr_obj = elem.GetAttrObject(index)
-        if not attr_obj:
-            continue
-        attr_item = PdsDictionary(attr_obj.obj)
-        if attr_item.GetText("O") == "Table":
-            attr_dict = attr_item
-            break
-
-    if not attr_dict:
-        attr_dict = doc.CreateDictObject(False)
-        attr_dict.PutName("O", "Table")
-        elem.AddAttrObj(attr_dict)
-
-    old_summary = attr_dict.GetText("Summary")
-    if overwrite or not old_summary:
-        print("[" + img + "] summary attribute updated")
-        attr_dict.PutString("Summary", summary)
-
-
 def browse_tags_recursive(parent: PdsStructElement, doc: PdfDoc, args):
+    """
+    Recursively browses through the structure elements of a PDF document and processes elements that match the specified tags.
+
+    Arguments:
+    - parent (PdsStructElement): The parent structure element to start browsing from.
+    - doc (PdfDoc): The PDF document containing the structure elements.
+    - args (argparse.Namespace): The command-line arguments containing the tags to match.
+
+    Description:
+    This function recursively browses through the structure elements of a PDF document starting from the specified parent element.
+    It checks each child element to see if it matches the specified tags using a regular expression. If a match is found, the element
+    is processed using the `process_struct_elem` function. If no match is found, the function calls itself recursively on the child element.
+
+    Example:
+    # Example usage
+    browse_tags_recursive(parent_element, pdf_document, args)
+    """
     count = parent.GetNumChildren()
     struct_tree = doc.GetStructTree()
     for i in range(0, count):
         if parent.GetChildType(i) != kPdsStructChildElement:
             continue
         child_elem = struct_tree.GetStructElementFromObject(parent.GetChildObject(i))
-        if re.match(args.tags, child_elem.GetType(True)):
+        if re.match(args.tags, child_elem.GetType(True)) or re.match(
+            args.tags, child_elem.GetType(False)
+        ):
             # process element
-
-            # process figure element
             process_struct_elem(child_elem, doc, args)
         else:
             browse_tags_recursive(child_elem, doc, args)
 
 
 def process_pdf(args):
-    #     input_path: str,
-    #     output_path: str,
-    #     tags: str,
-    #     license_name: str,
-    #     license_key: str,
-    #     api_key: str,
-    #     overwrite: bool,
-    #     lang: str,
-    # ) -> None:
-    """Run OpenAI for alternate text description.
+    """
+    Processes a PDF document by opening it, checking for a structure tree, and recursively browsing through the structure elements
+    to process elements that match the specified tags.
 
-    Parameters
-    ----------
-    input_path : str
-        Input path to the PDF file.
-    output_path : str
-        Output path for saving the PDF file.
-    license_name : str
-        Pdfix SDK license name.
-    license_key : str
-        Pdfix SDK license key.
-    api_key : str
-        OpenAI API key.
-    overwrite : bool
-        Ovewrite alternate text if already present.
-    lang : str
-        Alternate description language.
+    Arguments:
+    - args (argparse.Namespace): The command-line arguments containing the input PDF file, output PDF file, license name, license key, and tags to match.
 
+    Description:
+    This function initializes the Pdfix library and authorizes it using the provided license name and key. It then opens the specified input PDF file
+    and checks if the document has a structure tree. If the structure tree is present, it starts browsing through the structure elements from the root
+    element and processes elements that match the specified tags using the `browse_tags_recursive` function. Finally, it saves the processed PDF to the
+    specified output file.
+
+    Example:
+    # Example usage
+    process_pdf(args)
     """
     pdfix = GetPdfix()
     if pdfix is None:
