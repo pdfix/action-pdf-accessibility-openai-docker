@@ -114,7 +114,7 @@
       "desc": "Action that automatically generates and applies alternative image descriptions in PDF tags with OpenAI",
       "icon": "add_photo_alternate",
       "category": "Tags",
-      "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/alt-text-openai:latest  generate-alt-text --openai_key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
+      "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest  generate-alt-text --openai_key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
       "args": [
         {
           "title": "Tag Name",
@@ -130,7 +130,7 @@
       "desc": "Action that automatically generates and applies the table summary attribute in PDF tags with OpenAI",
       "icon": "table_view",
       "category": "Tags",
-      "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/alt-text-openai:latest  generate-table-summary --openai_key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
+      "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest  generate-table-summary --openai_key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
       "args": [
         {
           "title": "Tag Name",

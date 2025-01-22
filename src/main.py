@@ -19,11 +19,16 @@ def get_config(path: str) -> None:
         dst = path
         shutil.copyfile(src, dst)
 
+
 def main():
     parser = argparse.ArgumentParser(
         description="Generate Alternate Text with OpenAI",
     )
-    parser.add_argument("subparser", choices=["config", "generate-alt-text", "generate-table-summary"], help="Sub-command to run")
+    parser.add_argument(
+        "subparser",
+        choices=["config", "generate-alt-text", "generate-table-summary"],
+        help="Sub-command to run",
+    )
 
     parser.add_argument("--name", type=str, default="", help="Pdfix license name")
     parser.add_argument("--key", type=str, default="", help="Pdfix license key")
@@ -104,9 +109,7 @@ def main():
             sys.exit(f"Error: The input file '{args.input}' does not exist.")
             return
 
-        if args.input.lower().endswith(".pdf") and args.output.lower().endswith(
-            ".pdf"
-        ):
+        if args.input.lower().endswith(".pdf") and args.output.lower().endswith(".pdf"):
             try:
                 process_pdf(args)
             except Exception as e:
