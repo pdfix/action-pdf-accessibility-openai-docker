@@ -1,0 +1,145 @@
+{
+  "name": "PDF Accessibility with OpenAI",
+  "version": "1.0.0",
+  "args": [
+    {
+      "name": "input_pdf",
+      "desc": "Input PDF file",
+      "flags": 2,
+      "type": "file_path",
+      "ext": "pdf",
+      "value": ""
+    },
+    {
+      "name": "output_pdf",
+      "desc": "Output PDF file",
+      "flags": 4,
+      "type": "file_path",
+      "ext": "pdf",
+      "value": ""
+    },
+    {
+      "title": "OpenAI API Key",
+      "name": "openai_key",
+      "desc": "OpenAI API Key",
+      "type": "string",
+      "value": ""
+    },
+    {
+      "title": "Language",
+      "name": "lang",
+      "desc": "Alternate description language",
+      "type": "string",
+      "value": "English",
+      "set": [
+        {
+          "value": "English"
+        },
+        {
+          "value": "Deutsch"
+        },
+        {
+          "value": "Español"
+        },
+        {
+          "value": "Français"
+        },
+        {
+          "value": "Italiano"
+        },
+        {
+          "value": "Português"
+        },
+        {
+          "value": "Nederlands"
+        },
+        {
+          "value": "Polski"
+        },
+        {
+          "value": "Русский"
+        },
+        {
+          "value": "中文"
+        },
+        {
+          "value": "日本語"
+        },
+        {
+          "value": "한국어"
+        },
+        {
+          "value": "Türkçe"
+        },
+        {
+          "value": "Svenska"
+        },
+        {
+          "value": "Norsk"
+        },
+        {
+          "value": "Suomi"
+        },
+        {
+          "value": "Čeština"
+        },
+        {
+          "value": "Magyar"
+        },
+        {
+          "value": "Slovenčina"
+        },
+        {
+          "value": "Українська"
+        },
+        {
+          "value": "Ελληνικά"
+        },
+        {
+          "value": "Română"
+        }
+      ]
+    },
+    {
+      "title": "Overwrite",
+      "desc": "Replace the alternate text if it exists",
+      "name": "overwrite",
+      "type": "bool",
+      "value": false
+    }
+  ],
+  "actions": [
+    {
+      "name": "Generate Alternate Text with OpenAI",
+      "desc": "Action that automatically generates and applies alternative image descriptions in PDF tags with OpenAI",
+      "icon": "add_photo_alternate",
+      "category": "Tags",
+      "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/alt-text-openai:latest  generate-alt-text --openai_key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
+      "args": [
+        {
+          "title": "Tag Name",
+          "name": "tag_name",
+          "desc": "Tag name defined by a regular expression",
+          "type": "string",
+          "value": "Figure|Formula"
+        }        
+      ]
+    },
+    {
+      "name": "Generate Table Summary with OpenAI",
+      "desc": "Action that automatically generates and applies the table summary attribute in PDF tags with OpenAI",
+      "icon": "table_view",
+      "category": "Tags",
+      "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/alt-text-openai:latest  generate-table-summary --openai_key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
+      "args": [
+        {
+          "title": "Tag Name",
+          "name": "tag_name",
+          "desc": "Tag name defined by a regular expression",
+          "type": "string",
+          "value": "Table"
+        }        
+      ]
+    }
+  ]
+}
