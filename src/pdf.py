@@ -82,7 +82,7 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
 
         id += ", page: " + str(page_num + 1)
 
-        # get image bbox 
+        # get image bbox
         bbox = PdfRect()
         for i in range(elem.GetNumPages()):
             page_num = elem.GetPageNumber(i)
@@ -138,13 +138,14 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
                 attr_dict.PutName("O", "Table")
                 elem.AddAttrObj(attr_dict)
 
-            attr_dict.PutString("Summary", content)            
+            attr_dict.PutString("Summary", content)
             print((f"Table summary set for {id} tag"))
         else:
             print((f"Unknown operation: {args.subparser}"))
 
     except Exception as e:
         print("Error: " + str(e))
+
 
 def set_table_summary(
     elem: PdsStructElement,
@@ -155,7 +156,7 @@ def set_table_summary(
 
     # get the object page number (it may be written in child objects)
     pages = elem.GetNumPages()
-    if (pages == 0):
+    if pages == 0:
         print("[" + img + "] table found but can't determine the page number")
         return
 
@@ -163,7 +164,7 @@ def set_table_summary(
     if page_num == -1:
         print("[" + img + "] unable to retrieve the page number from tag")
         return
-    
+
     bbox = elem.GetBBox(page_num)
     # check bounding box
     if bbox.left == bbox.right or bbox.top == bbox.bottom:
@@ -202,7 +203,6 @@ def set_table_summary(
     if overwrite or not old_summary:
         print("[" + img + "] summary attribute updated")
         attr_dict.PutString("Summary", summary)
-
 
 
 def browse_tags_recursive(parent: PdsStructElement, doc: PdfDoc, args):
