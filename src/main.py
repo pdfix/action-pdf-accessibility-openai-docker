@@ -83,10 +83,13 @@ def main():
         sys.exit(0)
 
     else:
-        if not args.input or not args.output or not args.openai_key:
-            parser.error(
-                "The following arguments are required:\
-                -i/--input, -o/--output, --openai",
+        if not args.input:
+            raise ValueError(f"Invalid or missing arguments --input {args.input}")
+        if not args.output:
+            raise ValueError(f"Invalid or missing arguments: --output {args.output}")
+        if not args.openai_key:
+            raise ValueError(
+                f"Invalid or missing arguments: --openai-key {args.openai_key}"
             )
 
         if not os.path.isfile(args.input):

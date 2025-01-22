@@ -11,12 +11,37 @@ from pdfixsdk.Pdfix import (
     PdfRect,
     PdsDictionary,
     PdsStructElement,
+    PdsStructTree,
     kImageDIBFormatArgb,
     kImageFormatJpg,
     kPdsStructChildElement,
     kRotate0,
     kSaveFull,
 )
+
+
+def setAltText(elem: PdsStructElement, alt_text: str):
+    elem.SetAlt(alt_text)
+
+
+def setTableSummary(elem: PdsStructElement, table_summary: str):
+    doc = elem.GetStructTree().GetDoc()
+    attr_dict = None
+    for index in reversed(range(elem.GetNumAttrObjects())):
+        attr_obj = elem.GetAttrObject(index)
+        if not attr_obj:
+            continue
+        attr_item = PdsDictionary(attr_obj.obj)
+        if attr_item.GetText("O") == "Table":
+            attr_dict = attr_item
+            break
+
+    if not attr_dict:
+        attr_dict = doc.CreateDictObject(False)
+        attr_dict.PutName("O", "Table")
+        elem.AddAttrObj(attr_dict)
+
+    attr_dict.PutString("Summary", table_summary)
 
 
 def render_page(doc: PdfDoc, page_num: int, bbox: PdfRect, zoom: float) -> bytearray:
@@ -123,7 +148,7 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
 
         org_alt = elem.GetAlt()
         if not args.overwrite and org_alt:
-            print((f"Alt text already exists for {id} tag"))
+            print((f"Alt text already exists for {id}"))
             return
 
         data = render_page(doc, page_num, bbox, 1)
@@ -131,7 +156,7 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
         # with open(img, "wb") as bf:
         #     bf.write(data)
 
-        print((f"Talking to OpenAI for {id} tag ..."))
+        print((f"Talking to OpenAI for {id} ..."))
         response = openai_propmpt(base64_image, args)
 
         # print(response.message.content)
@@ -141,25 +166,10 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
             return
 
         if args.subparser == "generate-alt-text":
-            elem.SetAlt(content)
+            setAltText(elem, content)
             print((f"Alt text set for {id} tag"))
         elif args.subparser == "generate-table-summary":
-            attr_dict = None
-            for index in reversed(range(elem.GetNumAttrObjects())):
-                attr_obj = elem.GetAttrObject(index)
-                if not attr_obj:
-                    continue
-                attr_item = PdsDictionary(attr_obj.obj)
-                if attr_item.GetText("O") == "Table":
-                    attr_dict = attr_item
-                    break
-
-            if not attr_dict:
-                attr_dict = doc.CreateDictObject(False)
-                attr_dict.PutName("O", "Table")
-                elem.AddAttrObj(attr_dict)
-
-            attr_dict.PutString("Summary", content)
+            setTableSummary(elem, content)
             print((f"Table summary set for {id} tag"))
         else:
             print((f"Unknown operation: {args.subparser}"))
