@@ -34,23 +34,7 @@ def main():
     parser.add_argument("--key", type=str, default="", help="Pdfix license key")
     parser.add_argument("--openai-key", type=str, default="", help="OpenAI API key")
 
-    subparsers = parser.add_subparsers(dest="subparser")
-
-    # config subparser
-    pars_config = subparsers.add_parser(
-        "config",
-        help="Extract config file for integration. Output is written to --output file.",
-    )
-
-    # Alt Text subparser
-    # pars_alt_text = subparsers.add_parser(
-    #     "generate-alt-text",
-    #     help="Generate alternate text",
-    # )
-    # pars_table_summary = subparsers.add_parser(
-    #     "generate-table-summary",
-    #     help="Generate alternate text",
-    # )
+    parser.add_subparsers(dest="subparser")
 
     parser.add_argument("-i", "--input", type=str, help="The input PDF file")
     parser.add_argument(
