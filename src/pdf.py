@@ -56,6 +56,27 @@ def render_page(doc: PdfDoc, page_num: int, bbox: PdfRect, zoom: float) -> bytea
 
 
 def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
+    """
+    Processes a structure element in a PDF document by generating alternate text or table
+    summary using OpenAI.
+
+    Arguments:
+    - elem (PdsStructElement): The structure element to process.
+    - doc (PdfDoc): The PDF document containing the structure element.
+    - args (argparse.Namespace): The command-line arguments containing the tags to match,
+      overwrite flag, and subparser command.
+
+    Description:
+    This function processes a structure element in a PDF document by generating alternate
+    text or table summary using OpenAI. It retrieves the element's object ID, type, and
+    page number. If the element's bounding box is valid, it renders the page and sends the
+    image data to OpenAI for generating alternate text. Depending on the subparser command,
+    it either sets the alternate text for the element or updates the table summary attribute.
+
+    Example:
+    # Example usage
+    process_struct_elem(struct_element, pdf_document, args)
+    """
     try:
         elem_obj_id = elem.GetObject().GetId()
         elem_id = elem.GetId()
@@ -149,7 +170,8 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
 
 def browse_tags_recursive(parent: PdsStructElement, doc: PdfDoc, args):
     """
-    Recursively browses through the structure elements of a PDF document and processes elements that match the specified tags.
+    Recursively browses through the structure elements of a PDF document and processes
+    elements that match the specified tags.
 
     Arguments:
     - parent (PdsStructElement): The parent structure element to start browsing from.
@@ -157,9 +179,11 @@ def browse_tags_recursive(parent: PdsStructElement, doc: PdfDoc, args):
     - args (argparse.Namespace): The command-line arguments containing the tags to match.
 
     Description:
-    This function recursively browses through the structure elements of a PDF document starting from the specified parent element.
-    It checks each child element to see if it matches the specified tags using a regular expression. If a match is found, the element
-    is processed using the `process_struct_elem` function. If no match is found, the function calls itself recursively on the child element.
+    This function recursively browses through the structure elements of a PDF document
+    starting from the specified parent element. It checks each child element to see if it
+    matches the specified tags using a regular expression. If a match is found, the element
+    is processed using the `process_struct_elem` function. If no match is found, the function
+    calls itself recursively on the child element.
 
     Example:
     # Example usage
@@ -182,17 +206,20 @@ def browse_tags_recursive(parent: PdsStructElement, doc: PdfDoc, args):
 
 def process_pdf(args):
     """
-    Processes a PDF document by opening it, checking for a structure tree, and recursively browsing through the structure elements
-    to process elements that match the specified tags.
+    Processes a PDF document by opening it, checking for a structure tree, and recursively
+    browsing through the structure elements to process elements that match the specified tags.
 
     Arguments:
-    - args (argparse.Namespace): The command-line arguments containing the input PDF file, output PDF file, license name, license key, and tags to match.
+    - args (argparse.Namespace): The command-line arguments containing the input PDF file,
+      output PDF file, license name, license key, and tags to match.
 
     Description:
-    This function initializes the Pdfix library and authorizes it using the provided license name and key. It then opens the specified input PDF file
-    and checks if the document has a structure tree. If the structure tree is present, it starts browsing through the structure elements from the root
-    element and processes elements that match the specified tags using the `browse_tags_recursive` function. Finally, it saves the processed PDF to the
-    specified output file.
+    This function initializes the Pdfix library and authorizes it using the provided license
+    name and key. It then opens the specified input PDF file and checks if the document has a
+    structure tree. If the structure tree is present, it starts browsing through the structure
+    elements from the root element and processes elements that match the specified tags using
+    the `browse_tags_recursive` function. Finally, it saves the processed PDF to the specified
+    output file.
 
     Example:
     # Example usage
