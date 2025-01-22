@@ -22,19 +22,28 @@ def get_config(path: str) -> None:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate Alternate Text with OpenAI",
+        description="PDF Accessibility with OpenAI",
     )
-    parser.add_argument(
-        "subparser",
-        choices=["config", "generate-alt-text", "generate-table-summary"],
-        help="Sub-command to run",
-    )
+    subparsers = parser.add_subparsers(title="subparser")
 
-    parser.add_argument("--name", type=str, default="", help="Pdfix license name")
-    parser.add_argument("--key", type=str, default="", help="Pdfix license key")
+    # Generate Alt Text subcommand
+    parser_generate_config = subparsers.add_parser(
+        "config",
+        help="Save the default configuration file",
+    )    
+
+    parser_generate_alt_text = subparsers.add_parser(
+        "generate-alt-text",
+        help="Generate alternate text for images",
+    )    
+    parser_generate_table_summary = subparsers.add_parser(
+        "generate-table-summary",
+        help="Generate Table Summary",
+    )    
+
+    parser.add_argument("--name", type=str, default="", help="PDFix license name")
+    parser.add_argument("--key", type=str, default="", help="PDFix license key")
     parser.add_argument("--openai-key", type=str, default="", help="OpenAI API key")
-
-    parser.add_subparsers(dest="subparser")
 
     parser.add_argument("-i", "--input", type=str, help="The input PDF file")
     parser.add_argument(
@@ -47,8 +56,8 @@ def main():
     parser.add_argument(
         "--tags",
         type=str,
-        required=True,
-        default="Figure",
+        required=False,
+        default="",
         help="Regular expression defining the tag names tpo process",
     )
     parser.add_argument(
@@ -72,6 +81,7 @@ def main():
 
     try:
         args = parser.parse_args()
+
     except SystemExit as e:
         if e.code == 0:  # This happens when --help is used, exit gracefully
             sys.exit(0)
@@ -82,28 +92,34 @@ def main():
         get_config(args.output)
         sys.exit(0)
 
+    # default arguments:
+    if args.subparser == "generate-alt-text" and not args.tags:
+        args.tags = "Figure|Formula"
+    elif args.subparser == "generate-table-summary" and not args.tags:
+        args.tags = "Table"
+
+    # value checks:
+    if not args.input:
+        raise ValueError(f"Invalid or missing arguments --input {args.input}")
+    if not args.output:
+        raise ValueError(f"Invalid or missing arguments: --output {args.output}")
+    if not args.openai_key:
+        raise ValueError(
+            f"Invalid or missing arguments: --openai-key {args.openai_key}"
+        )
+
+    if not os.path.isfile(args.input):
+        sys.exit(f"Error: The input file '{args.input}' does not exist.")
+        return
+
+    if args.input.lower().endswith(".pdf") and args.output.lower().endswith(".pdf"):
+        try:
+            process_pdf(args)
+        except Exception as e:
+            sys.exit("Failed to run alternate description: {}".format(e))
+
     else:
-        if not args.input:
-            raise ValueError(f"Invalid or missing arguments --input {args.input}")
-        if not args.output:
-            raise ValueError(f"Invalid or missing arguments: --output {args.output}")
-        if not args.openai_key:
-            raise ValueError(
-                f"Invalid or missing arguments: --openai-key {args.openai_key}"
-            )
-
-        if not os.path.isfile(args.input):
-            sys.exit(f"Error: The input file '{args.input}' does not exist.")
-            return
-
-        if args.input.lower().endswith(".pdf") and args.output.lower().endswith(".pdf"):
-            try:
-                process_pdf(args)
-            except Exception as e:
-                sys.exit("Failed to run alternate description: {}".format(e))
-
-        else:
-            print("Input and output file must be PDF")
+        print("Input and output file must be PDF")
 
 
 if __name__ == "__main__":
