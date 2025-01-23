@@ -19,10 +19,27 @@ from pdfixsdk.Pdfix import (
     kSaveFull,
 )
 
+# utils
+def bytearray_to_data(byte_array): 
+  size = len(byte_array)
+  return (ctypes.c_ubyte * size).from_buffer(byte_array)
 
 def setAltText(elem: PdsStructElement, alt_text: str):
     elem.SetAlt(alt_text)
 
+def getTableSummary(elem: PdsStructElement):
+    attr_dict = None
+    for index in reversed(range(elem.GetNumAttrObjects())):
+        attr_obj = elem.GetAttrObject(index)
+        if not attr_obj:
+            continue
+        attr_item = PdsDictionary(attr_obj.obj)
+        if attr_item.GetText("O") == "Table":            
+            attr_dict = attr_item
+            summary = attr_dict.GetString("Summary")
+            if summary:
+                return True
+    return None
 
 def setTableSummary(elem: PdsStructElement, table_summary: str):
     doc = elem.GetStructTree().GetDoc()
@@ -42,6 +59,42 @@ def setTableSummary(elem: PdsStructElement, table_summary: str):
         elem.AddAttrObj(attr_dict)
 
     attr_dict.PutString("Summary", table_summary)
+
+
+def addAssociatedFile(elem: PdsStructElement, af: PdsDictionary):
+    elem_obj = PdsDictionary(elem.GetObject().obj)
+    af_dict = elem_obj.GetDictionary("AF")
+    if af_dict:
+        # convert dict to an array
+        af_arr = GetPdfix().CreateArrayObject(False)      
+        af_arr.Put(0, af_dict.Clone(False))
+        elem_obj.Put("AF", af_arr)
+
+    af_arr = elem_obj.GetArray("AF")
+    if not af_arr:
+        af_arr = elem_obj.PutArray("AF")
+    af_arr.Put(af_arr.GetNumObjects(), af)
+
+
+def setAFMathML(elem: PdsStructElement, mathml: str):
+    # create mathML object
+    doc = elem.GetStructTree().GetDoc()
+    af_dict = doc.CreateDictObject(True)
+    af_dict.PutName("Type", "Filespec")
+    af_dict.PutName("AFRelationshhip", "Supplement")
+    af_dict.PutString("F", "mathml-4")
+    af_dict.PutString("UF", "mathml-4")
+    af_dict.PutString("Desc", "mathml-4")
+
+    raw_data = bytearray_to_data(bytearray(mathml.encode("utf-8")))
+    f_dict = doc.CreateDictObject(False)
+    f_stm = doc.CreateStreamObject(True, f_dict, raw_data, len(mathml))
+
+    ef_dict = af_dict.PutDict("EF")
+    ef_dict.Put("F", f_stm)
+    ef_dict.Put("UF", f_stm)
+
+    addAssociatedFile(elem, af_dict)
 
 
 def render_page(doc: PdfDoc, page_num: int, bbox: PdfRect, zoom: float) -> bytearray:
@@ -146,11 +199,20 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
 
         print((f"Processing {id} tag matches the search criteria ..."))
 
-        org_alt = elem.GetAlt()
-        if not args.overwrite and org_alt:
-            print((f"Alt text already exists for {id}"))
-            return
-
+        if args.command == "generate-alt-text":
+          org_alt = elem.GetAlt()
+          if not args.overwrite and org_alt:
+              print((f"Alt text already exists for {id}"))
+              return
+        elif args.command == "generate-table-summary":
+          if getTableSummary(elem):
+              print((f"Table summary already exists for {id}"))
+              return
+        # elif args.subparser == "generate-mathml":
+        #   if elem.GetDictionary("AF"):
+        #       print((f"MathML already exists for {id}"))
+        #       return
+          
         data = render_page(doc, page_num, bbox, 1)
         base64_image = base64.b64encode(data).decode("utf-8")
         # with open(img, "wb") as bf:
@@ -165,12 +227,15 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
             print("No alt text found for " + id)
             return
 
-        if args.subparser == "generate-alt-text":
+        if args.command == "generate-alt-text":
             setAltText(elem, content)
             print((f"Alt text set for {id} tag"))
-        elif args.subparser == "generate-table-summary":
+        elif args.command == "generate-table-summary":
             setTableSummary(elem, content)
             print((f"Table summary set for {id} tag"))
+        elif args.command == "generate-mathml":
+            setAFMathML(elem, content)
+            print((f"MathML set for {id} tag"))
         else:
             print((f"Unknown operation: {args.subparser}"))
 
@@ -235,15 +300,29 @@ def process_pdf(args):
     # Example usage
     process_pdf(args)
     """
+
+    # value checks:
+    if not args.input:
+        raise ValueError(f"Invalid or missing arguments --input {args.input}")
+    if not args.output:
+        raise ValueError(f"Invalid or missing arguments: --output {args.output}")
+    if not args.openai_key:
+        raise ValueError(
+            f"Invalid or missing arguments: --openai-key {args.openai_key}"
+        )
+
     pdfix = GetPdfix()
     if pdfix is None:
         raise Exception("Pdfix Initialization fail")
 
     if args.name and args.key:
         if not pdfix.GetAccountAuthorization().Authorize(args.name, args.key):
-            raise Exception("Pdfix Authorization fail")
+            raise Exception(pdfix.GetError())
+    elif args.key:
+        if not pdfix.GetStandarsAuthorization().Activate(args.key):
+            raise Exception(pdfix.GetError())
     else:
-        print("No license name or key provided. Using Pdfix trial")
+        print("No license name or key provided. Using PDFix SDK trial")
 
     # Open doc
     doc = pdfix.OpenDoc(args.input, "")

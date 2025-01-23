@@ -122,7 +122,7 @@
           "desc": "Tag name defined by a regular expression",
           "type": "string",
           "value": "Figure|Formula"
-        }        
+        }
       ]
     },
     {
@@ -138,7 +138,44 @@
           "desc": "Tag name defined by a regular expression",
           "type": "string",
           "value": "Table"
-        }        
+        }
+      ]
+    },
+    {
+      "name": "Generate MathML with OpenAI",
+      "desc": "Action that automatically generates and adds MathML accociated files with OpenAI",
+      "icon": "calculate",
+      "category": "Tags",
+      "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest  generate-mathml --openai_key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\" --name \"${license_name}\" --key \"${license_key}\"",
+      "args": [
+        {
+          "title": "Tag Name",
+          "name": "tag_name",
+          "desc": "Tag name defined by a regular expression",
+          "type": "string",
+          "value": "Formula"
+        },
+        {
+          "title": "MathML Version",
+          "name": "mathml_version",
+          "desc": "Tag version of MathML",
+          "type": "string",
+          "value": "mathml-4",
+          "set": [
+            {
+              "value": "mathml-1"
+            },
+            {
+              "value": "mathml-2"
+            },
+            {
+              "value": "mathml-3"
+            },
+            {
+              "value": "mathml-4"
+            }
+          ]
+        }
       ]
     }
   ]

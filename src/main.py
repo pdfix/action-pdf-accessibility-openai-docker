@@ -6,8 +6,8 @@ from pathlib import Path
 from pdf import process_pdf
 
 
-def get_config(path: str) -> None:
-    if path is None:
+def get_config(args) -> None:
+    if args.output is None:
         with open(
             os.path.join(Path(__file__).parent.absolute(), "../config.json"),
             "r",
@@ -16,110 +16,74 @@ def get_config(path: str) -> None:
             print(f.read())
     else:
         src = os.path.join(Path(__file__).parent.absolute(), "../config.json")
-        dst = path
+        dst = args.output
         shutil.copyfile(src, dst)
 
+def setArgs(parser, names):
+    for name in names:
+        if name == "openai-key":
+            parser.add_argument("--openai-key", type=str, required=True, help="OpenAI API key")
+        elif name == "input":
+            parser.add_argument("--input", "-i", type=str, required=True, help="The input PDF file")
+        elif name == "output":
+            parser.add_argument("--output", "-o", type=str, required=False, help="The output file")
+        elif name == "tags":
+            parser.add_argument("--tags", type=str, default="Table", help="Tag names to process")
+        elif name == "lang":
+            parser.add_argument("--lang", type=str, default="en", help="Language setting")
+        elif name == "name":
+            parser.add_argument("--name", type=str, help="License Name")
+        elif name == "key":
+            parser.add_argument("--key", type=str, help="License Key") 
+        elif name == "mathml-version":
+            parser.add_argument("--mathml-version", type=str, choices=["mathml-1", "mathml-2", "mathml-3", "mathml-4"], default="mathml-4", help="MathML version")
+    return parser
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="PDF Accessibility with OpenAI",
-    )
-    subparsers = parser.add_subparsers(title="subparser")
-
-    # Generate Alt Text subcommand
-    parser_generate_config = subparsers.add_parser(
-        "config",
-        help="Save the default configuration file",
-    )    
-
-    parser_generate_alt_text = subparsers.add_parser(
-        "generate-alt-text",
-        help="Generate alternate text for images",
-    )    
-    parser_generate_table_summary = subparsers.add_parser(
-        "generate-table-summary",
-        help="Generate Table Summary",
-    )    
-
-    parser.add_argument("--name", type=str, default="", help="PDFix license name")
-    parser.add_argument("--key", type=str, default="", help="PDFix license key")
-    parser.add_argument("--openai-key", type=str, default="", help="OpenAI API key")
-
-    parser.add_argument("-i", "--input", type=str, help="The input PDF file")
-    parser.add_argument(
-        "-o",
-        "--output",
-        type=str,
-        help="The output file",
-    )
-
-    parser.add_argument(
-        "--tags",
-        type=str,
-        required=False,
-        default="",
-        help="Regular expression defining the tag names tpo process",
-    )
-    parser.add_argument(
-        "--overwrite",
-        type=bool,
-        default=False,
-        help="Overwrite the existing value",
-    )
-    parser.add_argument(
-        "--lang",
-        type=str,
-        required=False,
-        default="en",
-        help="The laguage of the alternate description and table summary",
-    )
-
-    # Print help if no arguments are provided
-    if len(sys.argv) == 1:
-        parser.print_help()
-        sys.exit(1)
-
     try:
-        args = parser.parse_args()
-
-    except SystemExit as e:
-        if e.code == 0:  # This happens when --help is used, exit gracefully
-            sys.exit(0)
-        print("Failed to parse arguments. Error: " + str(e))
-        sys.exit(1)
-
-    if args.subparser == "config":
-        get_config(args.output)
-        sys.exit(0)
-
-    # default arguments:
-    if args.subparser == "generate-alt-text" and not args.tags:
-        args.tags = "Figure|Formula"
-    elif args.subparser == "generate-table-summary" and not args.tags:
-        args.tags = "Table"
-
-    # value checks:
-    if not args.input:
-        raise ValueError(f"Invalid or missing arguments --input {args.input}")
-    if not args.output:
-        raise ValueError(f"Invalid or missing arguments: --output {args.output}")
-    if not args.openai_key:
-        raise ValueError(
-            f"Invalid or missing arguments: --openai-key {args.openai_key}"
+        parser = argparse.ArgumentParser(description="PDF Accessibility with OpenAI")
+        subparsers = parser.add_subparsers(
+            title="Commands", dest="command", required=True
         )
 
-    if not os.path.isfile(args.input):
-        sys.exit(f"Error: The input file '{args.input}' does not exist.")
-        return
+        # `generate-table-summary`
+        parser_generate_table_summary = subparsers.add_parser(
+            "generate-table-summary", help="Generate table summary"            
+        )
+        setArgs(parser_generate_table_summary, ["openai-key", "input", "output", "tags", "lang", "name", "key"])
+        parser_generate_table_summary.set_defaults(func=process_pdf)
 
-    if args.input.lower().endswith(".pdf") and args.output.lower().endswith(".pdf"):
-        try:
-            process_pdf(args)
-        except Exception as e:
-            sys.exit("Failed to run alternate description: {}".format(e))
+        # `generate-alt-text`
+        parser_generate_alt_text = subparsers.add_parser(
+            "generate-alt-text", help="Generate alternate text for images"
+        )
+        setArgs(parser_generate_alt_text, ["openai-key", "input", "output", "tags", "lang", "name", "key"])
+        parser_generate_alt_text.set_defaults(func=process_pdf)
 
-    else:
-        print("Input and output file must be PDF")
+        # `generate-mathml`
+        parser_generate_mathml = subparsers.add_parser(
+            "generate-mathml", help="Generate MathML for formulas"
+        )
+        setArgs(parser_generate_mathml, ["openai-key", "input", "output", "tags", "mathml-version", "name", "key"])  
+        parser_generate_mathml.set_defaults(func=process_pdf)
+
+        # `config` (does not require `input` or `output`)
+        parser_generate_config = subparsers.add_parser(
+            "config", help="Save the default configuration file"
+        )
+        parser_generate_config.set_defaults(func=get_config)
+
+        # Parsovanie argumentov
+        args = parser.parse_args()
+
+        # Spustenie priradenej funkcie
+        if hasattr(args, "func"):
+            args.func(args)
+        else:
+            parser.print_help()
+    except Exception as e:
+        print(f"Error: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
