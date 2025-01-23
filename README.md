@@ -17,26 +17,33 @@ A docker image that automatically fixes accessibility issues in PDF files using 
 ## Available Actions
 - Generate Alternate Text for images
 - Generate Table Summary
+- Generate MathML Associated Files for Formulas
 
 ```
 PDF Accessibility with OpenAI
 
 commands:
-  {config,generate-alt-text,generate-table-summary}
     config                  Save the default configuration file
     generate-alt-text       Generate alternate text for images
     generate-table-summary  Generate Table Summary
+    generate-mathml         Generate MathML for formulas
 
-options:
+common options:
   -h, --help                show this help message and exit
   --openai-key OPENAI_KEY   OpenAI API key
   --input INPUT             The input PDF file
   --output OUTPUT           The output file
   --tags TAGS               Regular expression defining the tag names tpo process
-  --overwrite OVERWRITE     Overwrite the existing value
-  --lang LANG               The laguage of the alternate description and table summary
   --name NAME               PDFix license name
   --key KEY                 PDFix license key
+
+generate-alt-text, generate-table-summary:
+  --lang LANG               The laguage of the alternate description and table summary
+  --overwrite OVERWRITE     Overwrite the existing value
+
+generate-mathml:
+  --mathml-version          MathML version
+      {mathml-1,mathml-2,mathml-3,mathml-4}                            
 ```
 
 ## Getting Started
