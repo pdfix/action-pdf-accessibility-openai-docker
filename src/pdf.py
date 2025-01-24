@@ -1,4 +1,5 @@
 import base64
+from concurrent.futures import ThreadPoolExecutor
 import ctypes
 import re
 from ai import openai_propmpt
@@ -133,7 +134,7 @@ def render_page(doc: PdfDoc, page_num: int, bbox: PdfRect, zoom: float) -> bytea
     return data
 
 
-def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
+def process_struct_elem(elem: PdsStructElement, args):
     """
     Processes a structure element in a PDF document by generating alternate text or table
     summary using OpenAI.
@@ -156,6 +157,7 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
     process_struct_elem(struct_element, pdf_document, args)
     """
     try:
+        doc = elem.GetStructTree().GetDoc()
         elem_obj_id = elem.GetObject().GetId()
         elem_id = elem.GetId()
         elem_type = elem.GetType(False)
@@ -243,7 +245,7 @@ def process_struct_elem(elem: PdsStructElement, doc: PdfDoc, args):
         print("Error: " + str(e))
 
 
-def browse_tags_recursive(parent: PdsStructElement, doc: PdfDoc, args):
+def browse_tags_recursive(elem: PdsStructElement, args) -> list:
     """
     Recursively browses through the structure elements of a PDF document and processes
     elements that match the specified tags.
@@ -264,19 +266,21 @@ def browse_tags_recursive(parent: PdsStructElement, doc: PdfDoc, args):
     # Example usage
     browse_tags_recursive(parent_element, pdf_document, args)
     """
-    count = parent.GetNumChildren()
-    struct_tree = doc.GetStructTree()
+    result = []
+    count = elem.GetNumChildren()
+    struct_tree = elem.GetStructTree()
     for i in range(0, count):
-        if parent.GetChildType(i) != kPdsStructChildElement:
+        if elem.GetChildType(i) != kPdsStructChildElement:
             continue
-        child_elem = struct_tree.GetStructElementFromObject(parent.GetChildObject(i))
+        child_elem = struct_tree.GetStructElementFromObject(elem.GetChildObject(i))
         if re.match(args.tags, child_elem.GetType(True)) or re.match(
             args.tags, child_elem.GetType(False)
         ):
             # process element
-            process_struct_elem(child_elem, doc, args)
+            result.append(child_elem)
         else:
-            browse_tags_recursive(child_elem, doc, args)
+            result.extend(browse_tags_recursive(child_elem, args))
+    return result
 
 
 def process_pdf(args):
@@ -335,7 +339,13 @@ def process_pdf(args):
 
     child_elem = struct_tree.GetStructElementFromObject(struct_tree.GetChildObject(0))
     try:
-        browse_tags_recursive(child_elem, doc, args)
+        items = browse_tags_recursive(child_elem, args)
+        # for elem in items:
+        #     process_struct_elem(elem, args)
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            futures = [executor.submit(process_struct_elem, elem, args) for elem in items]
+        for future in futures:
+            future.result()  # Wait for completion (optional)        
     except Exception as e:
         raise e
 

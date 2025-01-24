@@ -1,7 +1,7 @@
 import argparse
-import os
-import shutil
-import sys
+import time
+from datetime import datetime
+import os, shutil, sys
 from pathlib import Path
 from pdf import process_pdf
 
@@ -76,11 +76,21 @@ def main():
         # Parsovanie argumentov
         args = parser.parse_args()
 
+        # Measure the time it takes to make all requests
+        start_time = time.time()  # Record the start time
+
+        dayTyme = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        print(f"\nProcessing started at: {dayTyme}")
+        
         # Spustenie priradenej funkcie
         if hasattr(args, "func"):
             args.func(args)
         else:
             parser.print_help()
+
+        end_time = time.time()  # Record the end time
+        elapsed_time = end_time - start_time  # Calculate the elapsed time            
+        print(f"\nProcessing finished at: {dayTyme}. Elapsed time: {elapsed_time:.2f} seconds")
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
