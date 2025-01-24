@@ -7,6 +7,9 @@ A docker image that automatically fixes accessibility issues in PDF files using 
 - [PDF Accessibility with OpenAI](#pdf-accessibility-with-openai)
   - [Table of Contents](#table-of-contents)
   - [Available Actions](#available-actions)
+    - [Generate Alternate Text for images](#generate-alternate-text-for-images)
+    - [Generate Table Summary](#generate-table-summary)
+    - [Generate MathML Associated Files for Formulas](#generate-mathml-associated-files-for-formulas)
   - [Getting Started](#getting-started)
   - [Run using Command Line Interface](#run-using-command-line-interface)
   - [Run Description Generation using REST API](#run-description-generation-using-rest-api)
@@ -18,6 +21,19 @@ A docker image that automatically fixes accessibility issues in PDF files using 
 - Generate Alternate Text for images
 - Generate Table Summary
 - Generate MathML Associated Files for Formulas
+
+### Generate Alternate Text for images
+
+Action that automatically generates and applies alternative image descriptions in PDF tags with OpenAI
+
+### Generate Table Summary
+
+Action that automatically generates and applies the table summary attribute in PDF tags with OpenAI
+
+### Generate MathML Associated Files for Formulas
+
+Action that automatically generates and adds MathML accociated files with OpenAI
+
 
 ```
 PDF Accessibility with OpenAI
