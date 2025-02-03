@@ -7,17 +7,16 @@ from pdf import process_pdf
 
 
 def get_config(args) -> None:
-    if args.output is None:
-        with open(
-            os.path.join(Path(__file__).parent.absolute(), "../config.json"),
-            "r",
-            encoding="utf-8",
-        ) as f:
-            print(f.read())
-    else:
-        src = os.path.join(Path(__file__).parent.absolute(), "../config.json")
-        dst = args.output
-        shutil.copyfile(src, dst)
+    with open(
+        os.path.join(Path(__file__).parent.absolute(), "../config.json"),
+        "r",
+        encoding="utf-8",
+    ) as f:
+        if args.output is None:
+                print(f.read())
+        else:
+            with open(args.output, "w") as out:
+                out.write(f.read())
 
 def setArgs(parser, names):
     for name in names:
@@ -71,6 +70,7 @@ def main():
         parser_generate_config = subparsers.add_parser(
             "config", help="Save the default configuration file"
         )
+        setArgs(parser_generate_config, ["output"])
         parser_generate_config.set_defaults(func=get_config)
 
         # Parsovanie argumentov
