@@ -5,7 +5,7 @@
         {
             "title": "Generate Alternate Text OpenAI",
             "name": "generate_alt_text_openai",
-            "desc": "Action that automatically generates and applies alternative image descriptions in PDF tags with OpenAI",
+            "desc": "Automatically generates and applies alternate descriptions in PDF tags using OpenAI",
             "icon": "add_photo_alternate",
             "category": "OpenAI",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest  generate-alt-text --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
@@ -127,7 +127,7 @@
         {
             "title": "Generate Table Summary OpenAI",
             "name": "generate_table_summary_openai",
-            "desc": "Action that automatically generates and applies the table summary attribute in PDF tags with OpenAI",
+            "desc": "Automatically generates and applies table summary attribute in PDF tags using OpenAI",
             "icon": "table_view",
             "category": "OpenAI",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest  generate-table-summary --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
@@ -249,7 +249,7 @@
         {
             "title": "Generate MathML OpenAI",
             "name": "generate_mathml_openai",
-            "desc": "Action that automatically generates and adds MathML associated files with OpenAI",
+            "desc": "Automatically generates and adds MathML associated files to PDF tags using OpenAI",
             "icon": "calculate",
             "category": "OpenAI",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest  generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\" --name \"${license_name}\" --key \"${license_key}\"",
