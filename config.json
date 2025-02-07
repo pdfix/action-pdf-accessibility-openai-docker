@@ -1,12 +1,13 @@
 {
     "name": "PDF Accessibility OpenAI",
-    "version": "1.0.0",
+    "version": "v0.0.0",
     "actions": [
         {
             "title": "Generate Alternate Text OpenAI",
             "name": "generate_alt_text_openai",
             "desc": "Automatically generates and applies alternate descriptions in PDF tags using OpenAI",
             "icon": "add_photo_alternate",
+            "version": "v0.0.0",
             "category": "OpenAI",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest  generate-alt-text --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
@@ -129,6 +130,7 @@
             "name": "generate_table_summary_openai",
             "desc": "Automatically generates and applies table summary attribute in PDF tags using OpenAI",
             "icon": "table_view",
+            "version": "v0.0.0",
             "category": "OpenAI",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest  generate-table-summary --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
@@ -251,6 +253,7 @@
             "name": "generate_mathml_openai",
             "desc": "Automatically generates and adds MathML associated files to PDF tags using OpenAI",
             "icon": "calculate",
+            "version": "v0.0.0",
             "category": "OpenAI",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest  generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [

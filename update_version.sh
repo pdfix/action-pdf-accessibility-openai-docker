@@ -18,7 +18,9 @@ if [ ! -f "config.json" ]; then
     exit 1
 fi
 
+# Replace "v0.0.0" placeholder with the provided argument in config.json
+sed -i "s|v0.0.0|$1|g" config.json
 # Replace "latest" with the provided argument in config.json
-sed -i "s/latest/$1/g" config.json
+sed -i "s|latest|$1|g" config.json
 
 echo "Replaced all occurrences of 'latest' with '$1' in config.json."
