@@ -3,7 +3,8 @@ import time
 from datetime import datetime
 import os, shutil, sys
 from pathlib import Path
-from pdf import process_pdf
+from process_pdf import process_pdf
+from process_json import process_json
 
 
 def get_config(args) -> None:
@@ -17,6 +18,26 @@ def get_config(args) -> None:
         else:
             with open(args.output, "w") as out:
                 out.write(f.read())
+
+def process_cli(args) -> None:
+    # value checks:
+    if not args.input:
+        raise ValueError(f"Invalid or missing arguments --input {args.input}")
+    if not args.output:
+        raise ValueError(f"Invalid or missing arguments: --output {args.output}")
+    if not args.openai_key:
+        raise ValueError(
+            f"Invalid or missing arguments: --openai-key {args.openai_key}"
+        )
+
+    if args.input.lower().endswith(".pdf"):
+        # process whole pdf document
+        return process_pdf(args)
+    elif args.input.lower().endswith(".json"):
+        # process just json
+        return process_json(args)
+
+
 
 def setArgs(parser, names):
     for name in names:
@@ -50,21 +71,21 @@ def main():
             "generate-table-summary", help="Generate table summary"            
         )
         setArgs(parser_generate_table_summary, ["openai-key", "input", "output", "tags", "lang", "name", "key"])
-        parser_generate_table_summary.set_defaults(func=process_pdf)
+        parser_generate_table_summary.set_defaults(func=process_cli)
 
         # `generate-alt-text`
         parser_generate_alt_text = subparsers.add_parser(
             "generate-alt-text", help="Generate alternate text for images"
         )
         setArgs(parser_generate_alt_text, ["openai-key", "input", "output", "tags", "lang", "name", "key"])
-        parser_generate_alt_text.set_defaults(func=process_pdf)
+        parser_generate_alt_text.set_defaults(func=process_cli)
 
         # `generate-mathml`
         parser_generate_mathml = subparsers.add_parser(
             "generate-mathml", help="Generate MathML for formulas"
         )
         setArgs(parser_generate_mathml, ["openai-key", "input", "output", "tags", "mathml-version", "name", "key"])  
-        parser_generate_mathml.set_defaults(func=process_pdf)
+        parser_generate_mathml.set_defaults(func=process_cli)
 
         # `config` (does not require `input` or `output`)
         parser_generate_config = subparsers.add_parser(

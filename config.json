@@ -126,6 +126,116 @@
             ]
         },
         {
+            "title": "Generate Alternate Text OpenAI",
+            "name": "generate_alt_text_openai",
+            "desc": "Automatically generates alternate description using OpenAI",
+            "icon": "add_photo_alternate",
+            "version": "v0.0.0",
+            "subtype": "set_alt",
+            "category": "OpenAI",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest  generate-alt-text --openai-key \"${openai_key}\" -i \"${input_json}\" -o \"${output_json}\" --lang \"${lang}\"",
+            "args": [
+                {
+                    "name": "input_json",
+                    "desc": "Input JSON file",
+                    "flags": 2,
+                    "type": "file_path",
+                    "ext": "json",
+                    "value": ""
+                },
+                {
+                    "name": "output_json",
+                    "desc": "Output JSON file",
+                    "flags": 4,
+                    "type": "file_path",
+                    "ext": "json",
+                    "value": ""
+                },
+                {
+                    "title": "OpenAI API Key",
+                    "name": "openai_key",
+                    "desc": "OpenAI API Key",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "title": "Language",
+                    "name": "lang",
+                    "desc": "Alternate description language",
+                    "type": "string",
+                    "value": "English",
+                    "set": [
+                        {
+                            "value": "English"
+                        },
+                        {
+                            "value": "Deutsch"
+                        },
+                        {
+                            "value": "Español"
+                        },
+                        {
+                            "value": "Français"
+                        },
+                        {
+                            "value": "Italiano"
+                        },
+                        {
+                            "value": "Português"
+                        },
+                        {
+                            "value": "Nederlands"
+                        },
+                        {
+                            "value": "Polski"
+                        },
+                        {
+                            "value": "Русский"
+                        },
+                        {
+                            "value": "中文"
+                        },
+                        {
+                            "value": "日本語"
+                        },
+                        {
+                            "value": "한국어"
+                        },
+                        {
+                            "value": "Türkçe"
+                        },
+                        {
+                            "value": "Svenska"
+                        },
+                        {
+                            "value": "Norsk"
+                        },
+                        {
+                            "value": "Suomi"
+                        },
+                        {
+                            "value": "Čeština"
+                        },
+                        {
+                            "value": "Magyar"
+                        },
+                        {
+                            "value": "Slovenčina"
+                        },
+                        {
+                            "value": "Українська"
+                        },
+                        {
+                            "value": "Ελληνικά"
+                        },
+                        {
+                            "value": "Română"
+                        }
+                    ]
+                }
+            ]
+        },        
+        {
             "title": "Generate Table Summary OpenAI",
             "name": "generate_table_summary_openai",
             "desc": "Automatically generates and applies table summary attribute in PDF tags using OpenAI",

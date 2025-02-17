@@ -31,7 +31,7 @@ def openai_propmpt(img: str, args):
                     {
                         "type": "image_url",
                         "image_url": {
-                            "url": f"data:image/jpeg;base64,{img}",
+                            "url": f"{img}",
                         },
                     },
                 ],

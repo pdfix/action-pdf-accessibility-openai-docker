@@ -216,7 +216,8 @@ def process_struct_elem(elem: PdsStructElement, args):
         #       return
           
         data = render_page(doc, page_num, bbox, 1)
-        base64_image = base64.b64encode(data).decode("utf-8")
+        base64_image = f"data:image/jpeg;base64,{base64.b64encode(data).decode("utf-8")}"
+        
         # with open(img, "wb") as bf:
         #     bf.write(data)
 
@@ -304,16 +305,6 @@ def process_pdf(args):
     # Example usage
     process_pdf(args)
     """
-
-    # value checks:
-    if not args.input:
-        raise ValueError(f"Invalid or missing arguments --input {args.input}")
-    if not args.output:
-        raise ValueError(f"Invalid or missing arguments: --output {args.output}")
-    if not args.openai_key:
-        raise ValueError(
-            f"Invalid or missing arguments: --openai-key {args.openai_key}"
-        )
 
     pdfix = GetPdfix()
     if pdfix is None:
