@@ -127,7 +127,7 @@
         },
         {
             "title": "Generate Alternate Text OpenAI",
-            "name": "generate_alt_text_openai",
+            "name": "generate_alt_text_openai_json",
             "desc": "Automatically generates alternate description using OpenAI",
             "icon": "add_photo_alternate",
             "version": "v0.0.0",
