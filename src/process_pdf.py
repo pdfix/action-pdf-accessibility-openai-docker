@@ -216,7 +216,7 @@ def process_struct_elem(elem: PdsStructElement, args):
         #       return
           
         data = render_page(doc, page_num, bbox, 1)
-        base64_image = f"data:image/jpeg;base64,{base64.b64encode(data).decode("utf-8")}"
+        base64_image = (f"data:image/jpeg;base64,{base64.b64encode(data).decode('utf-8')}")
         
         # with open(img, "wb") as bf:
         #     bf.write(data)
