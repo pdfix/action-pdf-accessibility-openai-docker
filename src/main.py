@@ -55,6 +55,8 @@ def setArgs(parser, names):
             parser.add_argument("--name", type=str, help="License Name")
         elif name == "key":
             parser.add_argument("--key", type=str, help="License Key") 
+        elif name == "overwrite":
+            parser.add_argument("--overwrite", type=bool, default=False, help="Overwrite previous Alt text") 
         elif name == "mathml-version":
             parser.add_argument("--mathml-version", type=str, choices=["mathml-1", "mathml-2", "mathml-3", "mathml-4"], default="mathml-4", help="MathML version")
     return parser
@@ -70,21 +72,21 @@ def main():
         parser_generate_table_summary = subparsers.add_parser(
             "generate-table-summary", help="Generate table summary"            
         )
-        setArgs(parser_generate_table_summary, ["openai-key", "input", "output", "tags", "lang", "name", "key"])
+        setArgs(parser_generate_table_summary, ["openai-key", "input", "output", "tags", "lang", "name", "key", "overwrite"])
         parser_generate_table_summary.set_defaults(func=process_cli)
 
         # `generate-alt-text`
         parser_generate_alt_text = subparsers.add_parser(
             "generate-alt-text", help="Generate alternate text for images"
         )
-        setArgs(parser_generate_alt_text, ["openai-key", "input", "output", "tags", "lang", "name", "key"])
+        setArgs(parser_generate_alt_text, ["openai-key", "input", "output", "tags", "lang", "name", "key", "overwrite"])
         parser_generate_alt_text.set_defaults(func=process_cli)
 
         # `generate-mathml`
         parser_generate_mathml = subparsers.add_parser(
             "generate-mathml", help="Generate MathML for formulas"
         )
-        setArgs(parser_generate_mathml, ["openai-key", "input", "output", "tags", "mathml-version", "name", "key"])  
+        setArgs(parser_generate_mathml, ["openai-key", "input", "output", "tags", "mathml-version", "name", "key", "overwrite"])  
         parser_generate_mathml.set_defaults(func=process_cli)
 
         # `config` (does not require `input` or `output`)
