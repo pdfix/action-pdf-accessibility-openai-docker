@@ -5,6 +5,7 @@ import os, shutil, sys
 from pathlib import Path
 from process_pdf import process_pdf
 from process_json import process_json
+from image_update import check_for_image_updates
 
 
 def get_config(args) -> None:
@@ -98,6 +99,8 @@ def main():
 
         # Parse arguments
         args = parser.parse_args()
+
+        check_for_image_updates()
 
         # Measure the time it takes to make all requests
         start_time = time.time()  # Record the start time
