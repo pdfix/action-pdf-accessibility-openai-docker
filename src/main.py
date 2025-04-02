@@ -96,7 +96,7 @@ def main():
         setArgs(parser_generate_config, ["output"])
         parser_generate_config.set_defaults(func=get_config)
 
-        # Parsovanie argumentov
+        # Parse arguments
         args = parser.parse_args()
 
         # Measure the time it takes to make all requests
@@ -105,7 +105,7 @@ def main():
         dayTyme = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         print(f"\nProcessing started at: {dayTyme}")
         
-        # Spustenie priradenej funkcie
+        # Run assigned function
         if hasattr(args, "func"):
             args.func(args)
         else:
