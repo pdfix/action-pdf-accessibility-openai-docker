@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from ai import openai_propmpt
 
 
@@ -22,7 +23,7 @@ def process_json(args):
     1. Reads the input JSON file.
     2. Extracts the base64-encoded image.
     3. Passes the image to `openai_propmpt()` to generate a response.
-    4. Saves the response as a dictionary {"text": response} in the output JSON file.
+    4. Saves the response as a dictionary {"content": response} in the output JSON file.
 
     Example:
         args = Namespace(input="input.json", output="output.json")
