@@ -178,11 +178,7 @@ def process_struct_elem(elem: PdsStructElement, args):
 
         # get the object page number (it may be written in child objects)
         if page_num == -1:
-            print(
-                "Skipping ["
-                + id
-                + "] tag that matches the search criteria but can't determine the page number"
-            )
+            print("Skipping [" + id + "] tag that matches the search criteria but can't determine the page number")
             return
 
         id = f"{elem_type} [obj: {elem_obj_id}, id: {elem_id}, page: {page_num + 1}]"
@@ -196,11 +192,7 @@ def process_struct_elem(elem: PdsStructElement, args):
 
         # check bounding box
         if bbox.left == bbox.right or bbox.top == bbox.bottom:
-            print(
-                "Skipping ["
-                + id
-                + "] tag that matches the search criteria but can't determine the bounding box"
-            )
+            print("Skipping [" + id + "] tag that matches the search criteria but can't determine the bounding box")
             return
 
         print((f"Processing {id} tag matches the search criteria ..."))
@@ -220,9 +212,7 @@ def process_struct_elem(elem: PdsStructElement, args):
         #       return
 
         data = render_page(doc, page_num, bbox, 1)
-        base64_image = (
-            f"data:image/jpeg;base64,{base64.b64encode(data).decode('utf-8')}"
-        )
+        base64_image = f"data:image/jpeg;base64,{base64.b64encode(data).decode('utf-8')}"
 
         # with open(img, "wb") as bf:
         #     bf.write(data)
@@ -280,9 +270,7 @@ def browse_tags_recursive(elem: PdsStructElement, args) -> list:
         if elem.GetChildType(i) != kPdsStructChildElement:
             continue
         child_elem = struct_tree.GetStructElementFromObject(elem.GetChildObject(i))
-        if re.match(args.tags, child_elem.GetType(True)) or re.match(
-            args.tags, child_elem.GetType(False)
-        ):
+        if re.match(args.tags, child_elem.GetType(True)) or re.match(args.tags, child_elem.GetType(False)):
             # process element
             result.append(child_elem)
         else:
@@ -340,9 +328,7 @@ def process_pdf(args):
         # for elem in items:
         #     process_struct_elem(elem, args)
         with ThreadPoolExecutor(max_workers=10) as executor:
-            futures = [
-                executor.submit(process_struct_elem, elem, args) for elem in items
-            ]
+            futures = [executor.submit(process_struct_elem, elem, args) for elem in items]
         for future in futures:
             future.result()  # Wait for completion (optional)
     except Exception as e:
