@@ -1,8 +1,7 @@
 import base64
-from concurrent.futures import ThreadPoolExecutor
 import ctypes
 import re
-from ai import openai_propmpt
+from concurrent.futures import ThreadPoolExecutor
 
 from pdfixsdk.Pdfix import (
     GetPdfix,
@@ -12,7 +11,6 @@ from pdfixsdk.Pdfix import (
     PdfRect,
     PdsDictionary,
     PdsStructElement,
-    PdsStructTree,
     kImageDIBFormatArgb,
     kImageFormatJpg,
     kPdsStructChildElement,
@@ -20,13 +18,18 @@ from pdfixsdk.Pdfix import (
     kSaveFull,
 )
 
+from ai import openai_propmpt
+
+
 # utils
-def bytearray_to_data(byte_array): 
-  size = len(byte_array)
-  return (ctypes.c_ubyte * size).from_buffer(byte_array)
+def bytearray_to_data(byte_array):
+    size = len(byte_array)
+    return (ctypes.c_ubyte * size).from_buffer(byte_array)
+
 
 def setAltText(elem: PdsStructElement, alt_text: str):
     elem.SetAlt(alt_text)
+
 
 def getTableSummary(elem: PdsStructElement):
     attr_dict = None
@@ -35,12 +38,13 @@ def getTableSummary(elem: PdsStructElement):
         if not attr_obj:
             continue
         attr_item = PdsDictionary(attr_obj.obj)
-        if attr_item.GetText("O") == "Table":            
+        if attr_item.GetText("O") == "Table":
             attr_dict = attr_item
             summary = attr_dict.GetString("Summary")
             if summary:
                 return True
     return None
+
 
 def setTableSummary(elem: PdsStructElement, table_summary: str):
     doc = elem.GetStructTree().GetDoc()
@@ -67,7 +71,7 @@ def addAssociatedFile(elem: PdsStructElement, af: PdsDictionary):
     af_dict = elem_obj.GetDictionary("AF")
     if af_dict:
         # convert dict to an array
-        af_arr = GetPdfix().CreateArrayObject(False)      
+        af_arr = GetPdfix().CreateArrayObject(False)
         af_arr.Put(0, af_dict.Clone(False))
         elem_obj.Put("AF", af_arr)
 
@@ -202,22 +206,24 @@ def process_struct_elem(elem: PdsStructElement, args):
         print((f"Processing {id} tag matches the search criteria ..."))
 
         if args.command == "generate-alt-text":
-          org_alt = elem.GetAlt()
-          if not args.overwrite and org_alt:
-              print((f"Alt text already exists for {id}"))
-              return
+            org_alt = elem.GetAlt()
+            if not args.overwrite and org_alt:
+                print((f"Alt text already exists for {id}"))
+                return
         elif args.command == "generate-table-summary":
-          if getTableSummary(elem):
-              print((f"Table summary already exists for {id}"))
-              return
+            if getTableSummary(elem):
+                print((f"Table summary already exists for {id}"))
+                return
         # elif args.subparser == "generate-mathml":
         #   if elem.GetDictionary("AF"):
         #       print((f"MathML already exists for {id}"))
         #       return
-          
+
         data = render_page(doc, page_num, bbox, 1)
-        base64_image = (f"data:image/jpeg;base64,{base64.b64encode(data).decode('utf-8')}")
-        
+        base64_image = (
+            f"data:image/jpeg;base64,{base64.b64encode(data).decode('utf-8')}"
+        )
+
         # with open(img, "wb") as bf:
         #     bf.write(data)
 
@@ -334,9 +340,11 @@ def process_pdf(args):
         # for elem in items:
         #     process_struct_elem(elem, args)
         with ThreadPoolExecutor(max_workers=10) as executor:
-            futures = [executor.submit(process_struct_elem, elem, args) for elem in items]
+            futures = [
+                executor.submit(process_struct_elem, elem, args) for elem in items
+            ]
         for future in futures:
-            future.result()  # Wait for completion (optional)        
+            future.result()  # Wait for completion (optional)
     except Exception as e:
         raise e
 

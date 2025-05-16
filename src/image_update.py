@@ -1,11 +1,13 @@
-import requests
 import json
 import os
 from datetime import datetime
 
+import requests
+
 DOCKER_IMAGE = "pdfix/pdf-accessibility-openai"
 CONFIG_FILE = "config.json"
 LAST_CHECK_FILE = ".local_data.json"
+
 
 def get_current_version():
     """Read the current version from config.json."""
@@ -16,6 +18,7 @@ def get_current_version():
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"Error reading {CONFIG_FILE}: {e}")
         return "unknown"
+
 
 def get_latest_docker_version():
     """Fetch the latest available version from Docker Hub."""
@@ -30,6 +33,7 @@ def get_latest_docker_version():
         print(f"Error checking for updates: {e}")
     return None
 
+
 def last_check_today():
     """Check if the last update check was today by reading last_check.json."""
     if os.path.exists(LAST_CHECK_FILE):
@@ -42,6 +46,7 @@ def last_check_today():
             print(f"Error reading {LAST_CHECK_FILE}: {e}")
     return False
 
+
 def update_last_check():
     """Store today's date in last_check.json."""
     try:
@@ -50,6 +55,7 @@ def update_last_check():
     except Exception as e:
         print(f"Error writing {LAST_CHECK_FILE}: {e}")
 
+
 def check_for_image_updates():
     try:
         if not last_check_today():
@@ -57,9 +63,11 @@ def check_for_image_updates():
             latest_version = get_latest_docker_version()
 
             if latest_version and latest_version != current_version:
-                print(f"🚀 A new Docker image version ({latest_version}) is available! "
-                    f"Update with: `docker pull {DOCKER_IMAGE}:{latest_version}`")
-                
+                print(
+                    f"🚀 A new Docker image version ({latest_version}) is available! "
+                    f"Update with: `docker pull {DOCKER_IMAGE}:{latest_version}`"
+                )
+
             update_last_check()
     finally:
         # do not print if check for update fails
