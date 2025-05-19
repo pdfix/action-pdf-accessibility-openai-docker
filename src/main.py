@@ -11,16 +11,14 @@ from process_pdf import process_pdf
 
 
 def get_config(args) -> None:
-    with open(
-        os.path.join(Path(__file__).parent.absolute(), "../config.json"),
-        "r",
-        encoding="utf-8",
-    ) as f:
+    config_path = os.path.join(Path(__file__).parent.absolute(), "../config.json")
+
+    with open(config_path, "r", encoding="utf-8") as file:
         if args.output is None:
-            print(f.read())
+            print(file.read())
         else:
             with open(args.output, "w") as out:
-                out.write(f.read())
+                out.write(file.read())
 
 
 def process_cli(args) -> None:
