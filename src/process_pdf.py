@@ -27,11 +27,11 @@ def bytearray_to_data(byte_array):
     return (ctypes.c_ubyte * size).from_buffer(byte_array)
 
 
-def setAltText(elem: PdsStructElement, alt_text: str):
+def set_alt_text(elem: PdsStructElement, alt_text: str):
     elem.SetAlt(alt_text)
 
 
-def getTableSummary(elem: PdsStructElement):
+def get_table_summary(elem: PdsStructElement):
     attr_dict = None
     for index in reversed(range(elem.GetNumAttrObjects())):
         attr_obj = elem.GetAttrObject(index)
@@ -46,7 +46,7 @@ def getTableSummary(elem: PdsStructElement):
     return None
 
 
-def setTableSummary(elem: PdsStructElement, table_summary: str):
+def set_table_summary(elem: PdsStructElement, table_summary: str):
     doc = elem.GetStructTree().GetDoc()
     attr_dict = None
     for index in reversed(range(elem.GetNumAttrObjects())):
@@ -66,7 +66,7 @@ def setTableSummary(elem: PdsStructElement, table_summary: str):
     attr_dict.PutString("Summary", table_summary)
 
 
-def addAssociatedFile(elem: PdsStructElement, af: PdsDictionary):
+def add_associated_file(elem: PdsStructElement, af: PdsDictionary):
     elem_obj = PdsDictionary(elem.GetObject().obj)
     af_dict = elem_obj.GetDictionary("AF")
     if af_dict:
@@ -81,7 +81,7 @@ def addAssociatedFile(elem: PdsStructElement, af: PdsDictionary):
     af_arr.Put(af_arr.GetNumObjects(), af)
 
 
-def setAFMathML(elem: PdsStructElement, mathml: str):
+def set_af_math_ml(elem: PdsStructElement, mathml: str):
     # create mathML object
     doc = elem.GetStructTree().GetDoc()
     af_dict = doc.CreateDictObject(True)
@@ -99,7 +99,7 @@ def setAFMathML(elem: PdsStructElement, mathml: str):
     ef_dict.Put("F", f_stm)
     ef_dict.Put("UF", f_stm)
 
-    addAssociatedFile(elem, af_dict)
+    add_associated_file(elem, af_dict)
 
 
 def render_page(doc: PdfDoc, page_num: int, bbox: PdfRect, zoom: float) -> bytearray:
@@ -203,7 +203,7 @@ def process_struct_elem(elem: PdsStructElement, args):
                 print((f"Alt text already exists for {id}"))
                 return
         elif args.command == "generate-table-summary":
-            if getTableSummary(elem):
+            if get_table_summary(elem):
                 print((f"Table summary already exists for {id}"))
                 return
         # elif args.subparser == "generate-mathml":
@@ -227,13 +227,13 @@ def process_struct_elem(elem: PdsStructElement, args):
             return
 
         if args.command == "generate-alt-text":
-            setAltText(elem, content)
+            set_alt_text(elem, content)
             print((f"Alt text set for {id} tag"))
         elif args.command == "generate-table-summary":
-            setTableSummary(elem, content)
+            set_table_summary(elem, content)
             print((f"Table summary set for {id} tag"))
         elif args.command == "generate-mathml":
-            setAFMathML(elem, content)
+            set_af_math_ml(elem, content)
             print((f"MathML set for {id} tag"))
         else:
             print((f"Unknown operation: {args.subparser}"))
