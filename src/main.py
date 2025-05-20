@@ -10,14 +10,25 @@ from process_json import process_json
 from process_pdf import process_pdf
 
 
-def get_config(args) -> None:
+def run_config_subcommand(args) -> None:
+    get_pdfix_config(args.output)
+
+
+def get_pdfix_config(path: str) -> None:
+    """
+    If Path is not provided, output content of config.
+    If Path is provided, copy config to destination path.
+
+    Args:
+        path (string): Destination path for config.json file
+    """
     config_path = os.path.join(Path(__file__).parent.absolute(), "../config.json")
 
     with open(config_path, "r", encoding="utf-8") as file:
-        if args.output is None:
+        if path is None:
             print(file.read())
         else:
-            with open(args.output, "w") as out:
+            with open(path, "w") as out:
                 out.write(file.read())
 
 
@@ -76,7 +87,7 @@ def main():
         parser = argparse.ArgumentParser(description="PDF Accessibility with OpenAI")
         subparsers = parser.add_subparsers(title="Commands", dest="command", required=True)
 
-        # `generate-table-summary`
+        # `generate-table-summary` subcommand
         parser_generate_table_summary = subparsers.add_parser("generate-table-summary", help="Generate table summary")
         set_arguments(
             parser_generate_table_summary,
@@ -93,7 +104,7 @@ def main():
         )
         parser_generate_table_summary.set_defaults(func=process_cli)
 
-        # `generate-alt-text`
+        # `generate-alt-text` subcommand
         parser_generate_alt_text = subparsers.add_parser("generate-alt-text", help="Generate alternate text for images")
         set_arguments(
             parser_generate_alt_text,
@@ -110,7 +121,7 @@ def main():
         )
         parser_generate_alt_text.set_defaults(func=process_cli)
 
-        # `generate-mathml`
+        # `generate-mathml` subcommand
         parser_generate_mathml = subparsers.add_parser("generate-mathml", help="Generate MathML for formulas")
         set_arguments(
             parser_generate_mathml,
@@ -127,10 +138,10 @@ def main():
         )
         parser_generate_mathml.set_defaults(func=process_cli)
 
-        # `config` (does not require `input` or `output`)
+        # `config` subcommand
         parser_generate_config = subparsers.add_parser("config", help="Save the default configuration file")
         set_arguments(parser_generate_config, ["output"], False, "JSON")
-        parser_generate_config.set_defaults(func=get_config)
+        parser_generate_config.set_defaults(func=run_config_subcommand)
 
         # Parse arguments
         args = parser.parse_args()
@@ -140,10 +151,10 @@ def main():
         # Measure the time it takes to make all requests
         start_time = time.time()  # Record the start time
 
-        dayTyme = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        print(f"\nProcessing started at: {dayTyme}")
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        print(f"\nProcessing started at: {current_time}")
 
-        # Run assigned function
+        # Run subcommand function
         if hasattr(args, "func"):
             args.func(args)
         else:
@@ -151,7 +162,8 @@ def main():
 
         end_time = time.time()  # Record the end time
         elapsed_time = end_time - start_time  # Calculate the elapsed time
-        print(f"\nProcessing finished at: {dayTyme}. Elapsed time: {elapsed_time:.2f} seconds")
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        print(f"\nProcessing finished at: {current_time}. Elapsed time: {elapsed_time:.2f} seconds")
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
