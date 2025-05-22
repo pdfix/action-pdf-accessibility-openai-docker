@@ -1,17 +1,20 @@
 import json
 
-from ai import openai_propmpt
+from ai import openai_prompt
 
 
-def process_json(args):
+def process_json(subcommand: str, openai_key: str, input: str, output: str, lang: str, mathml_version: str) -> None:
     """
     Processes a JSON file by extracting a base64-encoded image,
     generating a response using OpenAI, and saving the result to an output file.
 
     Parameters:
-        args (Namespace): An object with the following attributes:
-            - input (str): Path to the input JSON file.
-            - output (str): Path to the output JSON file.
+        subcommand (str): Subcommand to determine the type of processing.
+        openai_key (str): OpenAI API key.
+        input (str): Path to the input JSON file.
+        output (str): Path to the output JSON file.
+        lang (str): Language for the response.
+        mathml_version (str): MathML version for the response.
 
     The input JSON file should have the following structure:
     {
@@ -25,18 +28,17 @@ def process_json(args):
     4. Saves the response as a dictionary {"content": response} in the output JSON file.
 
     Example:
-        args = Namespace(input="input.json", output="output.json")
-        process_json(args)
+        process("input.json", "output.json", "your_openai_key", "generate-alt-text", "en", "2.0")
     """
 
-    with open(args.input, "r", encoding="utf-8") as file:
+    with open(input, "r", encoding="utf-8") as file:
         data = json.load(file)
 
     base64_image = data["image"]
 
-    response = openai_propmpt(base64_image, args)
+    response = openai_prompt(base64_image, openai_key, subcommand, lang, mathml_version)
 
-    output_data: dict[str, str] = {"content": response.message.content}
+    output_data: dict[str, str] = {"content": str(response.message.content)}
 
-    with open(args.output, "w", encoding="utf-8") as output_file:
+    with open(output, "w", encoding="utf-8") as output_file:
         json.dump(output_data, output_file, indent=2, ensure_ascii=False)

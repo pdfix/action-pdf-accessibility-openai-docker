@@ -71,7 +71,7 @@ To use this Docker application, you'll need to have Docker installed on your sys
 To run the docker container as CLI, you should share the folder containing the PDF for processing using the `-i` parameter. In this example, the current folder is used.
 
 ```bash 
-docker run -v $(pwd):/data/ -w /data pdfix/pdf-accessibility-openai:latest generate-alt-text --input document.pdf --output out.pdf --tags "Figure|Formula" --openai_key <api_key> --lang English --overwrite true
+docker run -v $(pwd):/data/ -w /data pdfix/pdf-accessibility-openai:latest generate-alt-text --input document.pdf --output out.pdf --tags "Figure|Formula" --openai-key <api_key> --lang English --overwrite true
 ```
 
 To run With a PDFix License add these arguments.
