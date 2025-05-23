@@ -14,7 +14,7 @@ from pdfixsdk.Pdfix import (
 )
 
 from ai import openai_prompt
-from render_page import render_page
+from page_renderer import render_page
 
 
 def bytearray_to_data(byte_array: bytearray) -> ctypes.Array[ctypes.c_ubyte]:
