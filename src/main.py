@@ -19,6 +19,15 @@ DEFAULT_OVERWRITE = False
 def set_arguments(
     parser: argparse.ArgumentParser, names: list, required_output: bool = True, file_type: str = "PDF or JSON"
 ) -> None:
+    """
+    Set arguments for the parser based on the provided names and options.
+
+    Args:
+        parser (argparse.ArgumentParser): The argument parser to set arguments for.
+        names (list): List of argument names to set.
+        required_output (bool): Whether the output argument is required. Defaults to True.
+        file_type (str): The type of file being processed. Defaults to "PDF or JSON".
+    """
     for name in names:
         match name:
             case "input":

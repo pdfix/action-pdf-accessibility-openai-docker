@@ -8,14 +8,6 @@ def process_json(subcommand: str, openai_key: str, input: str, output: str, lang
     Processes a JSON file by extracting a base64-encoded image,
     generating a response using OpenAI, and saving the result to an output file.
 
-    Parameters:
-        subcommand (str): Subcommand to determine the type of processing.
-        openai_key (str): OpenAI API key.
-        input (str): Path to the input JSON file.
-        output (str): Path to the output JSON file.
-        lang (str): Language for the response.
-        mathml_version (str): MathML version for the response.
-
     The input JSON file should have the following structure:
     {
         "image": "<base64_encoded_image>"
@@ -27,8 +19,13 @@ def process_json(subcommand: str, openai_key: str, input: str, output: str, lang
     3. Passes the image to `openai_propmpt()` to generate a response.
     4. Saves the response as a dictionary {"content": response} in the output JSON file.
 
-    Example:
-        process("input.json", "output.json", "your_openai_key", "generate-alt-text", "en", "2.0")
+    Args:
+        subcommand (str): Subcommand to determine the type of processing.
+        openai_key (str): OpenAI API key.
+        input (str): Path to the input JSON file.
+        output (str): Path to the output JSON file.
+        lang (str): Language for the response.
+        mathml_version (str): MathML version for the response.
     """
 
     with open(input, "r", encoding="utf-8") as file:

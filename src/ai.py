@@ -4,7 +4,19 @@ from openai.types.chat.chat_completion import Choice
 
 
 def openai_prompt(image: str, openai_key: str, subcommand: str, lang: str, math_ml_version: str) -> Choice:
-    """Create a prompt for OpenAI, ask OpenAI, and wait for response."""
+    """
+    Create a prompt for OpenAI, ask OpenAI, and wait for response.
+
+    Args:
+        image (str): Base64-encoded image string.
+        openai_key (str): OpenAI API key.
+        subcommand (str): Subcommand to determine the type of processing.
+        lang (str): Language for the response.
+        math_ml_version (str): MathML version for the response.
+
+    Returns:
+        First (most probable) response from OpenAI.
+    """
     client = OpenAI(
         api_key=openai_key,
         timeout=httpx.Timeout(None, connect=10, read=60, write=30),

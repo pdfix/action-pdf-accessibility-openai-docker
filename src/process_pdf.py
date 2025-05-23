@@ -6,36 +6,52 @@ from typing import Optional
 
 from pdfixsdk.Pdfix import (
     GetPdfix,
-    PdfDoc,
-    PdfImageParams,
-    PdfPageRenderParams,
     PdfRect,
     PdsDictionary,
     PdsStructElement,
-    kImageDIBFormatArgb,
-    kImageFormatJpg,
     kPdsStructChildElement,
-    kRotate0,
     kSaveFull,
 )
 
 from ai import openai_prompt
+from render_page import render_page
 
 
-# utils
 def bytearray_to_data(byte_array: bytearray) -> ctypes.Array[ctypes.c_ubyte]:
-    """Utility function to convert a bytearray to a ctypes array."""
+    """
+    Utility function to convert a bytearray to a ctypes array.
+
+    Args:
+        byte_array (bytearray): The bytearray to convert.
+
+    Returns:
+        The converted ctypes array.
+    """
     size = len(byte_array)
     return (ctypes.c_ubyte * size).from_buffer(byte_array)
 
 
 def set_alternate_text(element: PdsStructElement, alternate_text: str) -> None:
-    """Set the alternate text for a structure element."""
+    """
+    Set the alternate text for a structure element.
+
+    Args:
+        element (PdsStructElement): The structure element to set the alternate text for.
+        alternate_text (str): The alternate text to set.
+    """
     element.SetAlt(alternate_text)
 
 
 def find_table_summary_attribute_dictionary(element: PdsStructElement) -> Optional[PdsDictionary]:
-    """Find the attribute dictionary for table summary in a structure element."""
+    """
+    Find the attribute dictionary for table summary in a structure element.
+
+    Args:
+        element (PdsStructElement): The structure element to search for the attribute dictionary.
+
+    Returns:
+        The attribute dictionary for table summary, or None if not found.
+    """
     for index in reversed(range(element.GetNumAttrObjects())):
         attribute_object = element.GetAttrObject(index)
         if not attribute_object:
@@ -47,13 +63,27 @@ def find_table_summary_attribute_dictionary(element: PdsStructElement) -> Option
 
 
 def check_if_table_summary_exists(element: PdsStructElement) -> bool:
-    """Check if a table summary attribute dictionary exists for a structure element."""
+    """
+    Check if a table summary attribute dictionary exists for a structure element.
+
+    Args:
+        element (PdsStructElement): The structure element to check.
+
+    Returns:
+        True if the table summary attribute dictionary exists, False otherwise.
+    """
     attribute_dictionary = find_table_summary_attribute_dictionary(element)
     return bool(attribute_dictionary and attribute_dictionary.GetString("Summary"))
 
 
 def set_table_summary(element: PdsStructElement, table_summary: str) -> None:
-    """Set the table summary attribute for a structure element. If table summary does not exists, create it."""
+    """
+    Set the table summary attribute for a structure element. If table summary does not exists, create it.
+
+    Args:
+        element (PdsStructElement): The structure element to set the table summary for.
+        table_summary (str): The table summary to set.
+    """
     attribute_dictionary = find_table_summary_attribute_dictionary(element)
 
     if not attribute_dictionary:
@@ -66,7 +96,13 @@ def set_table_summary(element: PdsStructElement, table_summary: str) -> None:
 
 
 def add_associated_file(element: PdsStructElement, associated_file_data: PdsDictionary) -> None:
-    """Add an associated file to a structure element."""
+    """
+    Add an associated file to a structure element.
+
+    Args:
+        element (PdsStructElement): The structure element to add the associated file to.
+        associated_file_data (PdsDictionary): The associated file data to add.
+    """
     element_object = PdsDictionary(element.GetObject().obj)
     associated_file_dictionary = element_object.GetDictionary("AF")
     if associated_file_dictionary:
@@ -82,7 +118,14 @@ def add_associated_file(element: PdsStructElement, associated_file_data: PdsDict
 
 
 def set_associated_file_math_ml(element: PdsStructElement, math_ml: str, math_ml_version: str) -> None:
-    """Set the MathML associated file for a structure element."""
+    """
+    Set the MathML associated file for a structure element.
+
+    Args:
+        element (PdsStructElement): The structure element to set the MathML for.
+        math_ml (str): The MathML content to set.
+        math_ml_version (str): The MathML version to set.
+    """
     # create mathML object
     document = element.GetStructTree().GetDoc()
     associated_file_data = document.CreateDictObject(True)
@@ -101,68 +144,6 @@ def set_associated_file_math_ml(element: PdsStructElement, math_ml: str, math_ml
     ef_dict.Put("UF", file_stream)
 
     add_associated_file(element, associated_file_data)
-
-
-def render_page(doc: PdfDoc, page_num: int, bbox: PdfRect, zoom: float) -> bytearray:
-    """
-    Render PDF document page to bytearray image.
-
-    Args:
-        doc (PdfDoc): The PDF document to render.
-        page_num (int): The page number to render.
-        bbox (PdfRect): The bounding box of the page to render.
-        zoom (float): The zoom level for rendering.
-    Returns:
-        The rendered image data as a bytearray.
-    """
-    page = doc.AcquirePage(page_num)
-    try:
-        page_view = page.AcquirePageView(zoom, kRotate0)
-
-        try:
-            rect = page_view.RectToDevice(bbox)
-
-            # render content
-            render_parameters = PdfPageRenderParams()
-            render_parameters.matrix = page_view.GetDeviceMatrix()
-            render_parameters.clip_box = bbox
-            render_parameters.image = GetPdfix().CreateImage(
-                rect.right - rect.left,
-                rect.bottom - rect.top,
-                kImageDIBFormatArgb,
-            )
-
-            try:
-                page.DrawContent(render_parameters)
-
-                # save image to stream and data
-                memory_stream = GetPdfix().CreateMemStream()
-                try:
-                    image_parameters = PdfImageParams()
-                    image_parameters.format = kImageFormatJpg
-                    render_parameters.image.SaveToStream(memory_stream, image_parameters)
-
-                    data = bytearray(memory_stream.GetSize())
-                    raw_data = (ctypes.c_ubyte * len(data)).from_buffer(data)
-                    memory_stream.Read(0, raw_data, len(data))
-                except Exception:
-                    raise
-                finally:
-                    memory_stream.Destroy()
-            except Exception:
-                raise
-            finally:
-                render_parameters.image.Destroy()
-        except Exception:
-            raise
-        finally:
-            page_view.Release()
-    except Exception:
-        raise
-    finally:
-        page.Release()
-
-    return data
 
 
 def process_struct_element(
@@ -287,7 +268,7 @@ def browse_tags_recursive(element: PdsStructElement, regex_tag: str) -> list:
     calls itself recursively on the child element.
 
     Args:
-        elem (PdsStructElement): The parent structure element to start browsing from.
+        element (PdsStructElement): The parent structure element to start browsing from.
         regex_tag (str): The regular expression to match tags.
     """
     result = []
