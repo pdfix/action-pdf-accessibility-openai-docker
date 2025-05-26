@@ -131,9 +131,9 @@ def set_associated_file_math_ml(element: PdsStructElement, math_ml: str, math_ml
     associated_file_data = document.CreateDictObject(True)
     associated_file_data.PutName("Type", "Filespec")
     associated_file_data.PutName("AFRelationshhip", "Supplement")
-    associated_file_data.PutString("F", "mathml-4")  # TODO Jozo ask math_ml_version
-    associated_file_data.PutString("UF", "mathml-4")  # TODO Jozo ask  math_ml_version
-    associated_file_data.PutString("Desc", "mathml-4")  # TODO Jozo ask  math_ml_version
+    associated_file_data.PutString("F", math_ml_version)
+    associated_file_data.PutString("UF", math_ml_version)
+    associated_file_data.PutString("Desc", math_ml_version)
 
     raw_data = bytearray_to_data(bytearray(math_ml.encode("utf-8")))
     file_dictionary = document.CreateDictObject(False)
