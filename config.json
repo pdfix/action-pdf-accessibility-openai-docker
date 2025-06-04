@@ -4,7 +4,7 @@
     "actions": [
         {
             "title": "Generate Alternate Text OpenAI",
-            "name": "generate_alt_text_openai",
+            "name": "pdfix-generate_alt_text_openai",
             "desc": "Automatically generates and applies alternate descriptions in PDF tags using OpenAI",
             "icon": "add_photo_alternate",
             "version": "v0.0.0",
@@ -127,7 +127,7 @@
         },
         {
             "title": "Generate Alternate Text OpenAI",
-            "name": "generate_alt_text_openai_json",
+            "name": "pdfix-generate_alt_text_openai_json",
             "desc": "Automatically generates alternate description using OpenAI",
             "icon": "add_photo_alternate",
             "version": "v0.0.0",
@@ -237,7 +237,7 @@
         },        
         {
             "title": "Generate Table Summary OpenAI",
-            "name": "generate_table_summary_openai",
+            "name": "pdfix-generate_table_summary_openai",
             "desc": "Automatically generates and applies table summary attribute in PDF tags using OpenAI",
             "icon": "table_view",
             "version": "v0.0.0",
@@ -360,7 +360,7 @@
         },
         {
             "title": "Generate MathML OpenAI",
-            "name": "generate_mathml_openai",
+            "name": "pdfix-generate_mathml_openai",
             "desc": "Automatically generates and adds MathML associated files to PDF tags using OpenAI",
             "icon": "calculate",
             "version": "v0.0.0",
