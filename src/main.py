@@ -89,8 +89,8 @@ def run_subcommand(args) -> None:
         getattr(args, "name", None),
         getattr(args, "key", None),
         getattr(args, "openai_key", None),
-        getattr(args, "input", None),
-        getattr(args, "output", None),
+        args.input,
+        args.output,
         getattr(args, "lang", DEFAULT_LANG),
         getattr(args, "mathml_version", DEFAULT_MATHML_VERSION),
         getattr(args, "overwrite", DEFAULT_OVERWRITE),
@@ -103,8 +103,8 @@ def process_cli(
     license_name: Optional[str],
     license_key: Optional[str],
     openai_key: Optional[str],
-    input: Optional[str],
-    output: Optional[str],
+    input: str,
+    output: str,
     lang: str,
     mathml_version: str,
     overwrite: bool,
@@ -126,10 +126,6 @@ def process_cli(
         overwrite (bool): Whether to overwrite previous alternate text.
         regex_tag (str): Regular expression for matching tags that should be processed.
     """
-    if not input:
-        raise ValueError(f"Invalid or missing arguments --input {input}")
-    if not output:
-        raise ValueError(f"Invalid or missing arguments: --output {output}")
     if not openai_key:
         raise ValueError(f"Invalid or missing arguments: --openai-key {openai_key}")
 
@@ -144,92 +140,100 @@ def process_cli(
 
 
 def main():
+    parser = argparse.ArgumentParser(description="PDF Accessibility with OpenAI")
+    subparsers = parser.add_subparsers(title="Commands", dest="command", required=True)
+
+    # Generate table summary subcommand
+    parser_generate_table_summary = subparsers.add_parser("generate-table-summary", help="Generate table summary")
+    set_arguments(
+        parser_generate_table_summary,
+        [
+            "name",
+            "key",
+            "openai-key",
+            "input",
+            "output",
+            "tags",
+            "lang",
+            "overwrite",
+        ],
+    )
+    parser_generate_table_summary.set_defaults(func=run_subcommand)
+
+    # Generate alt text images subcommand
+    parser_generate_alt_text = subparsers.add_parser("generate-alt-text", help="Generate alternate text for images")
+    set_arguments(
+        parser_generate_alt_text,
+        [
+            "name",
+            "key",
+            "openai-key",
+            "input",
+            "output",
+            "tags",
+            "lang",
+            "overwrite",
+        ],
+    )
+    parser_generate_alt_text.set_defaults(func=run_subcommand)
+
+    # Generate Mathml formula subcommand
+    parser_generate_mathml = subparsers.add_parser("generate-mathml", help="Generate MathML for formulas")
+    set_arguments(
+        parser_generate_mathml,
+        [
+            "name",
+            "key",
+            "openai-key",
+            "input",
+            "output",
+            "tags",
+            "mathml-version",
+            "overwrite",
+        ],
+    )
+    parser_generate_mathml.set_defaults(func=run_subcommand)
+
+    # Config subcommand
+    parser_generate_config = subparsers.add_parser("config", help="Save the default configuration file")
+    set_arguments(parser_generate_config, ["output"], False, "JSON")
+    parser_generate_config.set_defaults(func=run_config_subcommand)
+
+    # Parse arguments
     try:
-        parser = argparse.ArgumentParser(description="PDF Accessibility with OpenAI")
-        subparsers = parser.add_subparsers(title="Commands", dest="command", required=True)
-
-        # `generate-table-summary` subcommand
-        parser_generate_table_summary = subparsers.add_parser("generate-table-summary", help="Generate table summary")
-        set_arguments(
-            parser_generate_table_summary,
-            [
-                "name",
-                "key",
-                "openai-key",
-                "input",
-                "output",
-                "tags",
-                "lang",
-                "overwrite",
-            ],
-        )
-        parser_generate_table_summary.set_defaults(func=run_subcommand)
-
-        # `generate-alt-text` subcommand
-        parser_generate_alt_text = subparsers.add_parser("generate-alt-text", help="Generate alternate text for images")
-        set_arguments(
-            parser_generate_alt_text,
-            [
-                "name",
-                "key",
-                "openai-key",
-                "input",
-                "output",
-                "tags",
-                "lang",
-                "overwrite",
-            ],
-        )
-        parser_generate_alt_text.set_defaults(func=run_subcommand)
-
-        # `generate-mathml` subcommand
-        parser_generate_mathml = subparsers.add_parser("generate-mathml", help="Generate MathML for formulas")
-        set_arguments(
-            parser_generate_mathml,
-            [
-                "name",
-                "key",
-                "openai-key",
-                "input",
-                "output",
-                "tags",
-                "mathml-version",
-                "overwrite",
-            ],
-        )
-        parser_generate_mathml.set_defaults(func=run_subcommand)
-
-        # `config` subcommand
-        parser_generate_config = subparsers.add_parser("config", help="Save the default configuration file")
-        set_arguments(parser_generate_config, ["output"], False, "JSON")
-        parser_generate_config.set_defaults(func=run_config_subcommand)
-
-        # Parse arguments
         args = parser.parse_args()
-
-        update_checker = DockerImageContainerUpdateChecker()
-        update_checker.check_for_image_updates()
-
-        # Measure the time it takes to make all requests
-        start_time = time.time()  # Record the start time
-
-        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        print(f"\nProcessing started at: {current_time}")
-
-        # Run subcommand function
-        if hasattr(args, "func"):
-            args.func(args)
-        else:
-            parser.print_help()
-
-        end_time = time.time()  # Record the end time
-        elapsed_time = end_time - start_time  # Calculate the elapsed time
-        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        print(f"\nProcessing finished at: {current_time}. Elapsed time: {elapsed_time:.2f} seconds")
-    except Exception as e:
-        print(traceback.format_exc(), file=sys.stderr)
-        print(f"Error: {e}", file=sys.stderr)
+    except SystemExit as e:
+        if e.code == 0:
+            # This happens when --help is used, exit gracefully
+            sys.exit(0)
+        print("Failed to parse arguments. Please check the usage and try again.", file=sys.stderr)
         sys.exit(1)
+
+    # Update of docker image checker
+    update_checker = DockerImageContainerUpdateChecker()
+    update_checker.check_for_image_updates()
+
+    # Measure the time it takes to make all requests
+    start_time = time.time()  # Record the start time
+
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    print(f"\nProcessing started at: {current_time}")
+
+    if hasattr(args, "func"):
+        # Run subcommand
+        try:
+            args.func(args)
+        except Exception as e:
+            print(traceback.format_exc(), file=sys.stderr)
+            print(f"Failed to run the program: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        parser.print_help()
+
+    end_time = time.time()  # Record the end time
+    elapsed_time = end_time - start_time  # Calculate the elapsed time
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    print(f"\nProcessing finished at: {current_time}. Elapsed time: {elapsed_time:.2f} seconds")
 
 
 if __name__ == "__main__":
