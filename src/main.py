@@ -160,7 +160,7 @@ def main():
     )
     parser_generate_table_summary.set_defaults(func=run_subcommand)
 
-    # Generate alt text images subcommand
+    # Generate alternate text images subcommand
     parser_generate_alt_text = subparsers.add_parser("generate-alt-text", help="Generate alternate text for images")
     set_arguments(
         parser_generate_alt_text,
@@ -177,7 +177,7 @@ def main():
     )
     parser_generate_alt_text.set_defaults(func=run_subcommand)
 
-    # Generate Mathml formula subcommand
+    # Generate MathML formula subcommand
     parser_generate_mathml = subparsers.add_parser("generate-mathml", help="Generate MathML for formulas")
     set_arguments(
         parser_generate_mathml,

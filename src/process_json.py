@@ -34,7 +34,6 @@ def process_json(subcommand: str, openai_key: str, input: str, output: str, lang
     base64_image = data["image"]
 
     response = openai_prompt(base64_image, openai_key, subcommand, lang, mathml_version)
-
     output_data: dict[str, str] = {"content": str(response.message.content)}
 
     with open(output, "w", encoding="utf-8") as output_file:
