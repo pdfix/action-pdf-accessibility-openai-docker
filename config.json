@@ -131,7 +131,7 @@
             "desc": "Automatically generates alternate description using OpenAI",
             "icon": "add_photo_alternate",
             "version": "v0.0.0",
-            "subtype": "set_alt",
+            "subtype": "set_formula",
             "category": "OpenAI",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_json}\" -o \"${output_json}\" --lang \"${lang}\"",
             "args": [
