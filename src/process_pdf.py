@@ -1,4 +1,5 @@
 import base64
+import sys
 from concurrent.futures import ThreadPoolExecutor
 from typing import Optional
 
@@ -182,7 +183,7 @@ def process_struct_element(
         # print(response.message.content)
         content = response.message.content
         if not content:
-            print(f"No alternate text found for {id}")
+            print(f"No alternate text generated for {id}")
             return
 
         if subcommand == "generate-alt-text":
@@ -198,4 +199,5 @@ def process_struct_element(
             print(f"Unknown operation: {subcommand}")
 
     except Exception as e:
-        print(f"Error: {str(e)}")
+        # Write error and continue to other element
+        print(f"Error: {str(e)}", file=sys.stderr)
