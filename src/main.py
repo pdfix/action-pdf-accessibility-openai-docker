@@ -207,7 +207,7 @@ def main():
             # This happens when --help is used, exit gracefully
             sys.exit(0)
         print("Failed to parse arguments. Please check the usage and try again.", file=sys.stderr)
-        sys.exit(1)
+        sys.exit(e.code)
 
     # Update of docker image checker
     update_checker = DockerImageContainerUpdateChecker()

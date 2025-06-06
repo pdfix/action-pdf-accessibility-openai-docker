@@ -5,8 +5,10 @@ from typing import Optional
 
 from pdfixsdk.Pdfix import (
     GetPdfix,
+    Pdfix,
     PdfRect,
     PdsStructElement,
+    PdsStructTree,
     kSaveFull,
 )
 
@@ -70,7 +72,7 @@ def process_pdf(
     if doc is None:
         raise PdfixException(pdfix, "Unable to open PDF")
 
-    struct_tree = doc.GetStructTree()
+    struct_tree: PdsStructTree = doc.GetStructTree()
     if struct_tree is None:
         raise PdfixException(pdfix, "PDF has no structure tree")
 
@@ -81,7 +83,9 @@ def process_pdf(
         #     process_struct_e(elem, subcommand, openai_key, lang, mathml_version, overwrite)
         with ThreadPoolExecutor(max_workers=10) as executor:
             futures = [
-                executor.submit(process_struct_element, elem, subcommand, openai_key, lang, mathml_version, overwrite)
+                executor.submit(
+                    process_struct_element, pdfix, elem, subcommand, openai_key, lang, mathml_version, overwrite
+                )
                 for elem in items
             ]
         for future in futures:
@@ -94,6 +98,7 @@ def process_pdf(
 
 
 def process_struct_element(
+    pdfix: Pdfix,
     element: PdsStructElement,
     subcommand: str,
     openai_key: str,
@@ -113,6 +118,7 @@ def process_struct_element(
     it either sets the alternate text for the element or updates the table summary attribute.
 
     Args:
+        pdfix (Pdfix): Pdfix SDK.
         element (PdsStructElement): The structure element to process.
         subcommand (str): The subcommand to run (e.g., "generate-alt-text", "generate-table-summary").
         openai_key (str): OpenAI API key.
@@ -122,9 +128,9 @@ def process_struct_element(
     """
     try:
         document = element.GetStructTree().GetDoc()
-        element_object_id = element.GetObject().GetId()
-        element_id = element.GetId()
-        element_type = element.GetType(False)
+        element_object_id: int = element.GetObject().GetId()
+        element_id: str = element.GetId()
+        element_type: str = element.GetType(False)
         # element_type_mapped = elem.GetType(True)
 
         page_num = element.GetPageNumber(0)
@@ -171,7 +177,7 @@ def process_struct_element(
         #       print((f"MathML already exists for {id}"))
         #       return
 
-        data = render_page(document, page_num, bbox, 1)
+        data = render_page(pdfix, document, page_num, bbox, 1)
         base64_image = f"data:image/jpeg;base64,{base64.b64encode(data).decode('utf-8')}"
 
         # with open(img, "wb") as bf:
