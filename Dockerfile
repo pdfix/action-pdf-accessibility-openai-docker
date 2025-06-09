@@ -12,21 +12,18 @@ RUN apt-get install -y \
 
 WORKDIR /usr/alt-text-openai/
 
-ENV VIRTUAL_ENV=venv
-
 
 # Create a virtual environment and install dependencies
+ENV VIRTUAL_ENV=venv
 RUN python3 -m venv venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+COPY requirements.txt /usr/alt-text-openai/
+RUN pip install --no-cache-dir -r requirements.txt 
 
 
 # Copy the source code and requirements.txt into the container
 COPY src/ /usr/alt-text-openai/src/
-COPY requirements.txt /usr/alt-text-openai/
 COPY config.json /usr/alt-text-openai/
-
-
-RUN pip install --no-cache-dir -r requirements.txt 
 
 
 ENTRYPOINT ["/usr/alt-text-openai/venv/bin/python3", "/usr/alt-text-openai/src/main.py"]
