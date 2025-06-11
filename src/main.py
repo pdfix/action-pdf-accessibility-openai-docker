@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+import threading
 import time
 import traceback
 from datetime import datetime
@@ -209,17 +210,18 @@ def main():
         print("Failed to parse arguments. Please check the usage and try again.", file=sys.stderr)
         sys.exit(e.code)
 
-    # Update of docker image checker
-    update_checker = DockerImageContainerUpdateChecker()
-    update_checker.check_for_image_updates()
-
-    # Measure the time it takes to make all requests
-    start_time = time.time()  # Record the start time
-
-    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    print(f"\nProcessing started at: {current_time}")
-
     if hasattr(args, "func"):
+        # Check for updates only when help is not checked
+        update_checker = DockerImageContainerUpdateChecker()
+        # Check it in separate thread not to be delayed when there is slow or no internet connection
+        update_thread = threading.Thread(target=update_checker.check_for_image_updates)
+        update_thread.start()
+
+        # Measure the time it takes to make all requests
+        start_time = time.time()  # Record the start time
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        print(f"\nProcessing started at: {current_time}")
+
         # Run subcommand
         try:
             args.func(args)
@@ -227,13 +229,16 @@ def main():
             print(traceback.format_exc(), file=sys.stderr)
             print(f"Failed to run the program: {e}", file=sys.stderr)
             sys.exit(1)
+        finally:
+            end_time = time.time()  # Record the end time
+            elapsed_time = end_time - start_time  # Calculate the elapsed time
+            current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            print(f"\nProcessing finished at: {current_time}. Elapsed time: {elapsed_time:.2f} seconds")
+
+            # Make sure to let update thread finish before exiting
+            update_thread.join()
     else:
         parser.print_help()
-
-    end_time = time.time()  # Record the end time
-    elapsed_time = end_time - start_time  # Calculate the elapsed time
-    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    print(f"\nProcessing finished at: {current_time}. Elapsed time: {elapsed_time:.2f} seconds")
 
 
 if __name__ == "__main__":
