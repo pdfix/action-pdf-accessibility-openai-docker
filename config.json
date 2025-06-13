@@ -133,22 +133,132 @@
             "version": "v0.0.0",
             "subtype": "generate_alt_text_img_to_txt",
             "category": "Tags",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_json}\" -o \"${output_json}\" --lang \"${lang}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_img}\" -o \"${output_txt}\" --lang \"${lang}\"",
             "args": [
                 {
-                    "name": "input_json",
-                    "desc": "Input JSON file",
+                    "name": "input_img",
+                    "desc": "Input image file containing picture",
                     "flags": 2,
                     "type": "file_path",
-                    "ext": "json",
+                    "ext": "img",
                     "value": ""
                 },
                 {
-                    "name": "output_json",
-                    "desc": "Output JSON file",
+                    "name": "output_txt",
+                    "desc": "Output TXT file containing alt text",
                     "flags": 4,
                     "type": "file_path",
-                    "ext": "json",
+                    "ext": "txt",
+                    "value": ""
+                },
+                {
+                    "title": "OpenAI API Key",
+                    "name": "openai_key",
+                    "desc": "OpenAI API Key",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "title": "Language",
+                    "name": "lang",
+                    "desc": "Alternate description language",
+                    "type": "string",
+                    "value": "English",
+                    "set": [
+                        {
+                            "value": "English"
+                        },
+                        {
+                            "value": "Deutsch"
+                        },
+                        {
+                            "value": "Español"
+                        },
+                        {
+                            "value": "Français"
+                        },
+                        {
+                            "value": "Italiano"
+                        },
+                        {
+                            "value": "Português"
+                        },
+                        {
+                            "value": "Nederlands"
+                        },
+                        {
+                            "value": "Polski"
+                        },
+                        {
+                            "value": "Русский"
+                        },
+                        {
+                            "value": "中文"
+                        },
+                        {
+                            "value": "日本語"
+                        },
+                        {
+                            "value": "한국어"
+                        },
+                        {
+                            "value": "Türkçe"
+                        },
+                        {
+                            "value": "Svenska"
+                        },
+                        {
+                            "value": "Norsk"
+                        },
+                        {
+                            "value": "Suomi"
+                        },
+                        {
+                            "value": "Čeština"
+                        },
+                        {
+                            "value": "Magyar"
+                        },
+                        {
+                            "value": "Slovenčina"
+                        },
+                        {
+                            "value": "Українська"
+                        },
+                        {
+                            "value": "Ελληνικά"
+                        },
+                        {
+                            "value": "Română"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Generate Alternate Text from XML to Text (OpenAI)",
+            "name": "pdfix_generate_alternate_text_from_xml_to_text_openai",
+            "desc": "Automatically generates alternate text from an XML file using OpenAI, saving the description to a text file.",
+            "icon": "add_photo_alternate",
+            "version": "v0.0.0",
+            "subtype": "generate_alt_text_xml_to_txt",
+            "category": "Tags",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_xml}\" -o \"${output_txt}\" --lang \"${lang}\"",
+            "args": [
+                {
+                    "name": "input_xml",
+                    "desc": "Input XML file containing MathML",
+                    "flags": 2,
+                    "type": "file_path",
+                    "ext": "xml",
+                    "value": ""
+                },
+                {
+                    "name": "output_txt",
+                    "desc": "Output TXT file containing alt text",
+                    "flags": 4,
+                    "type": "file_path",
+                    "ext": "txt",
                     "value": ""
                 },
                 {
