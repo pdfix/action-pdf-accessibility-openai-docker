@@ -1,4 +1,6 @@
 import ctypes
+import io
+from typing import Optional
 
 from pdfixsdk import (
     PdfDevRect,
@@ -13,6 +15,7 @@ from pdfixsdk import (
     kImageFormatJpg,
     kRotate0,
 )
+from PIL import Image
 
 from exceptions import PdfixException
 
@@ -93,3 +96,15 @@ def render_page(pdfix: Pdfix, doc: PdfDoc, page_num: int, bbox: PdfRect, zoom: f
         page.Release()
 
     return data
+
+
+def get_image_bytes(image_path: str) -> Optional[bytes]:
+    try:
+        with Image.open(image_path) as image:
+            buffered = io.BytesIO()
+            image.save(buffered, format="jpg")
+            return buffered.getvalue()
+    except Exception:
+        raise
+
+    return None

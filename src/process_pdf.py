@@ -12,7 +12,7 @@ from pdfixsdk.Pdfix import (
     kSaveFull,
 )
 
-from ai import openai_prompt
+from ai import openai_prompt_with_image
 from exceptions import PdfixException
 from page_renderer import render_page
 from utils_sdk import (
@@ -184,7 +184,7 @@ def process_struct_element(
         #     bf.write(data)
 
         print(f"Talking to OpenAI for {id} ...")
-        response = openai_prompt(base64_image, openai_key, subcommand, lang, math_ml_version)
+        response = openai_prompt_with_image(base64_image, openai_key, subcommand, lang, math_ml_version)
 
         # print(response.message.content)
         content = response.message.content

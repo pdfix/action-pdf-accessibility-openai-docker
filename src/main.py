@@ -1,5 +1,6 @@
 import argparse
 import os
+import re
 import sys
 import threading
 import time
@@ -8,9 +9,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+from constants import IMAGE_FILE_EXT_REGEX, SUPPORTED_IMAGE_EXT
 from image_update import DockerImageContainerUpdateChecker
-from process_json import process_json
+from process_image import process_image
 from process_pdf import process_pdf
+from process_xml import process_xml
 
 DEFAULT_LANG = "en"
 DEFAULT_MATHML_VERSION = "mathml-4"
@@ -19,7 +22,7 @@ DEFAULT_OVERWRITE = False
 
 
 def set_arguments(
-    parser: argparse.ArgumentParser, names: list, required_output: bool = True, file_type: str = "PDF or JSON"
+    parser: argparse.ArgumentParser, names: list, required_output: bool = True, file_type: str = "PDF or Image"
 ) -> None:
     """
     Set arguments for the parser based on the provided names and options.
@@ -112,15 +115,15 @@ def process_cli(
     regex_tag: str,
 ) -> None:
     """
-    Processes a PDF or JSON file by extracting images,
+    Processes a PDF or image file by extracting images,
     generating a response using OpenAI, and saving the result to an output file.
 
     Args:
         license_name (str): PDFix license name.
         license_key (str): PDFix license key.
         subcommand (str): The subcommand to run (e.g., "generate-alt-text", "generate-table-summary").
-        input (str): Path to the input PDF or JSON file.
-        output (str): Path to the output PDF or JSON file.
+        input (str): Path to the input PDF or image file.
+        output (str): Path to the output PDF or XML or TXT file.
         openai_key (str): OpenAI API key.
         lang (str): Language setting.
         mathml_version (str): MathML version.
@@ -130,14 +133,16 @@ def process_cli(
     if not openai_key:
         raise ValueError(f"Invalid or missing arguments: --openai-key {openai_key}")
 
-    if input.lower().endswith(".pdf"):
-        # process whole pdf document
+    if input.lower().endswith(".pdf") and output.lower().endswith(".pdf"):
         return process_pdf(
             subcommand, license_name, license_key, openai_key, input, output, lang, mathml_version, overwrite, regex_tag
         )
-    elif input.lower().endswith(".json"):
-        # process just json
-        return process_json(subcommand, openai_key, input, output, lang, mathml_version)
+    elif re.search(IMAGE_FILE_EXT_REGEX, input, re.IGNORECASE) and output.lower().endswith((".xml", ".txt")):
+        return process_image(subcommand, openai_key, input, output, lang, mathml_version)
+    elif input.lower().endswith(".xml") and output.lower().endswith(".txt"):
+        return process_xml(subcommand, openai_key, input, output, lang, mathml_version)
+    else:
+        raise Exception("Not supported file combination. Please run with --help to find out supported combinations.")
 
 
 def main():
@@ -145,7 +150,10 @@ def main():
     subparsers = parser.add_subparsers(title="Commands", dest="command", required=True)
 
     # Generate table summary subcommand
-    parser_generate_table_summary = subparsers.add_parser("generate-table-summary", help="Generate table summary")
+    supported_files = f"Supported file combinations: PDF -> PDF, Image -> TXT. Supported images: {SUPPORTED_IMAGE_EXT}."
+    parser_generate_table_summary = subparsers.add_parser(
+        "generate-table-summary", help=f"Generate table summary. {supported_files}"
+    )
     set_arguments(
         parser_generate_table_summary,
         [
@@ -162,7 +170,11 @@ def main():
     parser_generate_table_summary.set_defaults(func=run_subcommand)
 
     # Generate alternate text images subcommand
-    parser_generate_alt_text = subparsers.add_parser("generate-alt-text", help="Generate alternate text for images")
+    supported_files = "Supported file combinations: PDF -> PDF, Image or XML -> TXT."
+    supported_files += f" Supported images: {SUPPORTED_IMAGE_EXT}."
+    parser_generate_alt_text = subparsers.add_parser(
+        "generate-alt-text", help=f"Generate alternate text for images. {supported_files}"
+    )
     set_arguments(
         parser_generate_alt_text,
         [
@@ -175,11 +187,16 @@ def main():
             "lang",
             "overwrite",
         ],
+        True,
+        "PDF or image or XML",
     )
     parser_generate_alt_text.set_defaults(func=run_subcommand)
 
     # Generate MathML formula subcommand
-    parser_generate_mathml = subparsers.add_parser("generate-mathml", help="Generate MathML for formulas")
+    supported_files = f"Supported file combinations: PDF -> PDF, Image -> TXT. Supported images: {SUPPORTED_IMAGE_EXT}."
+    parser_generate_mathml = subparsers.add_parser(
+        "generate-mathml", help=f"Generate MathML for formulas. {supported_files}"
+    )
     set_arguments(
         parser_generate_mathml,
         [
@@ -196,7 +213,7 @@ def main():
     parser_generate_mathml.set_defaults(func=run_subcommand)
 
     # Config subcommand
-    parser_generate_config = subparsers.add_parser("config", help="Save the default configuration file")
+    parser_generate_config = subparsers.add_parser("config", help="Save the default configuration file.")
     set_arguments(parser_generate_config, ["output"], False, "JSON")
     parser_generate_config.set_defaults(func=run_config_subcommand)
 
