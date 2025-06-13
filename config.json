@@ -234,7 +234,7 @@
                     ]
                 }
             ]
-        },        
+        },
         {
             "title": "Generate Table Summary (OpenAI)",
             "name": "pdfix_generate_table_summary_openai",
@@ -277,7 +277,7 @@
                 {
                     "title": "Language",
                     "name": "lang",
-                    "desc": "Alternate description language",
+                    "desc": "Table summary language",
                     "type": "string",
                     "value": "English",
                     "set": [
@@ -351,10 +351,120 @@
                 },
                 {
                     "title": "Overwrite",
-                    "desc": "Replace the alternate text if it exists",
+                    "desc": "Replace the table summary if it exists",
                     "name": "overwrite",
                     "type": "bool",
                     "value": false
+                }
+            ]
+        },
+        {
+            "title": "Generate Table Summary from Image to Text (OpenAI)",
+            "name": "pdfix_generate_table_summary_from_image_to_text_openai",
+            "desc": "Automatically generates a table summary from an image file using OpenAI, saving the description to a text file.",
+            "icon": "table_view",
+            "version": "v0.0.0",
+            "subtype": "generate_table_summary_img_to_txt",
+            "category": "Table",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_img}\" -o \"${output_txt}\" --lang \"${lang}\"",
+            "args": [
+                {
+                    "name": "input_img",
+                    "desc": "Input image file containing picture of table",
+                    "flags": 2,
+                    "type": "file_path",
+                    "ext": "img",
+                    "value": ""
+                },
+                {
+                    "name": "output_txt",
+                    "desc": "TXT file containing table summary",
+                    "flags": 4,
+                    "type": "file_path",
+                    "ext": "txt",
+                    "value": ""
+                },
+                {
+                    "title": "OpenAI API Key",
+                    "name": "openai_key",
+                    "desc": "OpenAI API Key",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "title": "Language",
+                    "name": "lang",
+                    "desc": "Table summary language",
+                    "type": "string",
+                    "value": "English",
+                    "set": [
+                        {
+                            "value": "English"
+                        },
+                        {
+                            "value": "Deutsch"
+                        },
+                        {
+                            "value": "Español"
+                        },
+                        {
+                            "value": "Français"
+                        },
+                        {
+                            "value": "Italiano"
+                        },
+                        {
+                            "value": "Português"
+                        },
+                        {
+                            "value": "Nederlands"
+                        },
+                        {
+                            "value": "Polski"
+                        },
+                        {
+                            "value": "Русский"
+                        },
+                        {
+                            "value": "中文"
+                        },
+                        {
+                            "value": "日本語"
+                        },
+                        {
+                            "value": "한국어"
+                        },
+                        {
+                            "value": "Türkçe"
+                        },
+                        {
+                            "value": "Svenska"
+                        },
+                        {
+                            "value": "Norsk"
+                        },
+                        {
+                            "value": "Suomi"
+                        },
+                        {
+                            "value": "Čeština"
+                        },
+                        {
+                            "value": "Magyar"
+                        },
+                        {
+                            "value": "Slovenčina"
+                        },
+                        {
+                            "value": "Українська"
+                        },
+                        {
+                            "value": "Ελληνικά"
+                        },
+                        {
+                            "value": "Română"
+                        }
+                    ]
                 }
             ]
         },
@@ -428,7 +538,7 @@
             "version": "v0.0.0",
             "subtype": "generate_formula_mathml_img_to_xml",
             "category": "Tags",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_img}\" -o \"${output_xml}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_img}\" -o \"${output_xml}\" --mathml-version \"${mathml_version}\"",
             "args": [
                 {
                     "name": "input_img",
@@ -452,13 +562,6 @@
                     "desc": "OpenAI API Key",
                     "type": "string",
                     "value": ""
-                },
-                {
-                    "title": "Tag Name",
-                    "name": "tag_name",
-                    "desc": "Tag name defined by a regular expression",
-                    "type": "string",
-                    "value": "Formula"
                 },
                 {
                     "title": "MathML Version",
