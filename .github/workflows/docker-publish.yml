@@ -92,7 +92,7 @@ jobs:
         run: |
           cd pdfix-version-updates/v1
           TODAY=$(date +%Y-%m-%d)
-          jq --indent 4 '(.["pdfix-actions"][] | select(.name == "pdfix/pdf-accessibility-paddle")) |= . + {
+          jq --indent 4 '(.["pdfix-actions"][] | select(.name == "${{ env.DOCKER_HUB_NAMESPACE }}/${{ env.DOCKER_HUB_REPOSITORY }}")) |= . + {
             "version": "${{ env.tag }}",
             "release_date": "'"$TODAY"'"
           }' versions.json > tmp.json
@@ -105,7 +105,7 @@ jobs:
           git config user.name "PDFix Support"
           git config user.email "support@pdfix.net"
           git add v1/versions.json
-          git commit -m "pdfix/pdf-accessibility-paddle ${{ env.tag }}"
+          git commit -m "${{ env.DOCKER_HUB_NAMESPACE }}/${{ env.DOCKER_HUB_REPOSITORY }} ${{ env.tag }}"
           git push
 
       - name: Tag latest commit with increment in versions repository
