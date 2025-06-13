@@ -4,22 +4,24 @@ from ai import openai_prompt_with_image
 from page_renderer import get_image_bytes
 
 
-def process_image(subcommand: str, openai_key: str, input: str, output: str, lang: str, mathml_version: str) -> None:
+def process_image(
+    subcommand: str, openai_key: str, input_path: str, output_path: str, lang: str, mathml_version: str
+) -> None:
     """
     Generates OpenAI response from image into output file.
 
     Args:
         subcommand (str): Subcommand to determine the type of processing.
         openai_key (str): OpenAI API key.
-        input (str): Path to the input JSON file.
-        output (str): Path to the output JSON file.
+        input_path (str): Path to the imagev file.
+        output_path (str): Path to the output TXT or XML file.
         lang (str): Language for the response.
         mathml_version (str): MathML version for the response.
     """
-    data = get_image_bytes(input)
+    data = get_image_bytes(input_path)
 
     if data is None:
-        raise Exception(f"Failed to read image data from {input}")
+        raise Exception(f"Failed to read image data from {input_path}")
     else:
         image_data: bytes = data
 
@@ -27,5 +29,5 @@ def process_image(subcommand: str, openai_key: str, input: str, output: str, lan
     response = openai_prompt_with_image(base64_image, openai_key, subcommand, lang, mathml_version)
     output = response.message.content if response.message.content else ""
 
-    with open(output, "w", encoding="utf-8") as output_file:
+    with open(output_path, "w", encoding="utf-8") as output_file:
         output_file.write(output)

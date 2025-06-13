@@ -149,7 +149,7 @@ def main():
     parser = argparse.ArgumentParser(description="PDF Accessibility with OpenAI")
     subparsers = parser.add_subparsers(title="Commands", dest="command", required=True)
 
-    # Generate table summary subcommand
+    # Generate table summary subparser
     supported_files = f"Supported file combinations: PDF -> PDF, Image -> TXT. Supported images: {SUPPORTED_IMAGE_EXT}."
     parser_generate_table_summary = subparsers.add_parser(
         "generate-table-summary", help=f"Generate table summary. {supported_files}"
@@ -169,7 +169,7 @@ def main():
     )
     parser_generate_table_summary.set_defaults(func=run_subcommand)
 
-    # Generate alternate text images subcommand
+    # Generate alternate text images subparser
     supported_files = "Supported file combinations: PDF -> PDF, Image or XML -> TXT."
     supported_files += f" Supported images: {SUPPORTED_IMAGE_EXT}."
     parser_generate_alt_text = subparsers.add_parser(
@@ -192,7 +192,7 @@ def main():
     )
     parser_generate_alt_text.set_defaults(func=run_subcommand)
 
-    # Generate MathML formula subcommand
+    # Generate MathML formula subparser
     supported_files = f"Supported file combinations: PDF -> PDF, Image -> TXT. Supported images: {SUPPORTED_IMAGE_EXT}."
     parser_generate_mathml = subparsers.add_parser(
         "generate-mathml", help=f"Generate MathML for formulas. {supported_files}"
@@ -212,7 +212,7 @@ def main():
     )
     parser_generate_mathml.set_defaults(func=run_subcommand)
 
-    # Config subcommand
+    # Config subparser
     parser_generate_config = subparsers.add_parser("config", help="Save the default configuration file.")
     set_arguments(parser_generate_config, ["output"], False, "JSON")
     parser_generate_config.set_defaults(func=run_config_subcommand)
