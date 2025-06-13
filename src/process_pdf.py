@@ -30,8 +30,8 @@ def process_pdf(
     license_name: Optional[str],
     license_key: Optional[str],
     openai_key: str,
-    input: str,
-    output: str,
+    input_path: str,
+    output_path: str,
     lang: str,
     mathml_version: str,
     overwrite: bool,
@@ -54,8 +54,8 @@ def process_pdf(
         license_name (str): PDFix license name.
         license_key (str): PDFix license key.
         openai_key (str): OpenAI API key.
-        input (str): Path to the input PDF file.
-        output (str): Path to the output PDF file.
+        input_path (str): Path to the input PDF file.
+        output_path (str): Path to the output PDF file.
         lang (str): Language for the response.
         mathml_version (str): MathML version for the response.
         overwrite (bool): Whether to overwrite previous alternate text.
@@ -68,7 +68,7 @@ def process_pdf(
     authorize_sdk(pdfix, license_name, license_key)
 
     # Open doc
-    doc = pdfix.OpenDoc(input, "")
+    doc = pdfix.OpenDoc(input_path, "")
     if doc is None:
         raise PdfixException(pdfix, "Unable to open PDF")
 
@@ -93,7 +93,7 @@ def process_pdf(
     except Exception:
         raise
 
-    if not doc.Save(output, kSaveFull):
+    if not doc.Save(output_path, kSaveFull):
         raise PdfixException(pdfix, "Unable to save PDF ")
 
 
