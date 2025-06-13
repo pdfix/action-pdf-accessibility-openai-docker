@@ -419,6 +419,69 @@
                     ]
                 }
             ]
+        },
+        {
+            "title": "Generate Formula MathML from Image to XML (OpenAI)",
+            "name": "pdfix_generate_formula_mathml_from_image_to_xml_openai",
+            "desc": "Automatically generates MathML from an image file using OpenAI, saving it as an XML file.",
+            "icon": "calculate",
+            "version": "v0.0.0",
+            "subtype": "generate_formula_mathml_img_to_xml",
+            "category": "Tags",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_img}\" -o \"${output_xml}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\"",
+            "args": [
+                {
+                    "name": "input_img",
+                    "desc": "Input image file containing picture of formula",
+                    "flags": 2,
+                    "type": "file_path",
+                    "ext": "img",
+                    "value": ""
+                },
+                {
+                    "name": "output_xml",
+                    "desc": "XML file containing MathML representation of formula",
+                    "flags": 4,
+                    "type": "file_path",
+                    "ext": "xml",
+                    "value": ""
+                },
+                {
+                    "title": "OpenAI API Key",
+                    "name": "openai_key",
+                    "desc": "OpenAI API Key",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "title": "Tag Name",
+                    "name": "tag_name",
+                    "desc": "Tag name defined by a regular expression",
+                    "type": "string",
+                    "value": "Formula"
+                },
+                {
+                    "title": "MathML Version",
+                    "name": "mathml_version",
+                    "desc": "Tag version of MathML",
+                    "type": "string",
+                    "value": "mathml-4",
+                    "set": [
+                        {
+                            "value": "mathml-1"
+                        },
+                        {
+                            "value": "mathml-2"
+                        },
+                        {
+                            "value": "mathml-3"
+                        },
+                        {
+                            "value": "mathml-4"
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
