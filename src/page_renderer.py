@@ -100,7 +100,9 @@ def render_page(pdfix: Pdfix, doc: PdfDoc, page_num: int, bbox: PdfRect, zoom: f
 
 def get_image_bytes(image_path: str) -> Optional[bytes]:
     try:
-        with Image.open(image_path) as image:
+        with Image.open(image_path) as image_file:
+            image: Image.Image = image_file
+
             # Remove transparency
             if image.mode in ("RGBA", "P"):
                 image = image.convert("RGB")
