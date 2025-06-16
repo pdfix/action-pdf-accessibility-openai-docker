@@ -133,14 +133,14 @@
             "version": "v0.0.0",
             "subtype": "generate_alt_text_img_to_txt",
             "category": "Tags",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_img}\" -o \"${output_txt}\" --lang \"${lang}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --lang \"${lang}\"",
             "args": [
                 {
-                    "name": "input_img",
+                    "name": "input_jpg",
                     "desc": "Input image file containing picture",
                     "flags": 2,
                     "type": "file_path",
-                    "ext": "img",
+                    "ext": "jpg",
                     "value": ""
                 },
                 {
@@ -476,14 +476,14 @@
             "version": "v0.0.0",
             "subtype": "generate_table_summary_img_to_txt",
             "category": "Table",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_img}\" -o \"${output_txt}\" --lang \"${lang}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --lang \"${lang}\"",
             "args": [
                 {
-                    "name": "input_img",
+                    "name": "input_jpg",
                     "desc": "Input image file containing picture of table",
                     "flags": 2,
                     "type": "file_path",
-                    "ext": "img",
+                    "ext": "jpg",
                     "value": ""
                 },
                 {
@@ -648,14 +648,14 @@
             "version": "v0.0.0",
             "subtype": "generate_formula_mathml_img_to_xml",
             "category": "Tags",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_img}\" -o \"${output_xml}\" --mathml-version \"${mathml_version}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_xml}\" --mathml-version \"${mathml_version}\"",
             "args": [
                 {
-                    "name": "input_img",
+                    "name": "input_jpg",
                     "desc": "Input image file containing picture of formula",
                     "flags": 2,
                     "type": "file_path",
-                    "ext": "img",
+                    "ext": "jpg",
                     "value": ""
                 },
                 {
