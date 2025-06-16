@@ -142,7 +142,13 @@ def process_cli(
     elif input.lower().endswith(".xml") and output.lower().endswith(".txt"):
         return process_xml(subcommand, openai_key, input, output, lang, mathml_version)
     else:
-        raise Exception("Not supported file combination. Please run with --help to find out supported combinations.")
+        input_extension = Path(input).suffix.lower()
+        output_extension = Path(output).suffix.lower()
+        exception_message = (
+            f"Not supported file combination ({input_extension} -> {output_extension})"
+            " Please run with --help to find out supported combinations."
+        )
+        raise Exception(exception_message)
 
 
 def main():
