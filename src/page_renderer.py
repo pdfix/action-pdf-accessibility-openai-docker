@@ -101,8 +101,14 @@ def render_page(pdfix: Pdfix, doc: PdfDoc, page_num: int, bbox: PdfRect, zoom: f
 def get_image_bytes(image_path: str) -> Optional[bytes]:
     try:
         with Image.open(image_path) as image:
+            # Remove transparency
+            if image.mode in ("RGBA", "P"):
+                image = image.convert("RGB")
+
+            # Save as jpg to bytearray
             buffered = io.BytesIO()
-            image.save(buffered, format="jpg")
+            image.save(buffered, format="JPEG")
+
             return buffered.getvalue()
     except Exception:
         raise
