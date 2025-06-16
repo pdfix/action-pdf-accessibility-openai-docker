@@ -17,6 +17,7 @@ A Docker image that enhances the accessibility of PDF documents using OpenAI and
   - [Help \& Support](#help--support)
   
 ## Available Actions
+
 - Generate Alternate Text for images
 - Generate Table Summary
 - Generate MathML Associated Files for Formulas
@@ -32,7 +33,6 @@ Automatically generates table summaries for Table tags using OpenAI, inserting t
 ### Generate MathML Associated Files for Formulas
 
 Automatically generates MathML for Formula tags using OpenAI, attaching it as an associated file to each tag.
-
 
 ```bash
 PDF Accessibility with OpenAI
@@ -68,9 +68,9 @@ To use this Docker application, you'll need to have Docker installed on your sys
 
 ## Run using Command Line Interface
 
-To run the docker container as CLI, you should share the folder containing the PDF for processing using the `-i` parameter. In this example, the current folder is used.
+To run the docker container as CLI, you should share the folder containing the PDF for processing using the `-v` parameter. In this example, the current folder is used.
 
-```bash 
+```bash
 docker run -v $(pwd):/data/ -w /data pdfix/pdf-accessibility-openai:latest generate-alt-text --input document.pdf --output out.pdf --tags "Figure|Formula" --openai-key <api_key> --lang English --overwrite true
 ```
 
@@ -79,6 +79,7 @@ To run With a PDFix License add these arguments.
 ```bash
 --name ${LICENSE_NAME} --key ${LICENSE_KEY}
 ```
+
 Contact support for more infomation.
 
 First run will pull the docker image, which may take some time. Make your own image for more advanced use.
@@ -90,6 +91,7 @@ docker run --rm pdfix/pdf-accessibility-openai:latest --help
 ```
 
 ## Export the Configuration File for Integration
+
 To export the configuration JSON file, use the following command:
 
 ```bash
@@ -97,11 +99,13 @@ docker run -v $(pwd):/data -w /data --rm pdfix/pdf-accessibility-openai:latest c
 ```
 
 ## License & libraries used
+
 - PDFix SDK - https://pdfix.net/terms
 - OpenAI API - https://openai.com/policies/
 
 Trial version of the PDFix SDK may apply a watermark on the page and redact random parts of the PDF including the scanned image in background. Contact us to get an evaluation or production license.
 
 ## Help & Support
+
 To obtain a PDFix SDK license or report an issue please contact us at support@pdfix.net.
 For more information visit https://pdfix.net
