@@ -7,7 +7,7 @@ import time
 import traceback
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 from constants import IMAGE_FILE_EXT_REGEX, SUPPORTED_IMAGE_EXT
 from image_update import DockerImageContainerUpdateChecker
@@ -19,6 +19,26 @@ DEFAULT_LANG = "en"
 DEFAULT_MATHML_VERSION = "mathml-4"
 DEFAULT_REGEX_TAG = "Table"
 DEFAULT_OVERWRITE = False
+
+
+def str2bool(value: Any) -> bool:
+    """
+    Helper function to convert argument to boolean.
+
+    Args:
+        value (Any): The value to convert to boolean.
+
+    Returns:
+        Parsed argument as boolean.
+    """
+    if isinstance(value, bool):
+        return value
+    if value.lower() in ("yes", "true", "t", "1"):
+        return True
+    elif value.lower() in ("no", "false", "f", "0"):
+        return False
+    else:
+        raise ValueError("Boolean value expected.")
 
 
 def set_arguments(
@@ -59,7 +79,7 @@ def set_arguments(
                 )
             case "overwrite":
                 parser.add_argument(
-                    "--overwrite", type=bool, default=DEFAULT_OVERWRITE, help="Overwrite previous Alt text"
+                    "--overwrite", type=str2bool, default=DEFAULT_OVERWRITE, help="Overwrite previous Alt text"
                 )
             case "tags":
                 parser.add_argument("--tags", type=str, default=DEFAULT_REGEX_TAG, help="Tag names to process")
