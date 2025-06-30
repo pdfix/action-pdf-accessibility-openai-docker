@@ -17,6 +17,12 @@ success() { echo -e "${GREEN}$1${NC}"; }
 # Function to print error messages
 error() { echo -e "${RED}ERROR: $1${NC}"; }
 
+# Check if the required arguments are provided
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <OPENAI_API_KEY>"
+    exit 1
+fi
+
 # init
 pushd "$(dirname $0)" > /dev/null
 
