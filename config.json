@@ -5,10 +5,11 @@
         {
             "title": "Generate Alternate Text (OpenAI)",
             "name": "pdfix_generate_alternate_text_openai",
-            "desc": "Automatically generates alternate text for Figure and Formula tags using OpenAI, embedding it into each tag’s Alt attribute.",
-            "icon": "add_photo_alternate",
+            "desc": "Automatically generates alternate text for Figure and Formula tags using OpenAI, embedding it into each tag’s Alt attribute [Cloud]",
             "version": "v0.0.0",
+            "icon": "add_photo_alternate",
             "category": "Tags",
+            "local": "False",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
@@ -128,11 +129,12 @@
         {
             "title": "Generate Alternate Text from Image to Text (OpenAI)",
             "name": "pdfix_generate_alternate_text_from_image_to_text_openai",
-            "desc": "Automatically generates alternate text from an image file using OpenAI, saving the description to a text file.",
-            "icon": "add_photo_alternate",
+            "desc": "Automatically generates alternate text from an image file using OpenAI, saving the description to a text file [Cloud]",
             "version": "v0.0.0",
-            "subtype": "generate_alt_text_img_to_txt",
+            "icon": "add_photo_alternate",
             "category": "Tags",
+            "subtype": "generate_alt_text_img_to_txt",
+            "local": "False",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --lang \"${lang}\"",
             "args": [
                 {
@@ -238,11 +240,12 @@
         {
             "title": "Generate Alternate Text from XML to Text (OpenAI)",
             "name": "pdfix_generate_alternate_text_from_xml_to_text_openai",
-            "desc": "Automatically generates alternate text from an XML file using OpenAI, saving the description to a text file.",
-            "icon": "add_photo_alternate",
+            "desc": "Automatically generates alternate text from an XML file using OpenAI, saving the description to a text file [Cloud]",
             "version": "v0.0.0",
-            "subtype": "generate_alt_text_xml_to_txt",
+            "icon": "add_photo_alternate",
             "category": "Tags",
+            "subtype": "generate_alt_text_xml_to_txt",
+            "local": "False",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_xml}\" -o \"${output_txt}\" --lang \"${lang}\"",
             "args": [
                 {
@@ -348,10 +351,11 @@
         {
             "title": "Generate Table Summary (OpenAI)",
             "name": "pdfix_generate_table_summary_openai",
-            "desc": "Automatically generates table summaries for Table tags using OpenAI, inserting them into each tag’s Summary attribute.",
-            "icon": "table_view",
+            "desc": "Automatically generates table summaries for Table tags using OpenAI, inserting them into each tag’s Summary attribute [Cloud]",
             "version": "v0.0.0",
+            "icon": "table_view",
             "category": "Table",
+            "local": "False",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
@@ -471,11 +475,12 @@
         {
             "title": "Generate Table Summary from Image to Text (OpenAI)",
             "name": "pdfix_generate_table_summary_from_image_to_text_openai",
-            "desc": "Automatically generates a table summary from an image file using OpenAI, saving the description to a text file.",
-            "icon": "table_view",
+            "desc": "Automatically generates a table summary from an image file using OpenAI, saving the description to a text file [Cloud]",
             "version": "v0.0.0",
-            "subtype": "generate_table_summary_img_to_txt",
+            "icon": "table_view",
             "category": "Table",
+            "subtype": "generate_table_summary_img_to_txt",
+            "local": "False",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --lang \"${lang}\"",
             "args": [
                 {
@@ -581,10 +586,11 @@
         {
             "title": "Generate Formula MathML (OpenAI)",
             "name": "pdfix_generate_formula_mathml_openai",
-            "desc": "Automatically generates MathML for Formula tags using OpenAI, attaching it as an associated file to each tag.",
-            "icon": "calculate",
+            "desc": "Automatically generates MathML for Formula tags using OpenAI, attaching it as an associated file to each tag [Cloud]",
             "version": "v0.0.0",
+            "icon": "calculate",
             "category": "Tags",
+            "local": "False",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
@@ -643,11 +649,12 @@
         {
             "title": "Generate Formula MathML from Image to XML (OpenAI)",
             "name": "pdfix_generate_formula_mathml_from_image_to_xml_openai",
-            "desc": "Automatically generates MathML from an image file using OpenAI, saving it as an XML file.",
-            "icon": "calculate",
+            "desc": "Automatically generates MathML from an image file using OpenAI, saving it as an XML file [Cloud]",
             "version": "v0.0.0",
-            "subtype": "generate_formula_mathml_img_to_xml",
+            "icon": "calculate",
             "category": "Tags",
+            "subtype": "generate_formula_mathml_img_to_xml",
+            "local": "False",
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_xml}\" --mathml-version \"${mathml_version}\"",
             "args": [
                 {
