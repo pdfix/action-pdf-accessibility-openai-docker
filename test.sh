@@ -19,7 +19,7 @@ error() { echo -e "${RED}ERROR: $1${NC}"; }
 
 # Check if the required arguments are provided
 if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <OPENAI_API_KEY>"
+    error "Usage: $0 <OPENAI_API_KEY>"
     exit 1
 fi
 
