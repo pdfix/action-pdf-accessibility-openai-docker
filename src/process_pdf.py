@@ -32,6 +32,7 @@ def process_pdf(
     openai_key: str,
     input_path: str,
     output_path: str,
+    model: str,
     lang: str,
     mathml_version: str,
     overwrite: bool,
@@ -56,6 +57,7 @@ def process_pdf(
         openai_key (str): OpenAI API key.
         input_path (str): Path to the input PDF file.
         output_path (str): Path to the output PDF file.
+        model (str): OpenAI model.
         lang (str): Language for the response.
         mathml_version (str): MathML version for the response.
         overwrite (bool): Whether to overwrite previous alternate text.
@@ -84,7 +86,7 @@ def process_pdf(
         with ThreadPoolExecutor(max_workers=10) as executor:
             futures = [
                 executor.submit(
-                    process_struct_element, pdfix, elem, subcommand, openai_key, lang, mathml_version, overwrite
+                    process_struct_element, pdfix, elem, subcommand, openai_key, model, lang, mathml_version, overwrite
                 )
                 for elem in items
             ]
@@ -102,6 +104,7 @@ def process_struct_element(
     element: PdsStructElement,
     subcommand: str,
     openai_key: str,
+    model: str,
     lang: str,
     math_ml_version: str,
     overwrite: bool,
@@ -122,6 +125,7 @@ def process_struct_element(
         element (PdsStructElement): The structure element to process.
         subcommand (str): The subcommand to run (e.g., "generate-alt-text", "generate-table-summary").
         openai_key (str): OpenAI API key.
+        model (str): OpenAI model.
         lang (str): Language for the response.
         math_ml_version (str): MathML version for the response.
         overwrite (bool): Whether to overwrite previous alternate text.
@@ -184,7 +188,7 @@ def process_struct_element(
         #     bf.write(data)
 
         print(f"Talking to OpenAI for {id} ...")
-        response = openai_prompt_with_image(base64_image, openai_key, subcommand, lang, math_ml_version)
+        response = openai_prompt_with_image(base64_image, openai_key, subcommand, model, lang, math_ml_version)
 
         # print(response.message.content)
         content = response.message.content

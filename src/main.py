@@ -69,6 +69,14 @@ def set_arguments(
                     default=DEFAULT_MATHML_VERSION,
                     help="MathML version",
                 )
+            case "model":
+                parser.add_argument(
+                    "--model",
+                    type=str,
+                    choices=["gpt-4o-mini", "gpt-4o"],
+                    default="gpt-4o-mini",
+                    help="OpenAI model to use for processing",
+                )
             case "name":
                 parser.add_argument("--name", type=str, default="", nargs="?", help="PDFix license name")
             case "openai-key":
@@ -115,6 +123,7 @@ def run_subcommand(args) -> None:
         getattr(args, "openai_key", None),
         args.input,
         args.output,
+        args.model,
         getattr(args, "lang", DEFAULT_LANG),
         getattr(args, "mathml_version", DEFAULT_MATHML_VERSION),
         getattr(args, "overwrite", DEFAULT_OVERWRITE),
@@ -129,6 +138,7 @@ def process_cli(
     openai_key: Optional[str],
     input: str,
     output: str,
+    model: str,
     lang: str,
     mathml_version: str,
     overwrite: bool,
@@ -139,12 +149,13 @@ def process_cli(
     generating a response using OpenAI, and saving the result to an output file.
 
     Args:
+        subcommand (str): The subcommand to run (e.g., "generate-alt-text", "generate-table-summary").
         license_name (str): PDFix license name.
         license_key (str): PDFix license key.
-        subcommand (str): The subcommand to run (e.g., "generate-alt-text", "generate-table-summary").
+        openai_key (str): OpenAI API key.
         input (str): Path to the input PDF or image file.
         output (str): Path to the output PDF or XML or TXT file.
-        openai_key (str): OpenAI API key.
+        model (str): OpenAI model.
         lang (str): Language setting.
         mathml_version (str): MathML version.
         overwrite (bool): Whether to overwrite previous alternate text.
@@ -155,12 +166,22 @@ def process_cli(
 
     if input.lower().endswith(".pdf") and output.lower().endswith(".pdf"):
         return process_pdf(
-            subcommand, license_name, license_key, openai_key, input, output, lang, mathml_version, overwrite, regex_tag
+            subcommand,
+            license_name,
+            license_key,
+            openai_key,
+            input,
+            output,
+            model,
+            lang,
+            mathml_version,
+            overwrite,
+            regex_tag,
         )
     elif re.search(IMAGE_FILE_EXT_REGEX, input, re.IGNORECASE) and output.lower().endswith((".xml", ".txt")):
-        return process_image(subcommand, openai_key, input, output, lang, mathml_version)
+        return process_image(subcommand, openai_key, input, output, model, lang, mathml_version)
     elif input.lower().endswith(".xml") and output.lower().endswith(".txt"):
-        return process_xml(subcommand, openai_key, input, output, lang, mathml_version)
+        return process_xml(subcommand, openai_key, input, output, model, lang)
     else:
         input_extension = Path(input).suffix.lower()
         output_extension = Path(output).suffix.lower()
@@ -188,8 +209,9 @@ def main():
             "openai-key",
             "input",
             "output",
-            "tags",
+            "model",
             "lang",
+            "tags",
             "overwrite",
         ],
     )
@@ -209,8 +231,9 @@ def main():
             "openai-key",
             "input",
             "output",
-            "tags",
+            "model",
             "lang",
+            "tags",
             "overwrite",
         ],
         True,
@@ -231,6 +254,7 @@ def main():
             "openai-key",
             "input",
             "output",
+            "model",
             "tags",
             "mathml-version",
             "overwrite",

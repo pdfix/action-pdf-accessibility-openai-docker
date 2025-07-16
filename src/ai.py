@@ -3,7 +3,9 @@ from openai import OpenAI
 from openai.types.chat.chat_completion import Choice
 
 
-def openai_prompt_with_image(image: str, openai_key: str, subcommand: str, lang: str, math_ml_version: str) -> Choice:
+def openai_prompt_with_image(
+    image: str, openai_key: str, subcommand: str, model: str, lang: str, math_ml_version: str
+) -> Choice:
     """
     Create a prompt for OpenAI, ask OpenAI, and wait for response.
 
@@ -11,6 +13,7 @@ def openai_prompt_with_image(image: str, openai_key: str, subcommand: str, lang:
         image (str): Base64-encoded image string.
         openai_key (str): OpenAI API key.
         subcommand (str): Subcommand to determine the type of processing.
+        model (str): OpenAI model.
         lang (str): Language for the response.
         math_ml_version (str): MathML version for the response.
 
@@ -43,7 +46,7 @@ def openai_prompt_with_image(image: str, openai_key: str, subcommand: str, lang:
         raise ValueError(f"Unknown subparser value {subcommand}")
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=model,
         messages=[
             {
                 "role": "user",
@@ -67,7 +70,7 @@ def openai_prompt_with_image(image: str, openai_key: str, subcommand: str, lang:
     return response.choices[0]
 
 
-def openai_prompt_with_xml(xml_data: str, openai_key: str, subcommand: str, lang: str, math_ml_version: str) -> Choice:
+def openai_prompt_with_xml(xml_data: str, openai_key: str, subcommand: str, model: str, lang: str) -> Choice:
     """
     Create a prompt for OpenAI, ask OpenAI, and wait for response.
 
@@ -75,8 +78,8 @@ def openai_prompt_with_xml(xml_data: str, openai_key: str, subcommand: str, lang
         xml_data (str): String containing XML data (MathML representation of Formula).
         openai_key (str): OpenAI API key.
         subcommand (str): Subcommand to determine the type of processing.
+        model (str): OpenAI model.
         lang (str): Language for the response.
-        math_ml_version (str): MathML version for the response.
 
     Returns:
         First (most probable) response from OpenAI.
@@ -98,7 +101,7 @@ def openai_prompt_with_xml(xml_data: str, openai_key: str, subcommand: str, lang
         raise ValueError(f"Unknown subparser value {subcommand}")
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=model,
         messages=[
             {
                 "role": "user",

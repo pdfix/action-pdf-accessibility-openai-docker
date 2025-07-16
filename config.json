@@ -10,7 +10,7 @@
             "icon": "add_photo_alternate",
             "category": "Tags",
             "local": "False",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
                     "name": "input_pdf",
@@ -34,6 +34,21 @@
                     "desc": "OpenAI API Key",
                     "type": "string",
                     "value": ""
+                },
+                {
+                    "title": "Model",
+                    "name": "model",
+                    "desc": "OpenAI model to use",
+                    "type": "string",
+                    "value": "gpt-4o-mini",
+                    "set": [
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-4o"
+                        }
+                    ]
                 },
                 {
                     "title": "Language",
@@ -135,7 +150,7 @@
             "category": "Tags",
             "subtype": "generate_alt_text_img_to_txt",
             "local": "False",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --lang \"${lang}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --model \"${model}\" --lang \"${lang}\"",
             "args": [
                 {
                     "name": "input_jpg",
@@ -159,6 +174,21 @@
                     "desc": "OpenAI API Key",
                     "type": "string",
                     "value": ""
+                },
+                {
+                    "title": "Model",
+                    "name": "model",
+                    "desc": "OpenAI model to use",
+                    "type": "string",
+                    "value": "gpt-4o-mini",
+                    "set": [
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-4o"
+                        }
+                    ]
                 },
                 {
                     "title": "Language",
@@ -246,7 +276,7 @@
             "category": "Tags",
             "subtype": "generate_alt_text_xml_to_txt",
             "local": "False",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_xml}\" -o \"${output_txt}\" --lang \"${lang}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_xml}\" -o \"${output_txt}\" --model \"${model}\" --lang \"${lang}\"",
             "args": [
                 {
                     "name": "input_xml",
@@ -270,6 +300,21 @@
                     "desc": "OpenAI API Key",
                     "type": "string",
                     "value": ""
+                },
+                {
+                    "title": "Model",
+                    "name": "model",
+                    "desc": "OpenAI model to use",
+                    "type": "string",
+                    "value": "gpt-4o-mini",
+                    "set": [
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-4o"
+                        }
+                    ]
                 },
                 {
                     "title": "Language",
@@ -356,7 +401,7 @@
             "icon": "table_view",
             "category": "Table",
             "local": "False",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
                     "name": "input_pdf",
@@ -387,6 +432,21 @@
                     "desc": "Tag name defined by a regular expression",
                     "type": "string",
                     "value": "Table"
+                },
+                {
+                    "title": "Model",
+                    "name": "model",
+                    "desc": "OpenAI model to use",
+                    "type": "string",
+                    "value": "gpt-4o-mini",
+                    "set": [
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-4o"
+                        }
+                    ]
                 },
                 {
                     "title": "Language",
@@ -481,7 +541,7 @@
             "category": "Table",
             "subtype": "generate_table_summary_img_to_txt",
             "local": "False",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --lang \"${lang}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --model \"${model}\" --lang \"${lang}\"",
             "args": [
                 {
                     "name": "input_jpg",
@@ -505,6 +565,21 @@
                     "desc": "OpenAI API Key",
                     "type": "string",
                     "value": ""
+                },
+                {
+                    "title": "Model",
+                    "name": "model",
+                    "desc": "OpenAI model to use",
+                    "type": "string",
+                    "value": "gpt-4o-mini",
+                    "set": [
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-4o"
+                        }
+                    ]
                 },
                 {
                     "title": "Language",
@@ -591,7 +666,7 @@
             "icon": "calculate",
             "category": "Tags",
             "local": "False",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\" --name \"${license_name}\" --key \"${license_key}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
                     "name": "input_pdf",
@@ -615,6 +690,21 @@
                     "desc": "OpenAI API Key",
                     "type": "string",
                     "value": ""
+                },
+                {
+                    "title": "Model",
+                    "name": "model",
+                    "desc": "OpenAI model to use",
+                    "type": "string",
+                    "value": "gpt-4o-mini",
+                    "set": [
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-4o"
+                        }
+                    ]
                 },
                 {
                     "title": "Tag Name",
@@ -655,7 +745,7 @@
             "category": "Tags",
             "subtype": "generate_formula_mathml_img_to_xml",
             "local": "False",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_xml}\" --mathml-version \"${mathml_version}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_xml}\" --model \"${model}\" --mathml-version \"${mathml_version}\"",
             "args": [
                 {
                     "name": "input_jpg",
@@ -679,6 +769,21 @@
                     "desc": "OpenAI API Key",
                     "type": "string",
                     "value": ""
+                },
+                {
+                    "title": "Model",
+                    "name": "model",
+                    "desc": "OpenAI model to use",
+                    "type": "string",
+                    "value": "gpt-4o-mini",
+                    "set": [
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-4o"
+                        }
+                    ]
                 },
                 {
                     "title": "MathML Version",
