@@ -33,7 +33,7 @@ TEMPORARY_DIRECTORY=".test"
 OPENAI_API_KEY=$1
 
 info "Building docker image..."
-docker build $PLATFORM --rm -t $DOCKER_IMAGE .
+docker build $PLATFORM -t $DOCKER_IMAGE .
 
 if [ -d "$(pwd)/$TEMPORARY_DIRECTORY" ]; then
     rm -rf $(pwd)/$TEMPORARY_DIRECTORY
