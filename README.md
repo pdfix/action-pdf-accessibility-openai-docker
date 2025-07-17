@@ -52,6 +52,8 @@ common options:
   --tags TAGS               Regular expression defining the tag names tpo process
   --name NAME               PDFix license name
   --key KEY                 PDFix license key
+  --model                   OpenAI model
+      {gpt-4o-mini,gpt-4o}
 
 generate-alt-text, generate-table-summary:
   --lang LANG               The laguage of the alternate description and table summary
