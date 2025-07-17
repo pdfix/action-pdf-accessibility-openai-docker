@@ -49,11 +49,12 @@ common options:
   --openai-key OPENAI_KEY   OpenAI API key
   --input INPUT             The input PDF or image file
   --output OUTPUT           The output file
-  --tags TAGS               Regular expression defining the tag names tpo process
+  --tags TAGS               Regular expression defining the tag names to process
   --name NAME               PDFix license name
   --key KEY                 PDFix license key
   --model                   OpenAI model
       {gpt-4o-mini,gpt-4o}
+  --prompt                  Prompt or path to txt file with prompt to use for OpenAI
 
 generate-alt-text, generate-table-summary:
   --lang LANG               The laguage of the alternate description and table summary

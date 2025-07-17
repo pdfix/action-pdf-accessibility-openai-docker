@@ -37,6 +37,7 @@ def process_pdf(
     mathml_version: str,
     overwrite: bool,
     regex_tag: str,
+    prompt: str,
 ) -> None:
     """
     Processes a PDF document by opening it, checking for a structure tree, and recursively
@@ -62,6 +63,7 @@ def process_pdf(
         mathml_version (str): MathML version for the response.
         overwrite (bool): Whether to overwrite previous alternate text.
         regex_tag (str): Regular expression for matching tags that should be processed.
+        prompt (str): Prompt for OpenAI.
     """
     pdfix = GetPdfix()
     if pdfix is None:
@@ -86,7 +88,16 @@ def process_pdf(
         with ThreadPoolExecutor(max_workers=10) as executor:
             futures = [
                 executor.submit(
-                    process_struct_element, pdfix, elem, subcommand, openai_key, model, lang, mathml_version, overwrite
+                    process_struct_element,
+                    pdfix,
+                    elem,
+                    subcommand,
+                    openai_key,
+                    model,
+                    lang,
+                    mathml_version,
+                    overwrite,
+                    prompt,
                 )
                 for elem in items
             ]
@@ -108,6 +119,7 @@ def process_struct_element(
     lang: str,
     math_ml_version: str,
     overwrite: bool,
+    prompt: str,
 ) -> None:
     """
     Processes a structure element in a PDF document by generating alternate text or table
@@ -129,6 +141,7 @@ def process_struct_element(
         lang (str): Language for the response.
         math_ml_version (str): MathML version for the response.
         overwrite (bool): Whether to overwrite previous alternate text.
+        prompt (str): Prompt for OpenAI.
     """
     try:
         document = element.GetStructTree().GetDoc()
@@ -188,7 +201,7 @@ def process_struct_element(
         #     bf.write(data)
 
         print(f"Talking to OpenAI for {id} ...")
-        response = openai_prompt_with_image(base64_image, openai_key, subcommand, model, lang, math_ml_version)
+        response = openai_prompt_with_image(base64_image, openai_key, model, lang, math_ml_version, prompt)
 
         # print(response.message.content)
         content = response.message.content

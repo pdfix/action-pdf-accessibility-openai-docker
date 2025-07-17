@@ -1,0 +1,1 @@
+Extract only the plain xml MathML {math_ml_version} representation of the mathematical expression from the provided image, without any additional explanation, description, or markdown code formatting.

@@ -1,0 +1,1 @@
+Provide only the alt text for the MathML formula in attached XML file in {lang} language. Keep the description brief but informative. Response should not be formatted. It will be used by screen readers.

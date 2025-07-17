@@ -1,0 +1,3 @@
+Provide only the alt text for the image in {lang} language, describing the content in a concise, clear, and meaningful way.
+Focus on the essential details, conveying the purpose of the image for screen readers.
+Include relevant information about the image's context, objects, people, and any key actions or emotions, while keeping the description brief but informative.

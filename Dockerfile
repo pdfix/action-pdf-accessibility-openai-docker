@@ -21,7 +21,8 @@ COPY requirements.txt /usr/alt-text-openai/
 RUN pip install --no-cache-dir -r requirements.txt 
 
 
-# Copy the source code and requirements.txt into the container
+# Copy default prompts, the source code and config.json into the container
+COPY prompts/ /usr/alt-text-openai/prompts/
 COPY src/ /usr/alt-text-openai/src/
 COPY config.json /usr/alt-text-openai/
 

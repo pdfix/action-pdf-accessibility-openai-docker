@@ -1,0 +1,1 @@
+Describe the table in {lang} language concisely without repeating its data. Keep the response brief and focus on structure, and content. Provide only the response without any additional explanation or context.

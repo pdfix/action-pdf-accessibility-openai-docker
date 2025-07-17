@@ -14,6 +14,7 @@ from image_update import DockerImageContainerUpdateChecker
 from process_image import process_image
 from process_pdf import process_pdf
 from process_xml import process_xml
+from prompt import PromptCreator
 
 DEFAULT_LANG = "en"
 DEFAULT_MATHML_VERSION = "mathml-4"
@@ -89,6 +90,13 @@ def set_arguments(
                 parser.add_argument(
                     "--overwrite", type=str2bool, default=DEFAULT_OVERWRITE, help="Overwrite previous Alt text"
                 )
+            case "prompt":
+                parser.add_argument(
+                    "--prompt",
+                    type=str,
+                    default="",
+                    help="Path to the prompt file or prompt itself. If not provided, default prompt will be used.",
+                )
             case "tags":
                 parser.add_argument("--tags", type=str, default=DEFAULT_REGEX_TAG, help="Tag names to process")
 
@@ -128,6 +136,7 @@ def run_subcommand(args) -> None:
         getattr(args, "mathml_version", DEFAULT_MATHML_VERSION),
         getattr(args, "overwrite", DEFAULT_OVERWRITE),
         getattr(args, "tags", DEFAULT_REGEX_TAG),
+        args.prompt,
     )
 
 
@@ -143,6 +152,7 @@ def process_cli(
     mathml_version: str,
     overwrite: bool,
     regex_tag: str,
+    path_or_prompt: str,
 ) -> None:
     """
     Processes a PDF or image file by extracting images,
@@ -160,9 +170,14 @@ def process_cli(
         mathml_version (str): MathML version.
         overwrite (bool): Whether to overwrite previous alternate text.
         regex_tag (str): Regular expression for matching tags that should be processed.
+        path_or_prompt (str): Either path to prompt, or prompt itself.
     """
     if not openai_key:
         raise ValueError(f"Invalid or missing arguments: --openai-key {openai_key}")
+
+    is_xml_input = input.lower().endswith(".xml")
+    prompt_creator = PromptCreator(path_or_prompt, subcommand, is_xml_input)
+    prompt: str = prompt_creator.get_the_prompt()
 
     if input.lower().endswith(".pdf") and output.lower().endswith(".pdf"):
         return process_pdf(
@@ -177,11 +192,12 @@ def process_cli(
             mathml_version,
             overwrite,
             regex_tag,
+            prompt,
         )
     elif re.search(IMAGE_FILE_EXT_REGEX, input, re.IGNORECASE) and output.lower().endswith((".xml", ".txt")):
-        return process_image(subcommand, openai_key, input, output, model, lang, mathml_version)
-    elif input.lower().endswith(".xml") and output.lower().endswith(".txt"):
-        return process_xml(subcommand, openai_key, input, output, model, lang)
+        return process_image(openai_key, input, output, model, lang, mathml_version, prompt)
+    elif is_xml_input and output.lower().endswith(".txt"):
+        return process_xml(openai_key, input, output, model, lang, prompt)
     else:
         input_extension = Path(input).suffix.lower()
         output_extension = Path(output).suffix.lower()
@@ -213,6 +229,7 @@ def main():
             "lang",
             "tags",
             "overwrite",
+            "prompt",
         ],
     )
     parser_generate_table_summary.set_defaults(func=run_subcommand)
@@ -235,6 +252,7 @@ def main():
             "lang",
             "tags",
             "overwrite",
+            "prompt",
         ],
         True,
         "PDF or image or XML",
@@ -258,6 +276,7 @@ def main():
             "tags",
             "mathml-version",
             "overwrite",
+            "prompt",
         ],
     )
     parser_generate_mathml.set_defaults(func=run_subcommand)
