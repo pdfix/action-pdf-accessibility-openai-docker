@@ -2,7 +2,7 @@ import ctypes
 import re
 from typing import Optional
 
-from pdfixsdk.Pdfix import GetPdfix, Pdfix, PdsDictionary, PdsStructElement, kPdsStructChildElement
+from pdfixsdk.Pdfix import GetPdfix, Pdfix, PdsDictionary, PdsStructElement, PdsStructTree, kPdsStructChildElement
 
 from exceptions import PdfixException
 
@@ -43,13 +43,13 @@ def browse_tags_recursive(element: PdsStructElement, regex_tag: str) -> list:
         element (PdsStructElement): The parent structure element to start browsing from.
         regex_tag (str): The regular expression to match tags.
     """
-    result = []
-    count = element.GetNumChildren()
-    structure_tree = element.GetStructTree()
+    result: list = []
+    count: int = element.GetNumChildren()
+    structure_tree: PdsStructTree = element.GetStructTree()
     for i in range(0, count):
         if element.GetChildType(i) != kPdsStructChildElement:
             continue
-        child_element = structure_tree.GetStructElementFromObject(element.GetChildObject(i))
+        child_element: PdsStructElement = structure_tree.GetStructElementFromObject(element.GetChildObject(i))
         if re.match(regex_tag, child_element.GetType(True)) or re.match(regex_tag, child_element.GetType(False)):
             # process element
             result.append(child_element)

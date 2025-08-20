@@ -18,7 +18,6 @@ from prompt import PromptCreator
 
 DEFAULT_LANG = "en"
 DEFAULT_MATHML_VERSION = "mathml-4"
-DEFAULT_REGEX_TAG = "Table"
 DEFAULT_OVERWRITE = False
 
 
@@ -98,7 +97,7 @@ def set_arguments(
                     help="Path to the prompt file or prompt itself. If not provided, default prompt will be used.",
                 )
             case "tags":
-                parser.add_argument("--tags", type=str, default=DEFAULT_REGEX_TAG, help="Tag names to process")
+                parser.add_argument("--tags", type=str, help="Tag names to process")
 
 
 def run_config_subcommand(args) -> None:
@@ -124,6 +123,20 @@ def get_pdfix_config(path: str) -> None:
 
 
 def run_subcommand(args) -> None:
+    # Properly set default tag base on command when no tags are provided
+    argument_tags: Optional[str] = str(getattr(args, "tags", None))
+    if argument_tags and argument_tags != "None":
+        tags: str = argument_tags
+    else:
+        if args.command == "generate-table-summary":
+            tags = "Table"
+        elif args.command == "generate-mathml":
+            tags = "Formula"
+        elif args.command == "generate-alt-text":
+            tags = "Figure|Formula"
+        else:
+            tags = "Figure"
+
     process_cli(
         args.command,
         getattr(args, "name", None),
@@ -135,7 +148,7 @@ def run_subcommand(args) -> None:
         getattr(args, "lang", DEFAULT_LANG),
         getattr(args, "mathml_version", DEFAULT_MATHML_VERSION),
         getattr(args, "overwrite", DEFAULT_OVERWRITE),
-        getattr(args, "tags", DEFAULT_REGEX_TAG),
+        tags,
         args.prompt,
     )
 
