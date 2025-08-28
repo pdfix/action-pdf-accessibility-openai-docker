@@ -112,7 +112,7 @@ def get_pdfix_config(path: str) -> None:
     Args:
         path (string): Destination path for config.json file
     """
-    config_path = os.path.join(Path(__file__).parent.absolute(), "../config.json")
+    config_path: str = os.path.join(Path(__file__).parent.absolute(), "../config.json")
 
     with open(config_path, "r", encoding="utf-8") as file:
         if path is None:
@@ -188,8 +188,8 @@ def process_cli(
     if not openai_key:
         raise ValueError(f"Invalid or missing arguments: --openai-key {openai_key}")
 
-    is_xml_input = input.lower().endswith(".xml")
-    prompt_creator = PromptCreator(path_or_prompt, subcommand, is_xml_input)
+    is_xml_input: bool = input.lower().endswith(".xml")
+    prompt_creator: PromptCreator = PromptCreator(path_or_prompt, subcommand, is_xml_input)
     prompt: str = prompt_creator.get_the_prompt()
 
     if input.lower().endswith(".pdf") and output.lower().endswith(".pdf"):
@@ -208,13 +208,13 @@ def process_cli(
             prompt,
         )
     elif re.search(IMAGE_FILE_EXT_REGEX, input, re.IGNORECASE) and output.lower().endswith((".xml", ".txt")):
-        return process_image(openai_key, input, output, model, lang, mathml_version, prompt)
+        return process_image(subcommand, openai_key, input, output, model, lang, mathml_version, prompt)
     elif is_xml_input and output.lower().endswith(".txt"):
         return process_xml(openai_key, input, output, model, lang, prompt)
     else:
-        input_extension = Path(input).suffix.lower()
-        output_extension = Path(output).suffix.lower()
-        exception_message = (
+        input_extension: str = Path(input).suffix.lower()
+        output_extension: str = Path(output).suffix.lower()
+        exception_message: str = (
             f"Not supported file combination ({input_extension} -> {output_extension})"
             " Please run with --help to find out supported combinations."
         )
@@ -226,7 +226,8 @@ def main():
     subparsers = parser.add_subparsers(title="Commands", dest="command", required=True)
 
     # Generate table summary subparser
-    supported_files = f"Supported file combinations: PDF -> PDF, Image -> TXT. Supported images: {SUPPORTED_IMAGE_EXT}."
+    supported_files = "Supported file combinations: PDF -> PDF, Image -> TXT."
+    supported_files += f" Supported images: {SUPPORTED_IMAGE_EXT}."
     parser_generate_table_summary = subparsers.add_parser(
         "generate-table-summary", help=f"Generate table summary. {supported_files}"
     )

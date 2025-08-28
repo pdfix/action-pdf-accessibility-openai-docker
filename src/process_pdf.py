@@ -3,8 +3,10 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 from typing import Optional
 
+from openai.types.chat.chat_completion import Choice
 from pdfixsdk.Pdfix import (
     GetPdfix,
+    PdfDoc,
     Pdfix,
     PdfRect,
     PdsStructElement,
@@ -15,6 +17,7 @@ from pdfixsdk.Pdfix import (
 from ai import openai_prompt_with_image
 from exceptions import PdfixException
 from page_renderer import render_page
+from utils import add_mathml_metadata
 from utils_sdk import (
     authorize_sdk,
     browse_tags_recursive,
@@ -65,14 +68,14 @@ def process_pdf(
         regex_tag (str): Regular expression for matching tags that should be processed.
         prompt (str): Prompt for OpenAI.
     """
-    pdfix = GetPdfix()
+    pdfix: Pdfix = GetPdfix()
     if pdfix is None:
         raise Exception("Pdfix Initialization fail")
 
     authorize_sdk(pdfix, license_name, license_key)
 
     # Open doc
-    doc = pdfix.OpenDoc(input_path, "")
+    doc: PdfDoc = pdfix.OpenDoc(input_path, "")
     if doc is None:
         raise PdfixException(pdfix, "Unable to open PDF")
 
@@ -80,9 +83,9 @@ def process_pdf(
     if struct_tree is None:
         raise PdfixException(pdfix, "PDF has no structure tree")
 
-    child_element = struct_tree.GetStructElementFromObject(struct_tree.GetChildObject(0))
+    child_element: PdsStructElement = struct_tree.GetStructElementFromObject(struct_tree.GetChildObject(0))
     try:
-        items = browse_tags_recursive(child_element, regex_tag)
+        items: list = browse_tags_recursive(child_element, regex_tag)
         # for elem in items:
         #     process_struct_e(elem, subcommand, openai_key, lang, mathml_version, overwrite)
         with ThreadPoolExecutor(max_workers=10) as executor:
@@ -150,14 +153,14 @@ def process_struct_element(
         element_type: str = element.GetType(False)
         # element_type_mapped = elem.GetType(True)
 
-        page_num = element.GetPageNumber(0)
+        page_num: int = element.GetPageNumber(0)
         if page_num == -1:
-            for i in range(0, element.GetNumChildren()):
-                page_num = element.GetChildPageNumber(i)
+            for index in range(0, element.GetNumChildren()):
+                page_num = element.GetChildPageNumber(index)
                 if page_num != -1:
                     break
 
-        id = f"{element_type} [obj: {element_object_id}, id: {element_id}]"
+        id: str = f"{element_type} [obj: {element_object_id}, id: {element_id}]"
 
         # get the object page number (it may be written in child objects)
         if page_num == -1:
@@ -167,10 +170,10 @@ def process_struct_element(
         id = f"{element_type} [obj: {element_object_id}, id: {element_id}, page: {page_num + 1}]"
 
         # get image bbox
-        bbox = PdfRect()
-        for i in range(element.GetNumPages()):
-            page_num = element.GetPageNumber(i)
-            bbox = element.GetBBox(page_num)
+        bbox: PdfRect = PdfRect()
+        for index in range(element.GetNumPages()):
+            page_number: int = element.GetPageNumber(index)
+            bbox = element.GetBBox(page_number)
             break
 
         # check bounding box
@@ -181,7 +184,7 @@ def process_struct_element(
         print((f"Processing {id} tag matches the search criteria ..."))
 
         if subcommand == "generate-alt-text":
-            orginal_alternate_text = element.GetAlt()
+            orginal_alternate_text: str = element.GetAlt()
             if not overwrite and orginal_alternate_text:
                 print(f"Alternate text already exists for {id}")
                 return
@@ -194,17 +197,17 @@ def process_struct_element(
         #       print((f"MathML already exists for {id}"))
         #       return
 
-        data = render_page(pdfix, document, page_num, bbox, 1)
-        base64_image = f"data:image/jpeg;base64,{base64.b64encode(data).decode('utf-8')}"
+        data: bytearray = render_page(pdfix, document, page_num, bbox, 1)
+        base64_image: str = f"data:image/jpeg;base64,{base64.b64encode(data).decode('utf-8')}"
 
         # with open(img, "wb") as bf:
         #     bf.write(data)
 
         print(f"Talking to OpenAI for {id} ...")
-        response = openai_prompt_with_image(base64_image, openai_key, model, lang, math_ml_version, prompt)
+        response: Choice = openai_prompt_with_image(base64_image, openai_key, model, lang, math_ml_version, prompt)
 
         # print(response.message.content)
-        content = response.message.content
+        content: Optional[str] = response.message.content
         if not content:
             print(f"No alternate text generated for {id}")
             return
@@ -216,6 +219,7 @@ def process_struct_element(
             set_table_summary(element, content)
             print(f"Table summary set for {id} tag")
         elif subcommand == "generate-mathml":
+            content = add_mathml_metadata(content)
             set_associated_file_math_ml(element, content, math_ml_version)
             print(f"MathML set for {id} tag")
         else:

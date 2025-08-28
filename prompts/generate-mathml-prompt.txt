@@ -1,1 +1,11 @@
-Extract only the plain xml MathML {math_ml_version} representation of the mathematical expression from the provided image, without any additional explanation, description, or markdown code formatting.
+Return only the full and valid XML representation of the mathematical expression in MathML {math_ml_version} format, with no markdown, no comments, and no explanation.
+
+The output must:
+- Begin with the opening <math> tag with the correct namespace.
+- End with the closing </math> tag.
+- Contain valid and well-formed XML.
+- Not include any incomplete or truncated tags or elements.
+- Be a complete representation of the expression shown in the image.
+
+Do not include any text before or after the XML.
+Only output the MathML content.

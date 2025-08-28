@@ -1,3 +1,5 @@
+from openai.types.chat.chat_completion import Choice
+
 from ai import openai_prompt_with_xml
 
 
@@ -15,10 +17,10 @@ def process_xml(openai_key: str, input_path: str, output_path: str, model: str, 
     """
 
     with open(input_path, "r", encoding="utf-8") as file:
-        xml_data = file.read()
+        xml_data: str = file.read()
 
-    response = openai_prompt_with_xml(xml_data, openai_key, model, lang, prompt)
-    output = response.message.content if response.message.content else ""
+    response: Choice = openai_prompt_with_xml(xml_data, openai_key, model, lang, prompt)
+    output: str = response.message.content if response.message.content else ""
 
     with open(output_path, "w", encoding="utf-8") as output_file:
         output_file.write(output)

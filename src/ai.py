@@ -1,6 +1,6 @@
 import httpx
 from openai import OpenAI
-from openai.types.chat.chat_completion import Choice
+from openai.types.chat.chat_completion import ChatCompletion, Choice
 
 
 def openai_prompt_with_image(
@@ -20,14 +20,14 @@ def openai_prompt_with_image(
     Returns:
         First (most probable) response from OpenAI.
     """
-    client = OpenAI(
+    client: OpenAI = OpenAI(
         api_key=openai_key,
         timeout=httpx.Timeout(None, connect=10, read=60, write=30),
     )
 
-    formatted_prompt = prompt.format(lang=lang, math_ml_version=math_ml_version)
+    formatted_prompt: str = prompt.format(lang=lang, math_ml_version=math_ml_version)
 
-    response = client.chat.completions.create(
+    response: ChatCompletion = client.chat.completions.create(
         model=model,
         messages=[
             {
@@ -66,13 +66,13 @@ def openai_prompt_with_xml(xml_data: str, openai_key: str, model: str, lang: str
     Returns:
         First (most probable) response from OpenAI.
     """
-    client = OpenAI(
+    client: OpenAI = OpenAI(
         api_key=openai_key,
         timeout=httpx.Timeout(None, connect=10, read=60, write=30),
     )
-    formatted_prompt = prompt.format(lang=lang, math_ml_version="")
+    formatted_prompt: str = prompt.format(lang=lang, math_ml_version="")
 
-    response = client.chat.completions.create(
+    response: ChatCompletion = client.chat.completions.create(
         model=model,
         messages=[
             {

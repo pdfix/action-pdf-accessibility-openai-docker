@@ -22,7 +22,7 @@ class PromptCreator:
         Returns the prompt based on the subcommand and whether it is XML or not.
         """
         if self._is_path(self.path_or_prompt):
-            prompt = self._extract_prompt_from_file(self.path_or_prompt)
+            prompt: str = self._extract_prompt_from_file(self.path_or_prompt)
         elif self.path_or_prompt:
             prompt = self._filter_prompt_placeholders(self.path_or_prompt, keep={"lang", "math_ml_version"})
         else:
@@ -51,8 +51,8 @@ class PromptCreator:
             str: The default prompt string.
         """
         if subcommand == "generate-alt-text":
-            prompt_file = "generate-alt-text-xml-prompt.txt" if is_xml else "generate-alt-text-prompt.txt"
-            prompt_path = os.path.join(Path(__file__).parent.absolute(), f"../prompts/{prompt_file}")
+            prompt_file: str = "generate-alt-text-xml-prompt.txt" if is_xml else "generate-alt-text-prompt.txt"
+            prompt_path: str = os.path.join(Path(__file__).parent.absolute(), f"../prompts/{prompt_file}")
         elif subcommand == "generate-table-summary":
             prompt_path = os.path.join(Path(__file__).parent.absolute(), "../prompts/generate-table-summary-prompt.txt")
         elif subcommand == "generate-mathml":
