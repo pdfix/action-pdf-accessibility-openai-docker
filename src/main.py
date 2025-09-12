@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from constants import IMAGE_FILE_EXT_REGEX, SUPPORTED_IMAGE_EXT
+from exceptions import OpenAIAuthenticationException
 from image_update import DockerImageContainerUpdateChecker
 from process_image import process_image
 from process_pdf import process_pdf
@@ -325,6 +326,9 @@ def main():
         # Run subcommand
         try:
             args.func(args)
+        except OpenAIAuthenticationException as auth_exception:
+            print(f"Failed to authenticate: {auth_exception}", file=sys.stderr)
+            sys.exit(1)
         except Exception as e:
             print(traceback.format_exc(), file=sys.stderr)
             print(f"Failed to run the program: {e}", file=sys.stderr)

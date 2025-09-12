@@ -1,6 +1,8 @@
 import httpx
-from openai import OpenAI
+from openai import AuthenticationError, OpenAI
 from openai.types.chat.chat_completion import ChatCompletion, Choice
+
+from exceptions import OpenAIAuthenticationException
 
 
 def openai_prompt_with_image(
@@ -27,27 +29,39 @@ def openai_prompt_with_image(
 
     formatted_prompt: str = prompt.format(lang=lang, math_ml_version=math_ml_version)
 
-    response: ChatCompletion = client.chat.completions.create(
-        model=model,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": formatted_prompt,
-                    },
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": f"{image}",
+    try:
+        response: ChatCompletion = client.chat.completions.create(
+            model=model,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": formatted_prompt,
                         },
-                    },
-                ],
-            },
-        ],
-        max_tokens=100,
-    )
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"{image}",
+                            },
+                        },
+                    ],
+                },
+            ],
+            max_tokens=100,
+        )
+    except AuthenticationError as e:
+        raise OpenAIAuthenticationException(e.message)
+
+    print(f" Responses: {len(response.choices)}")
+    for choice in response.choices:
+        print(f"========== choice {choice.index + 1} =========")
+        print(choice.message.to_json)
+        print("==============================")
+
+    # Test if ok
+    client.close()
 
     return response.choices[0]
 
@@ -72,21 +86,27 @@ def openai_prompt_with_xml(xml_data: str, openai_key: str, model: str, lang: str
     )
     formatted_prompt: str = prompt.format(lang=lang, math_ml_version="")
 
-    response: ChatCompletion = client.chat.completions.create(
-        model=model,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": formatted_prompt,
-                    },
-                    {"type": "text", "text": f"```xml\n{xml_data}\n```"},
-                ],
-            },
-        ],
-        max_tokens=100,
-    )
+    try:
+        response: ChatCompletion = client.chat.completions.create(
+            model=model,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": formatted_prompt,
+                        },
+                        {"type": "text", "text": f"```xml\n{xml_data}\n```"},
+                    ],
+                },
+            ],
+            max_tokens=100,
+        )
+    except AuthenticationError as e:
+        raise OpenAIAuthenticationException(e.message)
+
+    # Test if ok
+    client.close()
 
     return response.choices[0]

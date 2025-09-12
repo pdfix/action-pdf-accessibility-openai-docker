@@ -7,3 +7,9 @@ class PdfixException(Exception):
         error = str(pdfix.GetError())
         self.errno = error_code
         self.add_note(f"[{error_code}] [{error}]: {message}" if len(message) > 0 else f"[{error_code}] {error}")
+
+
+class OpenAIAuthenticationException(Exception):
+    def __init__(self, message: str = "") -> None:
+        self.errno = 1
+        self.add_note(f'OpenAI Api Key failed to authenticate: "{message}"')
