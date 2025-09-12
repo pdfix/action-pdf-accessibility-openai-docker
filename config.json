@@ -51,6 +51,7 @@
                     ]
                 },
                 {
+                    "title": "Prompt",
                     "name": "prompt_path",
                     "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for alternate text generation",
                     "type": "file_path",
@@ -198,6 +199,7 @@
                     ]
                 },
                 {
+                    "title": "Prompt",
                     "name": "prompt_path",
                     "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for alternate text generation",
                     "type": "file_path",
@@ -331,6 +333,7 @@
                     ]
                 },
                 {
+                    "title": "Prompt",
                     "name": "prompt_path",
                     "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for alternate text generation",
                     "type": "file_path",
@@ -470,6 +473,7 @@
                     ]
                 },
                 {
+                    "title": "Prompt",
                     "name": "prompt_path",
                     "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for table summary generation",
                     "type": "file_path",
@@ -610,6 +614,7 @@
                     ]
                 },
                 {
+                    "title": "Prompt",
                     "name": "prompt_path",
                     "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for table summary generation",
                     "type": "file_path",
@@ -742,6 +747,7 @@
                     ]
                 },
                 {
+                    "title": "Prompt",
                     "name": "prompt_path",
                     "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for MathML generation",
                     "type": "file_path",
@@ -828,6 +834,7 @@
                     ]
                 },
                 {
+                    "title": "Prompt",
                     "name": "prompt_path",
                     "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for MathML generation",
                     "type": "file_path",
