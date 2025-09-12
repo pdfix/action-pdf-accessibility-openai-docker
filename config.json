@@ -43,10 +43,28 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
-                            "value": "gpt-4o-mini"
+                            "value": "gpt-4-turbo"
                         },
                         {
                             "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "chatgpt-4o-latest"
+                        },
+                        {
+                            "value": "gpt-4.1"
+                        },
+                        {
+                            "value": "gpt-4.1-mini"
+                        },
+                        {
+                            "value": "gpt-4.1-nano"
+                        },
+                        {
+                            "value": "gpt-5-chat-latest"
                         }
                     ]
                 },
@@ -191,10 +209,28 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
-                            "value": "gpt-4o-mini"
+                            "value": "gpt-4-turbo"
                         },
                         {
                             "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "chatgpt-4o-latest"
+                        },
+                        {
+                            "value": "gpt-4.1"
+                        },
+                        {
+                            "value": "gpt-4.1-mini"
+                        },
+                        {
+                            "value": "gpt-4.1-nano"
+                        },
+                        {
+                            "value": "gpt-5-chat-latest"
                         }
                     ]
                 },
@@ -325,10 +361,28 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
-                            "value": "gpt-4o-mini"
+                            "value": "gpt-4-turbo"
                         },
                         {
                             "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "chatgpt-4o-latest"
+                        },
+                        {
+                            "value": "gpt-4.1"
+                        },
+                        {
+                            "value": "gpt-4.1-mini"
+                        },
+                        {
+                            "value": "gpt-4.1-nano"
+                        },
+                        {
+                            "value": "gpt-5-chat-latest"
                         }
                     ]
                 },
@@ -465,10 +519,28 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
-                            "value": "gpt-4o-mini"
+                            "value": "gpt-4-turbo"
                         },
                         {
                             "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "chatgpt-4o-latest"
+                        },
+                        {
+                            "value": "gpt-4.1"
+                        },
+                        {
+                            "value": "gpt-4.1-mini"
+                        },
+                        {
+                            "value": "gpt-4.1-nano"
+                        },
+                        {
+                            "value": "gpt-5-chat-latest"
                         }
                     ]
                 },
@@ -606,10 +678,28 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
-                            "value": "gpt-4o-mini"
+                            "value": "gpt-4-turbo"
                         },
                         {
                             "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "chatgpt-4o-latest"
+                        },
+                        {
+                            "value": "gpt-4.1"
+                        },
+                        {
+                            "value": "gpt-4.1-mini"
+                        },
+                        {
+                            "value": "gpt-4.1-nano"
+                        },
+                        {
+                            "value": "gpt-5-chat-latest"
                         }
                     ]
                 },
@@ -739,10 +829,28 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
-                            "value": "gpt-4o-mini"
+                            "value": "gpt-4-turbo"
                         },
                         {
                             "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "chatgpt-4o-latest"
+                        },
+                        {
+                            "value": "gpt-4.1"
+                        },
+                        {
+                            "value": "gpt-4.1-mini"
+                        },
+                        {
+                            "value": "gpt-4.1-nano"
+                        },
+                        {
+                            "value": "gpt-5-chat-latest"
                         }
                     ]
                 },
@@ -826,10 +934,28 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
-                            "value": "gpt-4o-mini"
+                            "value": "gpt-4-turbo"
                         },
                         {
                             "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "chatgpt-4o-latest"
+                        },
+                        {
+                            "value": "gpt-4.1"
+                        },
+                        {
+                            "value": "gpt-4.1-mini"
+                        },
+                        {
+                            "value": "gpt-4.1-nano"
+                        },
+                        {
+                            "value": "gpt-5-chat-latest"
                         }
                     ]
                 },
