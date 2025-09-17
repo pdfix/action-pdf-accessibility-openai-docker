@@ -147,7 +147,8 @@ def process_struct_element(
         prompt (str): Prompt for OpenAI.
     """
     try:
-        document = element.GetStructTree().GetDoc()
+        struct_tree: PdsStructTree = element.GetStructTree()
+        document: PdfDoc = struct_tree.GetDoc()
         element_object_id: int = element.GetObject().GetId()
         element_id: str = element.GetId()
         element_type: str = element.GetType(False)
