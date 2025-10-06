@@ -3,7 +3,7 @@
     "version": "v0.0.0",
     "actions": [
         {
-            "title": "Generate Alternate Text (OpenAI)",
+            "title": "Set Alternate Description (OpenAI)",
             "name": "pdfix_generate_alternate_text_openai",
             "desc": "Automatically generates alternate text for Figure and Formula tags using OpenAI, embedding it into each tag’s Alt attribute [Cloud]",
             "version": "v0.0.0",
@@ -168,7 +168,7 @@
             ]
         },
         {
-            "title": "Generate Alternate Text from Image to Text (OpenAI)",
+            "title": "Set Alternate Description (OpenAI)",
             "name": "pdfix_generate_alternate_text_from_image_to_text_openai",
             "desc": "Automatically generates alternate text from an image file using OpenAI, saving the description to a text file [Cloud]",
             "version": "v0.0.0",
@@ -320,7 +320,7 @@
             ]
         },
         {
-            "title": "Generate Alternate Text from XML to Text (OpenAI)",
+            "title": "Set Alternate Description from MathML (OpenAI)",
             "name": "pdfix_generate_alternate_text_from_xml_to_text_openai",
             "desc": "Automatically generates alternate text from an XML file using OpenAI, saving the description to a text file [Cloud]",
             "version": "v0.0.0",
@@ -472,7 +472,7 @@
             ]
         },
         {
-            "title": "Generate Table Summary (OpenAI)",
+            "title": "Set Table Summary (OpenAI)",
             "name": "pdfix_generate_table_summary_openai",
             "desc": "Automatically generates table summaries for Table tags using OpenAI, inserting them into each tag’s Summary attribute [Cloud]",
             "version": "v0.0.0",
@@ -637,7 +637,7 @@
             ]
         },
         {
-            "title": "Generate Table Summary from Image to Text (OpenAI)",
+            "title": "Set Table Summary (OpenAI)",
             "name": "pdfix_generate_table_summary_from_image_to_text_openai",
             "desc": "Automatically generates a table summary from an image file using OpenAI, saving the description to a text file [Cloud]",
             "version": "v0.0.0",
@@ -789,7 +789,7 @@
             ]
         },
         {
-            "title": "Generate Formula MathML (OpenAI)",
+            "title": "Set Formula MathML (OpenAI)",
             "name": "pdfix_generate_formula_mathml_openai",
             "desc": "Automatically generates MathML for Formula tags using OpenAI, attaching it as an associated file to each tag [Cloud]",
             "version": "v0.0.0",
@@ -893,7 +893,7 @@
             ]
         },
         {
-            "title": "Generate Formula MathML from Image to XML (OpenAI)",
+            "title": "Set Formula MathML (OpenAI)",
             "name": "pdfix_generate_formula_mathml_from_image_to_xml_openai",
             "desc": "Automatically generates MathML from an image file using OpenAI, saving it as an XML file [Cloud]",
             "version": "v0.0.0",
