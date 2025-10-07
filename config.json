@@ -3,7 +3,7 @@
     "version": "v0.0.0",
     "actions": [
         {
-            "title": "Set Alternate Description (OpenAI)",
+            "title": "Set Alternate Description  (OpenAI)",
             "name": "pdfix_generate_alternate_text_openai",
             "desc": "Automatically generates alternate text for Figure and Formula tags using OpenAI, embedding it into each tag’s Alt attribute [Cloud]",
             "version": "v0.0.0",
@@ -472,7 +472,7 @@
             ]
         },
         {
-            "title": "Set Table Summary (OpenAI)",
+            "title": "Set Table Summary  (OpenAI)",
             "name": "pdfix_generate_table_summary_openai",
             "desc": "Automatically generates table summaries for Table tags using OpenAI, inserting them into each tag’s Summary attribute [Cloud]",
             "version": "v0.0.0",
@@ -789,7 +789,7 @@
             ]
         },
         {
-            "title": "Set Formula MathML (OpenAI)",
+            "title": "Set Formula MathML  (OpenAI)",
             "name": "pdfix_generate_formula_mathml_openai",
             "desc": "Automatically generates MathML for Formula tags using OpenAI, attaching it as an associated file to each tag [Cloud]",
             "version": "v0.0.0",
