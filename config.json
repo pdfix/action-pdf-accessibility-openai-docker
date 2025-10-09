@@ -32,6 +32,7 @@
                     "title": "OpenAI API Key",
                     "name": "openai_key",
                     "desc": "OpenAI API Key",
+                    "flags": 96,
                     "type": "string",
                     "value": ""
                 },
@@ -198,6 +199,7 @@
                     "title": "OpenAI API Key",
                     "name": "openai_key",
                     "desc": "OpenAI API Key",
+                    "flags": 96,
                     "type": "string",
                     "value": ""
                 },
@@ -350,6 +352,7 @@
                     "title": "OpenAI API Key",
                     "name": "openai_key",
                     "desc": "OpenAI API Key",
+                    "flags": 96,
                     "type": "string",
                     "value": ""
                 },
@@ -501,6 +504,7 @@
                     "title": "OpenAI API Key",
                     "name": "openai_key",
                     "desc": "OpenAI API Key",
+                    "flags": 96,
                     "type": "string",
                     "value": ""
                 },
@@ -667,6 +671,7 @@
                     "title": "OpenAI API Key",
                     "name": "openai_key",
                     "desc": "OpenAI API Key",
+                    "flags": 96,
                     "type": "string",
                     "value": ""
                 },
@@ -818,6 +823,7 @@
                     "title": "OpenAI API Key",
                     "name": "openai_key",
                     "desc": "OpenAI API Key",
+                    "flags": 96,
                     "type": "string",
                     "value": ""
                 },
@@ -923,6 +929,7 @@
                     "title": "OpenAI API Key",
                     "name": "openai_key",
                     "desc": "OpenAI API Key",
+                    "flags": 96,
                     "type": "string",
                     "value": ""
                 },
