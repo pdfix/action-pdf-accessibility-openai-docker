@@ -74,7 +74,16 @@ def set_arguments(
                 parser.add_argument(
                     "--model",
                     type=str,
-                    choices=["gpt-4o-mini", "gpt-4o"],
+                    choices=[
+                        "gpt-4-turbo",
+                        "gpt-4o",
+                        "gpt-4o-mini",
+                        "chatgpt-4o-latest",
+                        "gpt-4.1",
+                        "gpt-4.1-mini",
+                        "gpt-4.1-nano",
+                        "gpt-5-chat-latest",
+                    ],
                     default="gpt-4o-mini",
                     help="OpenAI model to use for processing",
                 )
