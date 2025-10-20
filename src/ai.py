@@ -54,11 +54,11 @@ def openai_prompt_with_image(
     except AuthenticationError as e:
         raise OpenAIAuthenticationException(e.message)
 
-    print(f" Responses: {len(response.choices)}")
-    for choice in response.choices:
-        print(f"========== choice {choice.index + 1} =========")
-        print(choice.message.to_json)
-        print("==============================")
+    # print(f" Responses: {len(response.choices)}")
+    # for choice in response.choices:
+    #     print(f"========== choice {choice.index + 1} =========")
+    #     print(choice.message.to_json)
+    #     print("==============================")
 
     # Test if ok
     client.close()

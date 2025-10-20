@@ -1,5 +1,4 @@
 import argparse
-import os
 import re
 import sys
 import threading
@@ -10,7 +9,14 @@ from pathlib import Path
 from typing import Any, Optional
 
 from constants import IMAGE_FILE_EXT_REGEX, SUPPORTED_IMAGE_EXT
-from exceptions import OpenAIAuthenticationException
+from exceptions import (
+    EC_ARG_GENERAL,
+    MESSAGE_ARG_GENERAL,
+    ArgumentException,
+    ArgumentInputOutputNotAllowedException,
+    ArgumentOpenAIKeyException,
+    ExpectedException,
+)
 from image_update import DockerImageContainerUpdateChecker
 from process_image import process_image
 from process_pdf import process_pdf
@@ -39,7 +45,7 @@ def str2bool(value: Any) -> bool:
     elif value.lower() in ("no", "false", "f", "0"):
         return False
     else:
-        raise ValueError("Boolean value expected.")
+        raise ArgumentException(f"{MESSAGE_ARG_GENERAL} Boolean value expected.")
 
 
 def set_arguments(
@@ -122,7 +128,7 @@ def get_pdfix_config(path: str) -> None:
     Args:
         path (string): Destination path for config.json file
     """
-    config_path: str = os.path.join(Path(__file__).parent.absolute(), "../config.json")
+    config_path: Path = Path(__file__).parent.joinpath("../config.json").resolve()
 
     with open(config_path, "r", encoding="utf-8") as file:
         if path is None:
@@ -196,7 +202,7 @@ def process_cli(
         path_or_prompt (str): Either path to prompt, or prompt itself.
     """
     if not openai_key:
-        raise ValueError(f"Invalid or missing arguments: --openai-key {openai_key}")
+        raise ArgumentOpenAIKeyException()
 
     is_xml_input: bool = input.lower().endswith(".xml")
     prompt_creator: PromptCreator = PromptCreator(path_or_prompt, subcommand, is_xml_input)
@@ -224,11 +230,8 @@ def process_cli(
     else:
         input_extension: str = Path(input).suffix.lower()
         output_extension: str = Path(output).suffix.lower()
-        exception_message: str = (
-            f"Not supported file combination ({input_extension} -> {output_extension})"
-            " Please run with --help to find out supported combinations."
-        )
-        raise Exception(exception_message)
+        combination: str = f"{input_extension} -> {output_extension})"
+        raise ArgumentInputOutputNotAllowedException(combination)
 
 
 def main():
@@ -313,15 +316,19 @@ def main():
     # Parse arguments
     try:
         args = parser.parse_args()
+    except ExpectedException as e:
+        print(e.message, file=sys.stderr)
+        sys.exit(e.error_code)
     except SystemExit as e:
-        if e.code == 0:
-            # This happens when --help is used, exit gracefully
-            sys.exit(0)
-        print("Failed to parse arguments. Please check the usage and try again.", file=sys.stderr)
-        sys.exit(e.code)
-    except ValueError as e:
-        print(f"Parsing error: {e}")
-        sys.exit(2)
+        if e.code != 0:
+            print(MESSAGE_ARG_GENERAL, file=sys.stderr)
+            sys.exit(EC_ARG_GENERAL)
+        # This happens when --help is used, exit gracefully
+        sys.exit(0)
+    except Exception as e:
+        print(traceback.format_exc(), file=sys.stderr)
+        print(f"Failed to run the program:{e}", file=sys.stderr)
+        sys.exit(1)
 
     if hasattr(args, "func"):
         # Check for updates only when help is not checked
@@ -338,9 +345,9 @@ def main():
         # Run subcommand
         try:
             args.func(args)
-        except OpenAIAuthenticationException as auth_exception:
-            print(f"Failed to authenticate: {auth_exception}", file=sys.stderr)
-            sys.exit(1)
+        except ExpectedException as e:
+            print(e.message, file=sys.stderr)
+            sys.exit(e.error_code)
         except Exception as e:
             print(traceback.format_exc(), file=sys.stderr)
             print(f"Failed to run the program: {e}", file=sys.stderr)

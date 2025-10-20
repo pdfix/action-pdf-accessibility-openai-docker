@@ -1,6 +1,9 @@
 import os
 import re
 from pathlib import Path
+from typing import Any
+
+from exceptions import ArgumentUnknownCommandException
 
 
 class PromptCreator:
@@ -22,7 +25,8 @@ class PromptCreator:
         Returns the prompt based on the subcommand and whether it is XML or not.
         """
         if self._is_path(self.path_or_prompt):
-            prompt: str = self._extract_prompt_from_file(self.path_or_prompt)
+            prompt_path: Path = Path(self.path_or_prompt).resolve()
+            prompt: str = self._extract_prompt_from_file(prompt_path)
         elif self.path_or_prompt:
             prompt = self._filter_prompt_placeholders(self.path_or_prompt, keep={"lang", "math_ml_version"})
         else:
@@ -52,22 +56,22 @@ class PromptCreator:
         """
         if subcommand == "generate-alt-text":
             prompt_file: str = "generate-alt-text-xml-prompt.txt" if is_xml else "generate-alt-text-prompt.txt"
-            prompt_path: str = os.path.join(Path(__file__).parent.absolute(), f"../prompts/{prompt_file}")
+            prompt_path: Path = Path(__file__).parent.joinpath(f"../prompts/{prompt_file}").resolve()
         elif subcommand == "generate-table-summary":
-            prompt_path = os.path.join(Path(__file__).parent.absolute(), "../prompts/generate-table-summary-prompt.txt")
+            prompt_path = Path(__file__).parent.joinpath("../prompts/generate-table-summary-prompt.txt").resolve()
         elif subcommand == "generate-mathml":
-            prompt_path = os.path.join(Path(__file__).parent.absolute(), "../prompts/generate-mathml-prompt.txt")
+            prompt_path = Path(__file__).parent.joinpath("../prompts/generate-mathml-prompt.txt").resolve()
         else:
-            raise ValueError(f"Unknown subparser value {subcommand}")
+            raise ArgumentUnknownCommandException(subcommand)
 
         return self._extract_prompt_from_file(prompt_path)
 
-    def _extract_prompt_from_file(self, path: str) -> str:
+    def _extract_prompt_from_file(self, path: Path) -> str:
         """
         Extracts the prompt from the file at the given path.
 
         Args:
-            path (str): Path to the prompt file.
+            path (Path): Path to the prompt file.
         """
         with open(path, "r", encoding="utf-8") as file:
             return self._filter_prompt_placeholders(file.read().strip())
@@ -84,8 +88,8 @@ class PromptCreator:
             The cleaned prompt.
         """
 
-        def replacer(match):
-            var_name = match.group(1)
+        def replacer(match: re.Match[str]) -> str:
+            var_name: str | Any = match.group(1)
             return match.group(0) if var_name in keep else ""
 
         return re.sub(r"\{([^}]+)\}", replacer, prompt)

@@ -6,9 +6,9 @@ from openai import OpenAI
 from PIL import Image
 
 
-def create_dummy_image_base64():
-    image = Image.new("RGB", (1, 1), color=(255, 255, 255))
-    buffer = BytesIO()
+def create_dummy_image_base64() -> str:
+    image: Image.Image = Image.new("RGB", (1, 1), color=(255, 255, 255))
+    buffer: BytesIO = BytesIO()
     image.save(buffer, format="PNG")
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
@@ -37,12 +37,12 @@ if len(sys.argv) < 2:
     print("Usage: python check_models.py <your_openai_api_key>")
     sys.exit(1)
 
-api_key = sys.argv[1]
-client = OpenAI(api_key=api_key)
-dummy_image = create_dummy_image_base64()
+api_key: str = sys.argv[1]
+client: OpenAI = OpenAI(api_key=api_key)
+dummy_image: str = create_dummy_image_base64()
 
 models = client.models.list()
-supported_models = []
+supported_models: list[str] = []
 
 for model in models.data:
     if test_model_image_support(client, dummy_image, model.id):

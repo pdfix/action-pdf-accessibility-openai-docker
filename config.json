@@ -166,7 +166,22 @@
                     "type": "string",
                     "value": "Figure|Formula"
                 }
-            ]
+            ],
+            "errors": {
+                "10": "Failed to parse arguments. Please check the usage and try again.",
+                "11": "Not recognized command. Please see --help.",
+                "12": "Invalid or missing arguments for OpenAI Api Key.",
+                "13": "Not allowed input output file combination. Please see --help.",
+                "14": "Failed to read image data from input.",
+                "20": "Failed to initialize PDFix SDK.",
+                "21": "Failed to activate PDFix SDK acount.",
+                "22": "Failed to authorize PDFix SDK acount.",
+                "23": "Failed to render PDF Page into image.",
+                "24": "Failed to open PDF document.",
+                "25": "Failed to save PDF document.",
+                "26": "PDF document has no tags.",
+                "30": "OpenAI Api Key failed to authenticate."
+            }
         },
         {
             "title": "Set Alternate Description (OpenAI)",
@@ -319,7 +334,22 @@
                         }
                     ]
                 }
-            ]
+            ],
+            "errors": {
+                "10": "Failed to parse arguments. Please check the usage and try again.",
+                "11": "Not recognized command. Please see --help.",
+                "12": "Invalid or missing arguments for OpenAI Api Key.",
+                "13": "Not allowed input output file combination. Please see --help.",
+                "14": "Failed to read image data from input.",
+                "20": "Failed to initialize PDFix SDK.",
+                "21": "Failed to activate PDFix SDK acount.",
+                "22": "Failed to authorize PDFix SDK acount.",
+                "23": "Failed to render PDF Page into image.",
+                "24": "Failed to open PDF document.",
+                "25": "Failed to save PDF document.",
+                "26": "PDF document has no tags.",
+                "30": "OpenAI Api Key failed to authenticate."
+            }
         },
         {
             "title": "Set Alternate Description from MathML (OpenAI)",
@@ -472,7 +502,22 @@
                         }
                     ]
                 }
-            ]
+            ],
+            "errors": {
+                "10": "Failed to parse arguments. Please check the usage and try again.",
+                "11": "Not recognized command. Please see --help.",
+                "12": "Invalid or missing arguments for OpenAI Api Key.",
+                "13": "Not allowed input output file combination. Please see --help.",
+                "14": "Failed to read image data from input.",
+                "20": "Failed to initialize PDFix SDK.",
+                "21": "Failed to activate PDFix SDK acount.",
+                "22": "Failed to authorize PDFix SDK acount.",
+                "23": "Failed to render PDF Page into image.",
+                "24": "Failed to open PDF document.",
+                "25": "Failed to save PDF document.",
+                "26": "PDF document has no tags.",
+                "30": "OpenAI Api Key failed to authenticate."
+            }
         },
         {
             "title": "Set Table Summary  (OpenAI)",
@@ -638,7 +683,22 @@
                     "type": "bool",
                     "value": false
                 }
-            ]
+            ],
+            "errors": {
+                "10": "Failed to parse arguments. Please check the usage and try again.",
+                "11": "Not recognized command. Please see --help.",
+                "12": "Invalid or missing arguments for OpenAI Api Key.",
+                "13": "Not allowed input output file combination. Please see --help.",
+                "14": "Failed to read image data from input.",
+                "20": "Failed to initialize PDFix SDK.",
+                "21": "Failed to activate PDFix SDK acount.",
+                "22": "Failed to authorize PDFix SDK acount.",
+                "23": "Failed to render PDF Page into image.",
+                "24": "Failed to open PDF document.",
+                "25": "Failed to save PDF document.",
+                "26": "PDF document has no tags.",
+                "30": "OpenAI Api Key failed to authenticate."
+            }
         },
         {
             "title": "Set Table Summary (OpenAI)",
@@ -791,7 +851,22 @@
                         }
                     ]
                 }
-            ]
+            ],
+            "errors": {
+                "10": "Failed to parse arguments. Please check the usage and try again.",
+                "11": "Not recognized command. Please see --help.",
+                "12": "Invalid or missing arguments for OpenAI Api Key.",
+                "13": "Not allowed input output file combination. Please see --help.",
+                "14": "Failed to read image data from input.",
+                "20": "Failed to initialize PDFix SDK.",
+                "21": "Failed to activate PDFix SDK acount.",
+                "22": "Failed to authorize PDFix SDK acount.",
+                "23": "Failed to render PDF Page into image.",
+                "24": "Failed to open PDF document.",
+                "25": "Failed to save PDF document.",
+                "26": "PDF document has no tags.",
+                "30": "OpenAI Api Key failed to authenticate."
+            }
         },
         {
             "title": "Set Formula MathML  (OpenAI)",
@@ -896,7 +971,22 @@
                         }
                     ]
                 }
-            ]
+            ],
+            "errors": {
+                "10": "Failed to parse arguments. Please check the usage and try again.",
+                "11": "Not recognized command. Please see --help.",
+                "12": "Invalid or missing arguments for OpenAI Api Key.",
+                "13": "Not allowed input output file combination. Please see --help.",
+                "14": "Failed to read image data from input.",
+                "20": "Failed to initialize PDFix SDK.",
+                "21": "Failed to activate PDFix SDK acount.",
+                "22": "Failed to authorize PDFix SDK acount.",
+                "23": "Failed to render PDF Page into image.",
+                "24": "Failed to open PDF document.",
+                "25": "Failed to save PDF document.",
+                "26": "PDF document has no tags.",
+                "30": "OpenAI Api Key failed to authenticate."
+            }
         },
         {
             "title": "Set Formula MathML (OpenAI)",
@@ -995,7 +1085,22 @@
                         }
                     ]
                 }
-            ]
+            ],
+            "errors": {
+                "10": "Failed to parse arguments. Please check the usage and try again.",
+                "11": "Not recognized command. Please see --help.",
+                "12": "Invalid or missing arguments for OpenAI Api Key.",
+                "13": "Not allowed input output file combination. Please see --help.",
+                "14": "Failed to read image data from input.",
+                "20": "Failed to initialize PDFix SDK.",
+                "21": "Failed to activate PDFix SDK acount.",
+                "22": "Failed to authorize PDFix SDK acount.",
+                "23": "Failed to render PDF Page into image.",
+                "24": "Failed to open PDF document.",
+                "25": "Failed to save PDF document.",
+                "26": "PDF document has no tags.",
+                "30": "OpenAI Api Key failed to authenticate."
+            }
         }
     ]
 }

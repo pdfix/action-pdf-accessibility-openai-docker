@@ -4,6 +4,7 @@ from typing import Optional
 from openai.types.chat.chat_completion import Choice
 
 from ai import openai_prompt_with_image
+from exceptions import ArgumentFailedToReadImageException
 from page_renderer import get_image_bytes
 from utils import add_mathml_metadata
 
@@ -34,7 +35,7 @@ def process_image(
     data: Optional[bytes] = get_image_bytes(input_path)
 
     if data is None:
-        raise Exception(f"Failed to read image data from {input_path}")
+        raise ArgumentFailedToReadImageException(input_path)
     else:
         image_data: bytes = data
 

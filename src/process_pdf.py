@@ -15,7 +15,14 @@ from pdfixsdk.Pdfix import (
 )
 
 from ai import openai_prompt_with_image
-from exceptions import PdfixException
+from exceptions import (
+    ArgumentUnknownCommandException,
+    ExpectedException,
+    PdfixFailedToOpenException,
+    PdfixFailedToSaveException,
+    PdfixInitializeException,
+    PdfixNoTagsException,
+)
 from page_renderer import render_page
 from utils import add_mathml_metadata
 from utils_sdk import (
@@ -70,22 +77,22 @@ def process_pdf(
     """
     pdfix: Pdfix = GetPdfix()
     if pdfix is None:
-        raise Exception("Pdfix Initialization fail")
+        raise PdfixInitializeException()
 
     authorize_sdk(pdfix, license_name, license_key)
 
     # Open doc
     doc: PdfDoc = pdfix.OpenDoc(input_path, "")
     if doc is None:
-        raise PdfixException(pdfix, "Unable to open PDF")
+        raise PdfixFailedToOpenException(pdfix, input_path)
 
     struct_tree: PdsStructTree = doc.GetStructTree()
     if struct_tree is None:
-        raise PdfixException(pdfix, "PDF has no structure tree")
+        raise PdfixNoTagsException(pdfix)
 
     child_element: PdsStructElement = struct_tree.GetStructElementFromObject(struct_tree.GetChildObject(0))
     try:
-        items: list = browse_tags_recursive(child_element, regex_tag)
+        items: list[PdsStructElement] = browse_tags_recursive(child_element, regex_tag)
         # for elem in items:
         #     process_struct_e(elem, subcommand, openai_key, lang, mathml_version, overwrite)
         with ThreadPoolExecutor(max_workers=10) as executor:
@@ -110,7 +117,7 @@ def process_pdf(
         raise
 
     if not doc.Save(output_path, kSaveFull):
-        raise PdfixException(pdfix, "Unable to save PDF ")
+        raise PdfixFailedToSaveException(pdfix, output_path)
 
 
 def process_struct_element(
@@ -224,8 +231,10 @@ def process_struct_element(
             set_associated_file_math_ml(element, content, math_ml_version)
             print(f"MathML set for {id} tag")
         else:
-            print(f"Unknown operation: {subcommand}")
+            raise ArgumentUnknownCommandException(subcommand)
 
+    except ExpectedException:
+        raise
     except Exception as e:
         # Write error and continue to other element
         print(f"Error: {str(e)}", file=sys.stderr)
