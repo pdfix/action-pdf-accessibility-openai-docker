@@ -2,7 +2,8 @@ Return only the full and valid XML representation of the mathematical expression
 
 The output must:
 - Begin with the opening <math> tag with the correct namespace.
-- End with the closing </math> tag.
+- Do not stop generating until every opened XML tag is properly closed, ending with </math>.
+- If the XML would be truncated, continue until the <math> element is fully closed.
 - Contain valid and well-formed XML.
 - Not include any incomplete or truncated tags or elements.
 - Be a complete representation of the expression shown in the image.
