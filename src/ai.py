@@ -3,10 +3,11 @@ from openai import AuthenticationError, OpenAI
 from openai.types.chat.chat_completion import ChatCompletion, Choice
 
 from exceptions import OpenAIAuthenticationException
+from prompt import PromptCreator
 
 
 def openai_prompt_with_image(
-    image: str, openai_key: str, model: str, lang: str, math_ml_version: str, prompt: str
+    image: str, openai_key: str, model: str, lang: str, math_ml_version: str, prompt_creator: PromptCreator
 ) -> Choice:
     """
     Create a prompt for OpenAI, ask OpenAI, and wait for response.
@@ -17,7 +18,7 @@ def openai_prompt_with_image(
         model (str): OpenAI model.
         lang (str): Language for the response.
         math_ml_version (str): MathML version for the response.
-        prompt (str): Prompt for OpenAI.
+        prompt_creator (PromptCreator): Prompt creator for OpenAI.
 
     Returns:
         First (most probable) response from OpenAI.
@@ -27,6 +28,7 @@ def openai_prompt_with_image(
         timeout=httpx.Timeout(None, connect=10, read=60, write=30),
     )
 
+    prompt: str = prompt_creator.craft_prompt()
     formatted_prompt: str = prompt.format(lang=lang, math_ml_version=math_ml_version)
 
     try:
@@ -66,7 +68,9 @@ def openai_prompt_with_image(
     return response.choices[0]
 
 
-def openai_prompt_with_xml(xml_data: str, openai_key: str, model: str, lang: str, prompt: str) -> Choice:
+def openai_prompt_with_xml(
+    xml_data: str, openai_key: str, model: str, lang: str, prompt_creator: PromptCreator
+) -> Choice:
     """
     Create a prompt for OpenAI, ask OpenAI, and wait for response.
 
@@ -75,7 +79,7 @@ def openai_prompt_with_xml(xml_data: str, openai_key: str, model: str, lang: str
         openai_key (str): OpenAI API key.
         model (str): OpenAI model.
         lang (str): Language for the response.
-        prompt (str): Prompt for OpenAI.
+        prompt_creator (PromptCreator): Prompt creator for OpenAI.
 
     Returns:
         First (most probable) response from OpenAI.
@@ -84,6 +88,8 @@ def openai_prompt_with_xml(xml_data: str, openai_key: str, model: str, lang: str
         api_key=openai_key,
         timeout=httpx.Timeout(None, connect=10, read=60, write=30),
     )
+
+    prompt: str = prompt_creator.craft_prompt()
     formatted_prompt: str = prompt.format(lang=lang, math_ml_version="")
 
     try:

@@ -206,9 +206,9 @@ def process_cli(
 
     is_xml_input: bool = input.lower().endswith(".xml")
     prompt_creator: PromptCreator = PromptCreator(path_or_prompt, subcommand, is_xml_input)
-    prompt: str = prompt_creator.get_the_prompt()
 
     if input.lower().endswith(".pdf") and output.lower().endswith(".pdf"):
+        surround_tags_count: int = 2
         return process_pdf(
             subcommand,
             license_name,
@@ -221,12 +221,13 @@ def process_cli(
             mathml_version,
             overwrite,
             regex_tag,
-            prompt,
+            prompt_creator,
+            surround_tags_count,
         )
     elif re.search(IMAGE_FILE_EXT_REGEX, input, re.IGNORECASE) and output.lower().endswith((".xml", ".txt")):
-        return process_image(subcommand, openai_key, input, output, model, lang, mathml_version, prompt)
+        return process_image(subcommand, openai_key, input, output, model, lang, mathml_version, prompt_creator)
     elif is_xml_input and output.lower().endswith(".txt"):
-        return process_xml(openai_key, input, output, model, lang, prompt)
+        return process_xml(openai_key, input, output, model, lang, prompt_creator)
     else:
         input_extension: str = Path(input).suffix.lower()
         output_extension: str = Path(output).suffix.lower()

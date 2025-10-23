@@ -24,11 +24,13 @@ from exceptions import (
     PdfixNoTagsException,
 )
 from page_renderer import render_page
+from pdf_tag_group import PdfTagGroup
+from prompt import PromptCreator
 from utils import add_mathml_metadata
 from utils_sdk import (
     authorize_sdk,
-    browse_tags_recursive,
     check_if_table_summary_exists,
+    create_groups_of_tags_recursively,
     set_alternate_text,
     set_associated_file_math_ml,
     set_table_summary,
@@ -47,7 +49,8 @@ def process_pdf(
     mathml_version: str,
     overwrite: bool,
     regex_tag: str,
-    prompt: str,
+    prompt_creator: PromptCreator,
+    surround_tags_count: int,
 ) -> None:
     """
     Processes a PDF document by opening it, checking for a structure tree, and recursively
@@ -57,9 +60,9 @@ def process_pdf(
     This function initializes the Pdfix library and authorizes it using the provided license
     name and key. It then opens the specified input PDF file and checks if the document has a
     structure tree. If the structure tree is present, it starts browsing through the structure
-    elements from the root element and processes elements that match the specified tags using
-    the `browse_tags_recursive` function. Finally, it saves the processed PDF to the specified
-    output file.
+    elements from the root element and processes elements and their surrounding that match
+    the specified tags using the `create_groups_of_tags_recursively` function. Finally,
+    it saves the processed PDF to the specified output file.
 
     Args:
         subcommand (str): The subcommand to run (e.g., "generate-alt-text", "generate-table-summary").
@@ -73,7 +76,8 @@ def process_pdf(
         mathml_version (str): MathML version for the response.
         overwrite (bool): Whether to overwrite previous alternate text.
         regex_tag (str): Regular expression for matching tags that should be processed.
-        prompt (str): Prompt for OpenAI.
+        prompt_creator (PromptCreator): Prompt creator for OpenAI.
+        surround_tags_count (int): Number of surrounding tags to include for context.
     """
     pdfix: Pdfix = GetPdfix()
     if pdfix is None:
@@ -92,7 +96,7 @@ def process_pdf(
 
     child_element: PdsStructElement = struct_tree.GetStructElementFromObject(struct_tree.GetChildObject(0))
     try:
-        items: list[PdsStructElement] = browse_tags_recursive(child_element, regex_tag)
+        groups: list[PdfTagGroup] = create_groups_of_tags_recursively(child_element, regex_tag, surround_tags_count)
         # for elem in items:
         #     process_struct_e(elem, subcommand, openai_key, lang, mathml_version, overwrite)
         with ThreadPoolExecutor(max_workers=10) as executor:
@@ -100,16 +104,16 @@ def process_pdf(
                 executor.submit(
                     process_struct_element,
                     pdfix,
-                    elem,
+                    group,
                     subcommand,
                     openai_key,
                     model,
                     lang,
                     mathml_version,
                     overwrite,
-                    prompt,
+                    prompt_creator,
                 )
-                for elem in items
+                for group in groups
             ]
         for future in futures:
             future.result()  # Wait for completion (optional)
@@ -122,14 +126,14 @@ def process_pdf(
 
 def process_struct_element(
     pdfix: Pdfix,
-    element: PdsStructElement,
+    group: PdfTagGroup,
     subcommand: str,
     openai_key: str,
     model: str,
     lang: str,
     math_ml_version: str,
     overwrite: bool,
-    prompt: str,
+    prompt_creator: PromptCreator,
 ) -> None:
     """
     Processes a structure element in a PDF document by generating alternate text or table
@@ -144,16 +148,17 @@ def process_struct_element(
 
     Args:
         pdfix (Pdfix): Pdfix SDK.
-        element (PdsStructElement): The structure element to process.
+        group (PdfTagGroup): The structure containing list of structure elements and index of one to process.
         subcommand (str): The subcommand to run (e.g., "generate-alt-text", "generate-table-summary").
         openai_key (str): OpenAI API key.
         model (str): OpenAI model.
         lang (str): Language for the response.
         math_ml_version (str): MathML version for the response.
         overwrite (bool): Whether to overwrite previous alternate text.
-        prompt (str): Prompt for OpenAI.
+        prompt_creator (PromptCreator): Prompt creator for OpenAI.
     """
     try:
+        element: PdsStructElement = group.tags[group.target_index]
         struct_tree: PdsStructTree = element.GetStructTree()
         document: PdfDoc = struct_tree.GetDoc()
         element_object_id: int = element.GetObject().GetId()
@@ -212,7 +217,10 @@ def process_struct_element(
         #     bf.write(data)
 
         print(f"Talking to OpenAI for {id} ...")
-        response: Choice = openai_prompt_with_image(base64_image, openai_key, model, lang, math_ml_version, prompt)
+        prompt_creator.add_surrounding(group)
+        response: Choice = openai_prompt_with_image(
+            base64_image, openai_key, model, lang, math_ml_version, prompt_creator
+        )
 
         # print(response.message.content)
         content: Optional[str] = response.message.content

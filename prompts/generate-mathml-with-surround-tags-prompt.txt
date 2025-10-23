@@ -1,0 +1,15 @@
+Return only the full and valid XML representation of the mathematical expression in MathML {math_ml_version} format, with no markdown, no comments, and no explanation.
+
+The output must:
+- Begin with the opening <math> tag with the correct namespace.
+- End with the closing </math> tag.
+- Contain valid and well-formed XML.
+- Not include any incomplete or truncated tags or elements.
+- Be a complete representation of the expression shown in the image.
+
+Do not include any text before or after the XML.
+Only output the MathML content.
+
+The formula is part of a PDF document. Use the surrounding tags to help interpret and reconstruct the expression accurately, but do not include any of their content in the output.
+
+Here are the surrounding PDF tags for context:

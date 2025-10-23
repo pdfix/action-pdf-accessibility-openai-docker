@@ -6,6 +6,7 @@ from openai.types.chat.chat_completion import Choice
 from ai import openai_prompt_with_image
 from exceptions import ArgumentFailedToReadImageException
 from page_renderer import get_image_bytes
+from prompt import PromptCreator
 from utils import add_mathml_metadata
 
 
@@ -17,7 +18,7 @@ def process_image(
     model: str,
     lang: str,
     mathml_version: str,
-    prompt: str,
+    prompt_creator: PromptCreator,
 ) -> None:
     """
     Generates OpenAI response from image into output file.
@@ -30,7 +31,7 @@ def process_image(
         model (str): OpenAI model.
         lang (str): Language for the response.
         mathml_version (str): MathML version for the response.
-        prompt (str): Prompt for OpenAI.
+        prompt_creator (PromptCreator): Prompt creator for OpenAI.
     """
     data: Optional[bytes] = get_image_bytes(input_path)
 
@@ -40,7 +41,7 @@ def process_image(
         image_data: bytes = data
 
     base64_image: str = f"data:image/jpeg;base64,{base64.b64encode(image_data).decode('utf-8')}"
-    response: Choice = openai_prompt_with_image(base64_image, openai_key, model, lang, mathml_version, prompt)
+    response: Choice = openai_prompt_with_image(base64_image, openai_key, model, lang, mathml_version, prompt_creator)
     output: str = response.message.content if response.message.content else ""
     if subcommand == "generate-mathml":
         output = add_mathml_metadata(output)

@@ -1,0 +1,5 @@
+Provide only the alt text for the MathML formula in the attached XML file in {lang} language. Keep the description brief but informative. Response should not be formatted. It will be used by screen readers.
+
+The formula is part of a PDF document. Use the surrounding tags to understand the context, but do not repeat their content verbatim. Focus on describing the purpose or meaning of the formula as it appears in context.
+
+Here are the surrounding PDF tags to help you create the description:

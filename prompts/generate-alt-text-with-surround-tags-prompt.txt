@@ -1,0 +1,10 @@
+You are creating alt text for an image used in a tagged PDF document.
+
+Instructions:
+- Provide only the alt text, in {lang} language.
+- Describe the image clearly and concisely, focusing on its main content and purpose.
+- Use the surrounding PDF structure to infer the image’s context, but do not restate the surrounding text verbatim.
+- If the image represents a concept already described nearby, summarize its visual role (e.g., “Flowchart showing data processing steps”).
+- Avoid unnecessary detail or interpretation.
+
+Here are the surrounding PDF tags (for context):
