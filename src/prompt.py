@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 from typing import Any, Optional
 
-from pdfixsdk import PdsStructElement
+from pdfixsdk import PdsStructElement, PdsStructTree, kPdsStructChildElement
 
 from exceptions import ArgumentUnknownCommandException
 from pdf_tag_group import PdfTagGroup
@@ -184,10 +184,220 @@ class PromptCreator:
             case "Formula":
                 return element.GetAlt()[:max_tag_characters]
             case "L":
-                return element.GetAlt()[:max_tag_characters]  # TODO crawl list
+                return self._craft_structure_from_list(element, max_tag_characters)
             case "P":
                 return element.GetActualText()[:max_tag_characters]
             case "Table":
-                return element.GetAlt()[:max_tag_characters]  # TODO crawl cells
+                return self._craft_structure_from_table(element, max_tag_characters)
             case _:
                 return element.GetActualText()[:max_tag_characters]
+
+    def _extract_table_rows(self, element: PdsStructElement) -> list[PdsStructElement]:
+        """
+        From Table element extract all TR elements for futher processing.
+
+        Args:
+            element (PdsStructElement): Table element.
+
+        Result:
+            Returns list of all TRs from table.
+        """
+        result: list[PdsStructElement] = []
+        count: int = element.GetNumChildren()
+        structure_tree: PdsStructTree = element.GetStructTree()
+        for i in range(0, count):
+            if element.GetChildType(i) != kPdsStructChildElement:
+                continue
+
+            child_element: PdsStructElement = structure_tree.GetStructElementFromObject(element.GetChildObject(i))
+            match child_element.GetType(False):
+                case "THead":
+                    grand_count: int = child_element.GetNumChildren()
+                    for j in range(0, grand_count):
+                        grandchild_element: PdsStructElement = structure_tree.GetStructElementFromObject(
+                            child_element.GetChildObject(j)
+                        )
+                        if grandchild_element.GetType(False) == "TR":
+                            result.append(grandchild_element)
+
+                case "TR":
+                    result.append(child_element)
+
+                case "TBody":
+                    grand_count = child_element.GetNumChildren()
+                    for j in range(0, grand_count):
+                        grandchild_element = structure_tree.GetStructElementFromObject(child_element.GetChildObject(j))
+                        if grandchild_element.GetType(False) == "TR":
+                            result.append(grandchild_element)
+
+                case _:
+                    # All other elements are ignore at they should not be there
+                    pass
+
+        return result
+
+    def _craft_structure_from_table(self, element: PdsStructElement, max_characters: int) -> str:
+        """
+        Take Table element and return simplified JSON representation of it.
+
+        Args:
+            element (PdsStructElement): Table element.
+            max_characters (int): Longest string that will be accepted.
+
+        Result:
+            JSON structure in form of string.
+        """
+        data: list[list[str]] = []
+        structure_tree: PdsStructTree = element.GetStructTree()
+        rows: list[PdsStructElement] = self._extract_table_rows(element)
+
+        for row in rows:
+            cells: list[str] = []
+            count: int = row.GetNumChildren()
+            for i in range(0, count):
+                if row.GetChildType(i) != kPdsStructChildElement:
+                    continue
+                cell_element: PdsStructElement = structure_tree.GetStructElementFromObject(row.GetChildObject(i))
+                match cell_element.GetType(False):
+                    case "TH":
+                        # Only checking first element for simplification
+                        if cell_element.GetNumChildren() > 0 and cell_element.GetChildType(0) != kPdsStructChildElement:
+                            content_element: PdsStructElement = structure_tree.GetStructElementFromObject(
+                                cell_element.GetChildObject(0)
+                            )
+                            match content_element.GetType(False):
+                                case "P":
+                                    cells.append(content_element.GetActualText())
+                                case "L":
+                                    pass  # list inside cell
+                                case "Table":
+                                    pass  # nested table inside cell
+                                case "Figure":
+                                    pass  # figure inside cell
+                                case "Lbl":
+                                    pass  # label
+                                case "Span":
+                                    pass  # inline text runs
+                                case _:
+                                    pass
+                    case "TD":
+                        # Only checking first element for simplification
+                        if cell_element.GetNumChildren() > 0 and cell_element.GetChildType(0) != kPdsStructChildElement:
+                            content_element = structure_tree.GetStructElementFromObject(cell_element.GetChildObject(0))
+                            match content_element.GetType(False):
+                                case "P":
+                                    cells.append(content_element.GetActualText())
+                                case "L":
+                                    pass  # list inside cell
+                                case "Table":
+                                    pass  # nested table inside cell
+                                case "Figure":
+                                    pass  # figure inside cell
+                                case "Lbl":
+                                    pass  # label
+                                case "Span":
+                                    pass  # inline text runs
+                                case _:
+                                    pass
+                    case _:
+                        pass
+            data.append(cells)
+
+        data = self._shorten_data(data, max_characters)
+
+        return json.dumps(data, separators=(",", ":"), ensure_ascii=False)
+
+    def _extract_list_lines(self, element: PdsStructElement) -> list[PdsStructElement]:
+        """
+        From List element extract all LBody elements for futher processing.
+
+        Args:
+            element (PdsStructElement): List element.
+
+        Result:
+            Returns list of all LBodies from table.
+        """
+        result: list[PdsStructElement] = []
+        count: int = element.GetNumChildren()
+        structure_tree: PdsStructTree = element.GetStructTree()
+        for i in range(0, count):
+            if element.GetChildType(i) != kPdsStructChildElement:
+                continue
+
+            child_element: PdsStructElement = structure_tree.GetStructElementFromObject(element.GetChildObject(i))
+            match child_element.GetType(False):
+                case "LI":
+                    grand_count: int = child_element.GetNumChildren()
+                    for j in range(0, grand_count):
+                        grandchild_element: PdsStructElement = structure_tree.GetStructElementFromObject(
+                            child_element.GetChildObject(j)
+                        )
+                        if grandchild_element.GetType(False) == "LBody":
+                            result.append(grandchild_element)
+
+                case _:
+                    # All other elements are ignore at they should not be there
+                    pass
+
+        return result
+
+    def _craft_structure_from_list(self, element: PdsStructElement, max_characters: int) -> str:
+        """
+        Take List element and return simplified JSON representation of it.
+
+        Args:
+            element (PdsStructElement): List element.
+            max_characters (int): Longest string that will be accepted.
+
+        Result:
+            JSON structure in form of string.
+        """
+        data: list[str] = []
+        structure_tree: PdsStructTree = element.GetStructTree()
+        lines: list[PdsStructElement] = self._extract_list_lines(element)
+
+        for line in lines:
+            # Only checking first element for simplification
+            if line.GetNumChildren() > 0 and line.GetChildType(0) != kPdsStructChildElement:
+                content_element: PdsStructElement = structure_tree.GetStructElementFromObject(line.GetChildObject(0))
+                match content_element.GetType(False):
+                    case "P":
+                        data.append(content_element.GetActualText())
+                    case "L":
+                        pass  # nested list inside line
+                    case "Table":
+                        pass  # table inside line
+                    case "Figure":
+                        pass  # figure inside line
+                    case "Note":
+                        pass  # footnote/annotation inside line
+                    case "Quote":
+                        pass  # quote
+                    case "Span":
+                        pass  # inline text runs
+                    case "Reference":
+                        pass  # reference
+                    case _:
+                        pass
+
+        data = self._shorten_data(data, max_characters)
+
+        return json.dumps(data, separators=(",", ":"), ensure_ascii=False)
+
+    def _shorten_data(self, data: Any, max_length: int) -> Any:
+        """
+        Universal function that ensures no member is longer that specified.
+
+        Args:
+            data (Any): Either list of string.
+            max_lenght (int): How many characters can be used.
+
+        Returns:
+            Changed structure that is under control.
+        """
+        if isinstance(data, str):
+            return data[:max_length]
+        if isinstance(data, list):
+            count: int = len(data)
+            new_max: int = int(max_length / count)
+            return [self._shorten_data(member, new_max) for member in data]
