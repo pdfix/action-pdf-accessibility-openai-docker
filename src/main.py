@@ -166,6 +166,7 @@ def run_subcommand(args) -> None:
         getattr(args, "overwrite", DEFAULT_OVERWRITE),
         tags,
         args.prompt,
+        6,  # TODO add to arguments (for now 3 before and 3 after if available)
     )
 
 
@@ -182,6 +183,7 @@ def process_cli(
     overwrite: bool,
     regex_tag: str,
     path_or_prompt: str,
+    surround_tags_count: int,
 ) -> None:
     """
     Processes a PDF or image file by extracting images,
@@ -200,6 +202,7 @@ def process_cli(
         overwrite (bool): Whether to overwrite previous alternate text.
         regex_tag (str): Regular expression for matching tags that should be processed.
         path_or_prompt (str): Either path to prompt, or prompt itself.
+        surround_tags_count (int): Number of tags included into prompt.
     """
     if not openai_key:
         raise ArgumentOpenAIKeyException()
@@ -208,7 +211,6 @@ def process_cli(
     prompt_creator: PromptCreator = PromptCreator(path_or_prompt, subcommand, is_xml_input)
 
     if input.lower().endswith(".pdf") and output.lower().endswith(".pdf"):
-        surround_tags_count: int = 2
         return process_pdf(
             subcommand,
             license_name,

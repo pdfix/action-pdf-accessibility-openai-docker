@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 import re
@@ -28,6 +29,15 @@ class PromptCreator:
         self.is_xml: bool = is_xml
         self.group: Optional[PdfTagGroup] = None
 
+    def clone(self) -> "PromptCreator":
+        """
+        Craft new copy in thread-safe way.
+
+        Returns:
+            Full copy of this class.
+        """
+        return copy.deepcopy(self)
+
     def add_surrounding(self, group: PdfTagGroup) -> None:
         """
         Saves surrounding of tag to be able to craft better prompt
@@ -37,18 +47,23 @@ class PromptCreator:
         """
         self.group = group
 
-    def craft_prompt(self) -> str:
+    def craft_prompt(self, lang: str, math_ml_version: str) -> str:
         """
         Use all available information to craft prompt for OpenAI.
+
+        Args:
+            lang (str): Language for the response.
+            math_ml_version (str): MathML version for the response.
 
         Returns:
             Crafted message for chatbot that should contain all information without image itself.
         """
         prompt: str = self._get_the_prompt()
+        formatted_prompt: str = prompt.format(lang=lang, math_ml_version=math_ml_version)
         if self.group:
-            prompt += f"\n{self._craft_json_of_surrounding_tags(self.group)}"
+            formatted_prompt += f"\n{self._craft_json_of_surrounding_tags(self.group)}"
 
-        return prompt
+        return formatted_prompt
 
     def _get_the_prompt(self) -> str:
         """
@@ -153,48 +168,25 @@ class PromptCreator:
         """
         tags_list: list = []
 
+        if len(group.tags) == 0:
+            return "[]"
+
         max_tag_characters: int = int(self.MAX_PROMPT_LENGT / 2 / len(group.tags))
 
         for index, element in enumerate(group.tags):
             tag_dict: dict = {}
             category: str = element.GetType(False)
             if index == group.target_index:
-                tag_dict[category] = f"This is position of {category} that you are generating."
+                tag_dict[category] = f"This is position of {category} that you are generating text for."
             else:
-                tag_dict[category] = self._craft_text_for_element(category, element, max_tag_characters)
+                tag_dict[category] = self._extract_text_from_element(element, max_tag_characters)
             tags_list.append(tag_dict)
 
         return json.dumps(tags_list, indent=1)
 
-    def _craft_text_for_element(self, category: str, element: PdsStructElement, max_tag_characters: int) -> str:
-        """
-        For each tag type decide what kind of text helps AI best.
-
-        Args:
-            category (str): Tag type.
-            element (PdsStructElement): Tag.
-            max_tag_characters (int): Max length of message.
-
-        Returns:
-            Text that AI will see about this tag.
-        """
-        match category:
-            case "Figure":
-                return element.GetAlt()[:max_tag_characters]
-            case "Formula":
-                return element.GetAlt()[:max_tag_characters]
-            case "L":
-                return self._craft_structure_from_list(element, max_tag_characters)
-            case "P":
-                return element.GetActualText()[:max_tag_characters]
-            case "Table":
-                return self._craft_structure_from_table(element, max_tag_characters)
-            case _:
-                return element.GetActualText()[:max_tag_characters]
-
     def _extract_table_rows(self, element: PdsStructElement) -> list[PdsStructElement]:
         """
-        From Table element extract all TR elements for futher processing.
+        From Table element extract all "TR" elements for futher processing.
 
         Args:
             element (PdsStructElement): Table element.
@@ -209,15 +201,21 @@ class PromptCreator:
             if element.GetChildType(i) != kPdsStructChildElement:
                 continue
 
-            child_element: PdsStructElement = structure_tree.GetStructElementFromObject(element.GetChildObject(i))
+            child_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
+                element.GetChildObject(i)
+            )
+            if child_element is None:
+                continue
             match child_element.GetType(False):
                 case "THead":
                     grand_count: int = child_element.GetNumChildren()
                     for j in range(0, grand_count):
-                        grandchild_element: PdsStructElement = structure_tree.GetStructElementFromObject(
+                        if child_element.GetChildType(j) != kPdsStructChildElement:
+                            continue
+                        grandchild_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
                             child_element.GetChildObject(j)
                         )
-                        if grandchild_element.GetType(False) == "TR":
+                        if grandchild_element and grandchild_element.GetType(False) == "TR":
                             result.append(grandchild_element)
 
                 case "TR":
@@ -226,8 +224,10 @@ class PromptCreator:
                 case "TBody":
                     grand_count = child_element.GetNumChildren()
                     for j in range(0, grand_count):
+                        if child_element.GetChildType(j) != kPdsStructChildElement:
+                            continue
                         grandchild_element = structure_tree.GetStructElementFromObject(child_element.GetChildObject(j))
-                        if grandchild_element.GetType(False) == "TR":
+                        if grandchild_element and grandchild_element.GetType(False) == "TR":
                             result.append(grandchild_element)
 
                 case _:
@@ -257,59 +257,67 @@ class PromptCreator:
             for i in range(0, count):
                 if row.GetChildType(i) != kPdsStructChildElement:
                     continue
-                cell_element: PdsStructElement = structure_tree.GetStructElementFromObject(row.GetChildObject(i))
+                cell_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
+                    row.GetChildObject(i)
+                )
+                if cell_element is None:
+                    continue
                 match cell_element.GetType(False):
                     case "TH":
-                        # Only checking first element for simplification
-                        if cell_element.GetNumChildren() > 0 and cell_element.GetChildType(0) != kPdsStructChildElement:
-                            content_element: PdsStructElement = structure_tree.GetStructElementFromObject(
-                                cell_element.GetChildObject(0)
-                            )
-                            match content_element.GetType(False):
-                                case "P":
-                                    cells.append(content_element.GetActualText())
-                                case "L":
-                                    pass  # list inside cell
-                                case "Table":
-                                    pass  # nested table inside cell
-                                case "Figure":
-                                    pass  # figure inside cell
-                                case "Lbl":
-                                    pass  # label
-                                case "Span":
-                                    pass  # inline text runs
-                                case _:
-                                    pass
+                        cell_text: str = self._extract_cell_text(structure_tree, cell_element, max_characters)
+                        if cell_text:
+                            cells.append(cell_text)
+                            continue
                     case "TD":
-                        # Only checking first element for simplification
-                        if cell_element.GetNumChildren() > 0 and cell_element.GetChildType(0) != kPdsStructChildElement:
-                            content_element = structure_tree.GetStructElementFromObject(cell_element.GetChildObject(0))
-                            match content_element.GetType(False):
-                                case "P":
-                                    cells.append(content_element.GetActualText())
-                                case "L":
-                                    pass  # list inside cell
-                                case "Table":
-                                    pass  # nested table inside cell
-                                case "Figure":
-                                    pass  # figure inside cell
-                                case "Lbl":
-                                    pass  # label
-                                case "Span":
-                                    pass  # inline text runs
-                                case _:
-                                    pass
+                        cell_text = self._extract_cell_text(structure_tree, cell_element, max_characters)
+                        if cell_text:
+                            cells.append(cell_text)
+                            continue
                     case _:
                         pass
             data.append(cells)
 
+        # Shortening each cell maximum characters to fit prompt into character limit
         data = self._shorten_data(data, max_characters)
 
         return json.dumps(data, separators=(",", ":"), ensure_ascii=False)
 
+    def _extract_cell_text(
+        self, structure_tree: PdsStructTree, cell_element: PdsStructElement, max_characters: int
+    ) -> str:
+        """
+        Extract text from "TH" or "TD" tags.
+
+        Args:
+            structure_tree (PdsStructTree): Structure tree.
+            element (PdsStructElement): Table element.
+            max_characters (int): Longest string that will be accepted.
+
+        Result:
+            Cell content as string.
+        """
+        # Simple Cell
+        cell_text: str = cell_element.GetText(max_characters)
+        if cell_text:
+            return cell_text
+        # Complex Cell
+        for j in range(0, cell_element.GetNumChildren()):
+            if cell_element.GetChildType(j) != kPdsStructChildElement:
+                continue
+            content_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
+                cell_element.GetChildObject(0)
+            )
+            if content_element is None:
+                continue
+            content: str = self._extract_text_from_element(content_element, max_characters)
+            if content:
+                return content
+        # Default
+        return ""
+
     def _extract_list_lines(self, element: PdsStructElement) -> list[PdsStructElement]:
         """
-        From List element extract all LBody elements for futher processing.
+        From List element extract all "LBody" elements for futher processing.
 
         Args:
             element (PdsStructElement): List element.
@@ -324,15 +332,21 @@ class PromptCreator:
             if element.GetChildType(i) != kPdsStructChildElement:
                 continue
 
-            child_element: PdsStructElement = structure_tree.GetStructElementFromObject(element.GetChildObject(i))
+            child_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
+                element.GetChildObject(i)
+            )
+            if child_element is None:
+                continue
             match child_element.GetType(False):
                 case "LI":
                     grand_count: int = child_element.GetNumChildren()
                     for j in range(0, grand_count):
-                        grandchild_element: PdsStructElement = structure_tree.GetStructElementFromObject(
+                        if child_element.GetChildType(j) != kPdsStructChildElement:
+                            continue
+                        grandchild_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
                             child_element.GetChildObject(j)
                         )
-                        if grandchild_element.GetType(False) == "LBody":
+                        if grandchild_element and grandchild_element.GetType(False) == "LBody":
                             result.append(grandchild_element)
 
                 case _:
@@ -357,29 +371,25 @@ class PromptCreator:
         lines: list[PdsStructElement] = self._extract_list_lines(element)
 
         for line in lines:
-            # Only checking first element for simplification
-            if line.GetNumChildren() > 0 and line.GetChildType(0) != kPdsStructChildElement:
-                content_element: PdsStructElement = structure_tree.GetStructElementFromObject(line.GetChildObject(0))
-                match content_element.GetType(False):
-                    case "P":
-                        data.append(content_element.GetActualText())
-                    case "L":
-                        pass  # nested list inside line
-                    case "Table":
-                        pass  # table inside line
-                    case "Figure":
-                        pass  # figure inside line
-                    case "Note":
-                        pass  # footnote/annotation inside line
-                    case "Quote":
-                        pass  # quote
-                    case "Span":
-                        pass  # inline text runs
-                    case "Reference":
-                        pass  # reference
-                    case _:
-                        pass
+            # Simple list item:
+            line_text: str = line.GetText(max_characters)
+            if line_text:
+                data.append(line_text)
+                continue
+            # Complex list item:
+            for index in range(0, line.GetNumChildren()):
+                if line.GetChildType(index) != kPdsStructChildElement:
+                    continue
+                content_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
+                    line.GetChildObject(index)
+                )
+                if content_element is None:
+                    continue
+                content: str = self._extract_text_from_element(content_element, max_characters)
+                if content:
+                    data.append(content)
 
+        # Shortening each cell maximum characters to fit prompt into character limit
         data = self._shorten_data(data, max_characters)
 
         return json.dumps(data, separators=(",", ":"), ensure_ascii=False)
@@ -399,5 +409,118 @@ class PromptCreator:
             return data[:max_length]
         if isinstance(data, list):
             count: int = len(data)
+            if count < 1:
+                return []
             new_max: int = int(max_length / count)
             return [self._shorten_data(member, new_max) for member in data]
+
+    def _extract_text_from_element(self, element: PdsStructElement, max_characters: int) -> str:
+        """
+        For given tag extract text for AI.
+
+        Args:
+            element (PdsStructElement): Tag.
+            max_characters (int): AI has character limitation for prompt.
+
+        Returns:
+            Content of tag or something that helps AI understand what is inside.
+        """
+        match element.GetType(False):
+            # case "Annot":
+            #     return element.GetText(max_characters)
+            # case "Art":
+            #     return element.GetText(max_characters)
+            # case "Artifact":
+            #     return element.GetText(max_characters)
+            # case "Aside":
+            #     return element.GetText(max_characters)
+            # case "BibEntry":
+            #     return element.GetText(max_characters)
+            # case "BlockQuote":
+            #     return element.GetText(max_characters)
+            case "Caption":  # DONE
+                return element.GetText(max_characters)
+            # case "CellMissingHeader":
+            #     return element.GetText(max_characters)
+            # case "CellSpan":
+            #     return element.GetText(max_characters)
+            # case "Code":
+            #     return element.GetText(max_characters)
+            # case "FENote":
+            #     return element.GetText(max_characters)
+            case "Figure":
+                return element.GetAlt()[:max_characters]
+            # case "Form":
+            #     return element.GetText(max_characters)
+            # case "Formula":
+            #     return element.GetAlt()[:max_characters]
+            case "H":  # DONE
+                return element.GetText(max_characters)
+            case "H1":  # DONE
+                return element.GetText(max_characters)
+            case "H2":  # DONE
+                return element.GetText(max_characters)
+            case "H3":  # DONE
+                return element.GetText(max_characters)
+            case "H4":  # DONE
+                return element.GetText(max_characters)
+            case "H5":  # DONE
+                return element.GetText(max_characters)
+            case "H6":  # DONE
+                return element.GetText(max_characters)
+            case "H7":  # DONE
+                return element.GetText(max_characters)
+            case "H8":  # DONE
+                return element.GetText(max_characters)
+            # case "Index":
+            #     return element.GetText(max_characters)
+            case "L":
+                return self._craft_structure_from_list(element, max_characters)
+            # case "LBody":
+            #     return element.GetText(max_characters)
+            # case "LI":
+            #     return element.GetText(max_characters)
+            # case "Lbl":
+            #     return element.GetText(max_characters)
+            # case "Link":
+            #     return element.GetText(max_characters)
+            # case "Note":
+            #     return element.GetText(max_characters)
+            case "P":  # DONE
+                return element.GetText(max_characters)
+            # case "Quote":
+            #     return element.GetText(max_characters)
+            # case "Reference":
+            #     return element.GetText(max_characters)
+            # case "Ruby":
+            #     return element.GetText(max_characters)
+            # case "Span":
+            #     return element.GetText(max_characters)
+            # case "TBody":
+            #     return element.GetText(max_characters)
+            # case "TD":
+            #     return element.GetText(max_characters)
+            # case "TFoot":
+            #     return element.GetText(max_characters)
+            # case "TH":
+            #     return element.GetText(max_characters)
+            # case "THead":
+            #     return element.GetText(max_characters)
+            # case "TOC":
+            #     return element.GetText(max_characters)
+            # case "TOCI":
+            #     return element.GetText(max_characters)
+            # case "TR":
+            #     return element.GetText(max_characters)
+            case "Table":
+                return self._craft_structure_from_table(element, max_characters)
+            # case "Title":
+            #     return element.GetText(max_characters)
+            case _:
+                debug_text: str = f"For '{element.GetType(False)}' Tag:"
+                debug_text += f"\nalt text: {element.GetAlt()}"
+                debug_text += f"\nactual text: {element.GetActualText()}"
+                debug_text += f"\ntext: {element.GetText(max_characters)}"
+                debug_text += f"\ntitle: {element.GetTitle()}"
+                print(debug_text)
+                return ""

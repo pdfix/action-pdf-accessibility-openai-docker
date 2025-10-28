@@ -94,7 +94,9 @@ def process_pdf(
     if struct_tree is None:
         raise PdfixNoTagsException(pdfix)
 
-    child_element: PdsStructElement = struct_tree.GetStructElementFromObject(struct_tree.GetChildObject(0))
+    child_element: Optional[PdsStructElement] = struct_tree.GetStructElementFromObject(struct_tree.GetChildObject(0))
+    if child_element is None:
+        raise PdfixNoTagsException(pdfix)
     try:
         groups: list[PdfTagGroup] = create_groups_of_tags_recursively(child_element, regex_tag, surround_tags_count)
         # for elem in items:
@@ -217,10 +219,9 @@ def process_struct_element(
         #     bf.write(data)
 
         print(f"Talking to OpenAI for {id} ...")
-        prompt_creator.add_surrounding(group)
-        response: Choice = openai_prompt_with_image(
-            base64_image, openai_key, model, lang, math_ml_version, prompt_creator
-        )
+        prompt: PromptCreator = prompt_creator.clone()
+        prompt.add_surrounding(group)
+        response: Choice = openai_prompt_with_image(base64_image, openai_key, model, lang, math_ml_version, prompt)
 
         # print(response.message.content)
         content: Optional[str] = response.message.content

@@ -28,8 +28,7 @@ def openai_prompt_with_image(
         timeout=httpx.Timeout(None, connect=10, read=60, write=30),
     )
 
-    prompt: str = prompt_creator.craft_prompt()
-    formatted_prompt: str = prompt.format(lang=lang, math_ml_version=math_ml_version)
+    formatted_prompt: str = prompt_creator.craft_prompt(lang, math_ml_version)
 
     try:
         response: ChatCompletion = client.chat.completions.create(
@@ -89,8 +88,7 @@ def openai_prompt_with_xml(
         timeout=httpx.Timeout(None, connect=10, read=60, write=30),
     )
 
-    prompt: str = prompt_creator.craft_prompt()
-    formatted_prompt: str = prompt.format(lang=lang, math_ml_version="")
+    formatted_prompt: str = prompt_creator.craft_prompt(lang, "")
 
     try:
         response: ChatCompletion = client.chat.completions.create(
