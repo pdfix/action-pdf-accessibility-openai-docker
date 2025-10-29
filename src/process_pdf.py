@@ -1,5 +1,5 @@
 import base64
-import sys
+import logging
 from concurrent.futures import ThreadPoolExecutor
 from typing import Optional
 
@@ -23,6 +23,7 @@ from exceptions import (
     PdfixInitializeException,
     PdfixNoTagsException,
 )
+from logger import get_logger
 from page_renderer import render_page
 from pdf_tag_group import PdfTagGroup
 from prompt import PromptCreator
@@ -35,6 +36,8 @@ from utils_sdk import (
     set_associated_file_math_ml,
     set_table_summary,
 )
+
+logger: logging.Logger = get_logger()
 
 
 def process_pdf(
@@ -179,7 +182,7 @@ def process_struct_element(
 
         # get the object page number (it may be written in child objects)
         if page_num == -1:
-            print(f"Skipping [{id}] tag that matches the search criteria but can't determine the page number")
+            logger.info(f"Skipping [{id}] tag that matches the search criteria but can't determine the page number")
             return
 
         id = f"{element_type} [obj: {element_object_id}, id: {element_id}, page: {page_num + 1}]"
@@ -193,23 +196,23 @@ def process_struct_element(
 
         # check bounding box
         if bbox.left == bbox.right or bbox.top == bbox.bottom:
-            print(f"Skipping [{id}] tag that matches the search criteria but can't determine the bounding box")
+            logger.info(f"Skipping [{id}] tag that matches the search criteria but can't determine the bounding box")
             return
 
-        print((f"Processing {id} tag matches the search criteria ..."))
+        logger.info((f"Processing {id} tag matches the search criteria ..."))
 
         if subcommand == "generate-alt-text":
             orginal_alternate_text: str = element.GetAlt()
             if not overwrite and orginal_alternate_text:
-                print(f"Alternate text already exists for {id}")
+                logger.info(f"Alternate text already exists for {id}")
                 return
         elif subcommand == "generate-table-summary":
             if check_if_table_summary_exists(element):
-                print(f"Table summary already exists for {id}")
+                logger.info(f"Table summary already exists for {id}")
                 return
         # elif subcommand == "generate-mathml":
         #   if element.GetDictionary("AF"):
-        #       print((f"MathML already exists for {id}"))
+        #       logger.info((f"MathML already exists for {id}"))
         #       return
 
         data: bytearray = render_page(pdfix, document, page_num, bbox, 1)
@@ -218,27 +221,26 @@ def process_struct_element(
         # with open(img, "wb") as bf:
         #     bf.write(data)
 
-        print(f"Talking to OpenAI for {id} ...")
+        logger.info(f"Talking to OpenAI for {id} ...")
         prompt: PromptCreator = prompt_creator.clone()
         prompt.add_surrounding(group)
         response: Choice = openai_prompt_with_image(base64_image, openai_key, model, lang, math_ml_version, prompt)
 
-        # print(response.message.content)
         content: Optional[str] = response.message.content
         if not content:
-            print(f"No alternate text generated for {id}")
+            logger.info(f"No text generated for {id}")
             return
 
         if subcommand == "generate-alt-text":
             set_alternate_text(element, content)
-            print(f"Alternate text set for {id} tag")
+            logger.info(f"Alternate text set for {id} tag")
         elif subcommand == "generate-table-summary":
             set_table_summary(element, content)
-            print(f"Table summary set for {id} tag")
+            logger.info(f"Table summary set for {id} tag")
         elif subcommand == "generate-mathml":
             content = add_mathml_metadata(content)
             set_associated_file_math_ml(element, content, math_ml_version)
-            print(f"MathML set for {id} tag")
+            logger.info(f"MathML set for {id} tag")
         else:
             raise ArgumentUnknownCommandException(subcommand)
 
@@ -246,4 +248,4 @@ def process_struct_element(
         raise
     except Exception as e:
         # Write error and continue to other element
-        print(f"Error: {str(e)}", file=sys.stderr)
+        logger.exception(f"Unexpected exception for [{id}]: {str(e)}")

@@ -1,5 +1,6 @@
 import copy
 import json
+import logging
 import os
 import re
 from pathlib import Path
@@ -8,7 +9,10 @@ from typing import Any, Optional
 from pdfixsdk import PdsStructElement, PdsStructTree, kPdsStructChildElement
 
 from exceptions import ArgumentUnknownCommandException
+from logger import get_logger
 from pdf_tag_group import PdfTagGroup
+
+logger: logging.Logger = get_logger()
 
 
 class PromptCreator:
@@ -522,5 +526,5 @@ class PromptCreator:
                 debug_text += f"\nactual text: {element.GetActualText()}"
                 debug_text += f"\ntext: {element.GetText(max_characters)}"
                 debug_text += f"\ntitle: {element.GetTitle()}"
-                print(debug_text)
+                logger.debug(debug_text)
                 return ""

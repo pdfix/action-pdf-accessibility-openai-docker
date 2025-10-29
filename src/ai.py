@@ -1,9 +1,14 @@
+import logging
+
 import httpx
 from openai import AuthenticationError, OpenAI
 from openai.types.chat.chat_completion import ChatCompletion, Choice
 
 from exceptions import OpenAIAuthenticationException
+from logger import get_logger
 from prompt import PromptCreator
+
+logger: logging.Logger = get_logger()
 
 
 def openai_prompt_with_image(
@@ -55,16 +60,20 @@ def openai_prompt_with_image(
     except AuthenticationError as e:
         raise OpenAIAuthenticationException(e.message)
 
-    # print(f" Responses: {len(response.choices)}")
-    # for choice in response.choices:
-    #     print(f"========== choice {choice.index + 1} =========")
-    #     print(choice.message.to_json)
-    #     print("==============================")
+    logger.debug(f" Responses: {len(response.choices)}")
+    for choice in response.choices:
+        logger.debug(f"========== choice {choice.index + 1} =========")
+        logger.debug(choice.message.to_json)
+        logger.debug("==============================")
 
     # Test if ok
     client.close()
 
-    return response.choices[0]
+    first_choice: Choice = response.choices[0]
+
+    logger.debug(f"PROMPT:\n{formatted_prompt}\nRESPONSE:\n{first_choice.message.content}")
+
+    return first_choice
 
 
 def openai_prompt_with_xml(
@@ -114,4 +123,8 @@ def openai_prompt_with_xml(
     # Test if ok
     client.close()
 
-    return response.choices[0]
+    first_choice: Choice = response.choices[0]
+
+    logger.debug(f"PROMPT:\n{formatted_prompt}\nRESPONSE:\n{first_choice.message.content}")
+
+    return first_choice
