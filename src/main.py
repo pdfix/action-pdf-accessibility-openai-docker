@@ -26,6 +26,7 @@ from prompt import PromptCreator
 DEFAULT_LANG = "en"
 DEFAULT_MATHML_VERSION = "mathml-4"
 DEFAULT_OVERWRITE = False
+DEFAULT_TAGS_COUNT = 2
 
 logger = get_logger()
 
@@ -116,6 +117,13 @@ def set_arguments(
                 )
             case "tags":
                 parser.add_argument("--tags", type=str, help="Tag names to process")
+            case "tags-count":
+                parser.add_argument(
+                    "--tags-count",
+                    type=int,
+                    default=DEFAULT_TAGS_COUNT,
+                    help="How many surrounding tags information is used in prompt (works only with pdf files).",
+                )
 
 
 def run_config_subcommand(args) -> None:
@@ -168,7 +176,7 @@ def run_subcommand(args) -> None:
         getattr(args, "overwrite", DEFAULT_OVERWRITE),
         tags,
         args.prompt,
-        6,  # TODO add to arguments (for now 3 before and 3 after if available)
+        getattr(args, "tags_count", DEFAULT_TAGS_COUNT),
     )
 
 
@@ -262,6 +270,7 @@ def main():
             "tags",
             "overwrite",
             "prompt",
+            "tags-count",
         ],
     )
     parser_generate_table_summary.set_defaults(func=run_subcommand)
@@ -285,6 +294,7 @@ def main():
             "tags",
             "overwrite",
             "prompt",
+            "tags-count",
         ],
         True,
         "PDF or image or XML",
@@ -309,6 +319,7 @@ def main():
             "mathml-version",
             "overwrite",
             "prompt",
+            "tags-count",
         ],
     )
     parser_generate_mathml.set_defaults(func=run_subcommand)

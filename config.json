@@ -10,7 +10,7 @@
             "icon": "add_photo_alternate",
             "category": "Tags",
             "local": "False",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt_path}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt_path}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
                     "name": "input_pdf",
@@ -165,6 +165,13 @@
                     "desc": "Tag name defined by a regular expression",
                     "type": "string",
                     "value": "Figure|Formula"
+                },
+                {
+                    "title": "Surrounding Tag Count",
+                    "name": "tag_count",
+                    "desc": "How many surrounding tags are included into prompt for AI. For Number 2 1 before and 1 after is taken. Custom prompt does not fill surrounding tags.",
+                    "type": "int",
+                    "value": "2"
                 }
             ],
             "errors": {
@@ -527,7 +534,7 @@
             "icon": "table_view",
             "category": "Table",
             "local": "False",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt_path}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --name \"${license_name}\" --key \"${license_key}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt_path}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
                     "name": "input_pdf",
@@ -682,6 +689,13 @@
                     "name": "overwrite",
                     "type": "bool",
                     "value": false
+                },
+                {
+                    "title": "Surrounding Tag Count",
+                    "name": "tag_count",
+                    "desc": "How many surrounding tags are included into prompt for AI. For Number 2 1 before and 1 after is taken. Custom prompt does not fill surrounding tags.",
+                    "type": "int",
+                    "value": "2"
                 }
             ],
             "errors": {
@@ -876,7 +890,7 @@
             "icon": "calculate",
             "category": "Tags",
             "local": "False",
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt_path}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\" --name \"${license_name}\" --key \"${license_key}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt_path}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
                     "name": "input_pdf",
@@ -970,6 +984,13 @@
                             "value": "mathml-4"
                         }
                     ]
+                },
+                {
+                    "title": "Surrounding Tag Count",
+                    "name": "tag_count",
+                    "desc": "How many surrounding tags are included into prompt for AI. For Number 2 1 before and 1 after is taken. Custom prompt does not fill surrounding tags.",
+                    "type": "int",
+                    "value": "2"
                 }
             ],
             "errors": {
