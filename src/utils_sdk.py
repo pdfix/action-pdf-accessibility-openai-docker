@@ -12,6 +12,7 @@ from pdfixsdk.Pdfix import (
     PdsStream,
     PdsStructElement,
     PdsStructTree,
+    PsAccountAuthorization,
     kPdsStructChildElement,
 )
 
@@ -29,7 +30,7 @@ def authorize_sdk(pdfix: Pdfix, license_name: Optional[str], license_key: Option
         license_key (string): Pdfix sdk license key
     """
     if license_name and license_key:
-        authorization = pdfix.GetAccountAuthorization()
+        authorization: PsAccountAuthorization = pdfix.GetAccountAuthorization()
         if not authorization.Authorize(license_name, license_key):
             raise PdfixAuthorizationException(pdfix)
     elif license_key:
@@ -61,11 +62,17 @@ def create_groups_of_tags_recursively(
     tags_from_left: int = int(surround_tags_count / 2)
     result: list[PdfTagGroup] = []
     count: int = element.GetNumChildren()
-    structure_tree: PdsStructTree = element.GetStructTree()
+    structure_tree: Optional[PdsStructTree] = element.GetStructTree()
+    if structure_tree is None:
+        return result
+
     for i in range(0, count):
         if element.GetChildType(i) != kPdsStructChildElement:
             continue
-        child_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(element.GetChildObject(i))
+        child_object: Optional[PdsObject] = element.GetChildObject(i)
+        if child_object is None:
+            continue
+        child_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(child_object)
         if child_element is None:
             continue
         if re.match(regex_tag, child_element.GetType(True)) or re.match(regex_tag, child_element.GetType(False)):
@@ -87,9 +94,18 @@ def set_associated_file_math_ml(element: PdsStructElement, math_ml: str, math_ml
         math_ml_version (str): The MathML version to set.
     """
     # create mathML object
-    struct_tree: PdsStructTree = element.GetStructTree()
-    document: PdfDoc = struct_tree.GetDoc()
-    associated_file_data: PdsDictionary = document.CreateDictObject(True)
+    struct_tree: Optional[PdsStructTree] = element.GetStructTree()
+    if struct_tree is None:
+        print("Not expected problem with element not retrieving structure tree")
+        return
+    document: Optional[PdfDoc] = struct_tree.GetDoc()
+    if document is None:
+        print("Not expected problem with structure tree not retrieving document")
+        return
+    associated_file_data: Optional[PdsDictionary] = document.CreateDictObject(True)
+    if associated_file_data is None:
+        print("Not expected problem with document not able to create dictionary")
+        return
     associated_file_data.PutName("Type", "Filespec")
     associated_file_data.PutName("AFRelationshhip", "Supplement")
     associated_file_data.PutString("F", math_ml_version)
@@ -97,10 +113,19 @@ def set_associated_file_math_ml(element: PdsStructElement, math_ml: str, math_ml
     associated_file_data.PutString("Desc", math_ml_version)
 
     raw_data: ctypes.Array[ctypes.c_ubyte] = bytearray_to_data(bytearray(math_ml.encode("utf-8")))
-    file_dictionary: PdsDictionary = document.CreateDictObject(False)
-    file_stream: PdsStream = document.CreateStreamObject(True, file_dictionary, raw_data, len(math_ml))
+    file_dictionary: Optional[PdsDictionary] = document.CreateDictObject(False)
+    if file_dictionary is None:
+        print("Not expected problem with document not able to create dictionary")
+        return
+    file_stream: Optional[PdsStream] = document.CreateStreamObject(True, file_dictionary, raw_data, len(math_ml))
+    if file_stream is None:
+        print("Not expected problem with document not able to create file stream")
+        return
 
-    ef_dict: PdsDictionary = associated_file_data.PutDict("EF")
+    ef_dict: Optional[PdsDictionary] = associated_file_data.PutDict("EF")
+    if ef_dict is None:
+        print("Not expected problem with dictionary not able to create dictionary")
+        return
     ef_dict.Put("F", file_stream)
     ef_dict.Put("UF", file_stream)
 
@@ -130,17 +155,19 @@ def add_associated_file(element: PdsStructElement, associated_file_data: PdsDict
         associated_file_data (PdsDictionary): The associated file data to add.
     """
     element_object: PdsDictionary = PdsDictionary(element.GetObject().obj)
-    associated_file_dictionary: PdsDictionary = element_object.GetDictionary("AF")
+    associated_file_dictionary: Optional[PdsDictionary] = element_object.GetDictionary("AF")
     if associated_file_dictionary:
         # convert dict to an array
-        associated_file_array: PdsArray = GetPdfix().CreateArrayObject(False)
-        associated_file_array.Put(0, associated_file_dictionary.Clone(False))
-        element_object.Put("AF", associated_file_array)
+        associated_file_array: Optional[PdsArray] = GetPdfix().CreateArrayObject(False)
+        if associated_file_array:
+            associated_file_array.Put(0, associated_file_dictionary.Clone(False))
+            element_object.Put("AF", associated_file_array)
 
     associated_file_array = element_object.GetArray("AF")
     if not associated_file_array:
         associated_file_array = element_object.PutArray("AF")
-    associated_file_array.Put(associated_file_array.GetNumObjects(), associated_file_data)
+    if associated_file_array:
+        associated_file_array.Put(associated_file_array.GetNumObjects(), associated_file_data)
 
 
 def set_alternate_text(element: PdsStructElement, alternate_text: str) -> None:
@@ -179,9 +206,18 @@ def set_table_summary(element: PdsStructElement, table_summary: str) -> None:
     attribute_dictionary: Optional[PdsDictionary] = find_table_summary_attribute_dictionary(element)
 
     if not attribute_dictionary:
-        struct_tree: PdsStructTree = element.GetStructTree()
-        document: PdfDoc = struct_tree.GetDoc()
+        struct_tree: Optional[PdsStructTree] = element.GetStructTree()
+        if struct_tree is None:
+            print("Not expected problem with element not retrieving structure tree")
+            return
+        document: Optional[PdfDoc] = struct_tree.GetDoc()
+        if document is None:
+            print("Not expected problem with structure tree not retrieving document")
+            return
         attribute_dictionary = document.CreateDictObject(False)
+        if attribute_dictionary is None:
+            print("Not expected problem with document not able to create dictionary")
+            return
         attribute_dictionary.PutName("O", "Table")
         element.AddAttrObj(attribute_dictionary)
 
@@ -199,7 +235,7 @@ def find_table_summary_attribute_dictionary(element: PdsStructElement) -> Option
         The attribute dictionary for table summary, or None if not found.
     """
     for index in reversed(range(element.GetNumAttrObjects())):
-        attribute_object: PdsObject = element.GetAttrObject(index)
+        attribute_object: Optional[PdsObject] = element.GetAttrObject(index)
         if not attribute_object:
             continue
         attribute_item: PdsDictionary = PdsDictionary(attribute_object.obj)

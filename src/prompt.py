@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 from typing import Any, Optional
 
-from pdfixsdk import PdsStructElement, PdsStructTree, kPdsStructChildElement
+from pdfixsdk import PdsObject, PdsStructElement, PdsStructTree, kPdsStructChildElement
 
 from exceptions import ArgumentUnknownCommandException
 from logger import get_logger
@@ -17,7 +17,7 @@ logger: logging.Logger = get_logger()
 
 class PromptCreator:
     MAX_PROMPT_LENGT: int = 4000
-    IDEAL_PROMPT_LENGT: int = 300
+    # IDEAL_PROMPT_LENGT: int = 300
 
     def __init__(self, path_or_prompt: str, subcommand: str, is_xml: bool) -> None:
         """
@@ -200,24 +200,33 @@ class PromptCreator:
         """
         result: list[PdsStructElement] = []
         count: int = element.GetNumChildren()
-        structure_tree: PdsStructTree = element.GetStructTree()
+        structure_tree: Optional[PdsStructTree] = element.GetStructTree()
+        if structure_tree is None:
+            return result
+
         for i in range(0, count):
             if element.GetChildType(i) != kPdsStructChildElement:
                 continue
 
-            child_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
-                element.GetChildObject(i)
-            )
+            child_object: Optional[PdsObject] = element.GetChildObject(i)
+            if child_object is None:
+                continue
+
+            child_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(child_object)
             if child_element is None:
                 continue
+
             match child_element.GetType(False):
                 case "THead":
                     grand_count: int = child_element.GetNumChildren()
                     for j in range(0, grand_count):
                         if child_element.GetChildType(j) != kPdsStructChildElement:
                             continue
+                        grandchild_object: Optional[PdsObject] = child_element.GetChildObject(j)
+                        if grandchild_object is None:
+                            continue
                         grandchild_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
-                            child_element.GetChildObject(j)
+                            grandchild_object
                         )
                         if grandchild_element and grandchild_element.GetType(False) == "TR":
                             result.append(grandchild_element)
@@ -230,7 +239,10 @@ class PromptCreator:
                     for j in range(0, grand_count):
                         if child_element.GetChildType(j) != kPdsStructChildElement:
                             continue
-                        grandchild_element = structure_tree.GetStructElementFromObject(child_element.GetChildObject(j))
+                        grandchild_object = child_element.GetChildObject(j)
+                        if grandchild_object is None:
+                            continue
+                        grandchild_element = structure_tree.GetStructElementFromObject(grandchild_object)
                         if grandchild_element and grandchild_element.GetType(False) == "TR":
                             result.append(grandchild_element)
 
@@ -252,7 +264,9 @@ class PromptCreator:
             JSON structure in form of string.
         """
         data: list[list[str]] = []
-        structure_tree: PdsStructTree = element.GetStructTree()
+        structure_tree: Optional[PdsStructTree] = element.GetStructTree()
+        if structure_tree is None:
+            return "[]"
         rows: list[PdsStructElement] = self._extract_table_rows(element)
 
         for row in rows:
@@ -261,9 +275,10 @@ class PromptCreator:
             for i in range(0, count):
                 if row.GetChildType(i) != kPdsStructChildElement:
                     continue
-                cell_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
-                    row.GetChildObject(i)
-                )
+                cell_object: Optional[PdsObject] = row.GetChildObject(i)
+                if cell_object is None:
+                    continue
+                cell_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(cell_object)
                 if cell_element is None:
                     continue
                 match cell_element.GetType(False):
@@ -308,9 +323,10 @@ class PromptCreator:
         for j in range(0, cell_element.GetNumChildren()):
             if cell_element.GetChildType(j) != kPdsStructChildElement:
                 continue
-            content_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
-                cell_element.GetChildObject(0)
-            )
+            content_object: Optional[PdsObject] = cell_element.GetChildObject(0)
+            if content_object is None:
+                continue
+            content_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(content_object)
             if content_element is None:
                 continue
             content: str = self._extract_text_from_element(content_element, max_characters)
@@ -331,14 +347,18 @@ class PromptCreator:
         """
         result: list[PdsStructElement] = []
         count: int = element.GetNumChildren()
-        structure_tree: PdsStructTree = element.GetStructTree()
+        structure_tree: Optional[PdsStructTree] = element.GetStructTree()
+        if structure_tree is None:
+            return result
+
         for i in range(0, count):
             if element.GetChildType(i) != kPdsStructChildElement:
                 continue
 
-            child_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
-                element.GetChildObject(i)
-            )
+            child_object: Optional[PdsObject] = element.GetChildObject(i)
+            if child_object is None:
+                continue
+            child_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(child_object)
             if child_element is None:
                 continue
             match child_element.GetType(False):
@@ -347,8 +367,11 @@ class PromptCreator:
                     for j in range(0, grand_count):
                         if child_element.GetChildType(j) != kPdsStructChildElement:
                             continue
+                        grandchild_object: Optional[PdsObject] = child_element.GetChildObject(j)
+                        if grandchild_object is None:
+                            continue
                         grandchild_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
-                            child_element.GetChildObject(j)
+                            grandchild_object
                         )
                         if grandchild_element and grandchild_element.GetType(False) == "LBody":
                             result.append(grandchild_element)
@@ -371,7 +394,9 @@ class PromptCreator:
             JSON structure in form of string.
         """
         data: list[str] = []
-        structure_tree: PdsStructTree = element.GetStructTree()
+        structure_tree: Optional[PdsStructTree] = element.GetStructTree()
+        if structure_tree is None:
+            return "[]"
         lines: list[PdsStructElement] = self._extract_list_lines(element)
 
         for line in lines:
@@ -384,9 +409,10 @@ class PromptCreator:
             for index in range(0, line.GetNumChildren()):
                 if line.GetChildType(index) != kPdsStructChildElement:
                     continue
-                content_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
-                    line.GetChildObject(index)
-                )
+                content_object: Optional[PdsObject] = line.GetChildObject(index)
+                if content_object is None:
+                    continue
+                content_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(content_object)
                 if content_element is None:
                     continue
                 content: str = self._extract_text_from_element(content_element, max_characters)

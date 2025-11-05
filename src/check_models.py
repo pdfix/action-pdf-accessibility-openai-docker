@@ -1,6 +1,7 @@
 import base64
 import sys
 from io import BytesIO
+from typing import Any
 
 from openai import OpenAI
 from PIL import Image
@@ -41,7 +42,7 @@ api_key: str = sys.argv[1]
 client: OpenAI = OpenAI(api_key=api_key)
 dummy_image: str = create_dummy_image_base64()
 
-models = client.models.list()
+models: Any = client.models.list()
 supported_models: list[str] = []
 
 for model in models.data:

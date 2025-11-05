@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pdfixsdk import PdsStructElement, PdsStructTree
+from pdfixsdk import PdsObject, PdsStructElement, PdsStructTree
 
 
 class PdfTagGroup:
@@ -23,13 +23,17 @@ class PdfTagGroup:
         # - tags_for_left points into position in new list otherwise
         self.target_index: int = min(tags_for_left, target_index)
 
-        structure_tree: PdsStructTree = element.GetStructTree()
+        structure_tree: Optional[PdsStructTree] = element.GetStructTree()
+
+        if not structure_tree:
+            return
 
         for index in range(element.GetNumChildren()):
             if index < target_index - tags_for_left or index > target_index + tags_for_left:
                 continue
-            child_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(
-                element.GetChildObject(index)
-            )
+            child_object: Optional[PdsObject] = element.GetChildObject(index)
+            if not child_object:
+                continue
+            child_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(child_object)
             if child_element:
                 self.tags.append(child_element)

@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
-from constants import IMAGE_FILE_EXT_REGEX, SUPPORTED_IMAGE_EXT
+from constants import CONFIG_FILE, IMAGE_FILE_EXT_REGEX, SUPPORTED_IMAGE_EXT
 from exceptions import (
     EC_ARG_GENERAL,
     MESSAGE_ARG_GENERAL,
@@ -130,7 +130,7 @@ def get_pdfix_config(path: str) -> None:
     Args:
         path (string): Destination path for config.json file
     """
-    config_path: Path = Path(__file__).parent.joinpath("../config.json").resolve()
+    config_path: Path = Path(__file__).parent.parent.joinpath(CONFIG_FILE).resolve()
 
     with open(config_path, "r", encoding="utf-8") as file:
         if path is None:

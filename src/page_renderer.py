@@ -11,6 +11,7 @@ from pdfixsdk import (
     PdfPageRenderParams,
     PdfPageView,
     PdfRect,
+    PsImage,
     PsMemoryStream,
     kImageDIBFormatArgb,
     kImageFormatJpg,
@@ -35,12 +36,12 @@ def render_page(pdfix: Pdfix, doc: PdfDoc, page_num: int, bbox: PdfRect, zoom: f
     Returns:
         The rendered image data as a bytearray.
     """
-    page: PdfPage = doc.AcquirePage(page_num)
+    page: Optional[PdfPage] = doc.AcquirePage(page_num)
     if page is None:
         raise PdfixFailedToRenderException(pdfix, "Unable to acquire the page")
 
     try:
-        page_view: PdfPageView = page.AcquirePageView(zoom, kRotate0)
+        page_view: Optional[PdfPageView] = page.AcquirePageView(zoom, kRotate0)
         if page_view is None:
             raise PdfixFailedToRenderException(pdfix, "Unable to acquire page view")
 
@@ -51,20 +52,22 @@ def render_page(pdfix: Pdfix, doc: PdfDoc, page_num: int, bbox: PdfRect, zoom: f
             render_parameters: PdfPageRenderParams = PdfPageRenderParams()
             render_parameters.matrix = page_view.GetDeviceMatrix()
             render_parameters.clip_box = bbox
-            render_parameters.image = pdfix.CreateImage(
+            ps_image: Optional[PsImage] = pdfix.CreateImage(
                 rect.right - rect.left,
                 rect.bottom - rect.top,
                 kImageDIBFormatArgb,
             )
-            if render_parameters.image is None:
+            if ps_image is None:
                 raise PdfixFailedToRenderException(pdfix, "Unable to create the image")
+
+            render_parameters.image = ps_image
 
             try:
                 if not page.DrawContent(render_parameters):
                     raise PdfixFailedToRenderException(pdfix, "Unable to draw the content")
 
                 # save image to stream and data
-                memory_stream: PsMemoryStream = pdfix.CreateMemStream()
+                memory_stream: Optional[PsMemoryStream] = pdfix.CreateMemStream()
                 if memory_stream is None:
                     raise PdfixFailedToRenderException(pdfix, "Unable to create memory stream")
 

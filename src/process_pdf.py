@@ -9,6 +9,7 @@ from pdfixsdk.Pdfix import (
     PdfDoc,
     Pdfix,
     PdfRect,
+    PdsObject,
     PdsStructElement,
     PdsStructTree,
     kSaveFull,
@@ -82,22 +83,26 @@ def process_pdf(
         prompt_creator (PromptCreator): Prompt creator for OpenAI.
         surround_tags_count (int): Number of surrounding tags to include for context.
     """
-    pdfix: Pdfix = GetPdfix()
+    pdfix: Optional[Pdfix] = GetPdfix()
     if pdfix is None:
         raise PdfixInitializeException()
 
     authorize_sdk(pdfix, license_name, license_key)
 
     # Open doc
-    doc: PdfDoc = pdfix.OpenDoc(input_path, "")
+    doc: Optional[PdfDoc] = pdfix.OpenDoc(input_path, "")
     if doc is None:
         raise PdfixFailedToOpenException(pdfix, input_path)
 
-    struct_tree: PdsStructTree = doc.GetStructTree()
+    struct_tree: Optional[PdsStructTree] = doc.GetStructTree()
     if struct_tree is None:
         raise PdfixNoTagsException(pdfix)
 
-    child_element: Optional[PdsStructElement] = struct_tree.GetStructElementFromObject(struct_tree.GetChildObject(0))
+    child_object: Optional[PdsObject] = struct_tree.GetChildObject(0)
+    if child_object is None:
+        raise PdfixNoTagsException(pdfix)
+
+    child_element: Optional[PdsStructElement] = struct_tree.GetStructElementFromObject(child_object)
     if child_element is None:
         raise PdfixNoTagsException(pdfix)
     try:
