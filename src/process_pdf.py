@@ -19,6 +19,7 @@ from ai import openai_prompt_with_image
 from exceptions import (
     ArgumentUnknownCommandException,
     ExpectedException,
+    OpenAIAuthenticationException,
     PdfixFailedToOpenException,
     PdfixFailedToSaveException,
     PdfixInitializeException,
@@ -105,30 +106,50 @@ def process_pdf(
     child_element: Optional[PdsStructElement] = struct_tree.GetStructElementFromObject(child_object)
     if child_element is None:
         raise PdfixNoTagsException(pdfix)
+
+    groups: list[PdfTagGroup] = create_groups_of_tags_recursively(child_element, regex_tag, surround_tags_count)
     try:
-        groups: list[PdfTagGroup] = create_groups_of_tags_recursively(child_element, regex_tag, surround_tags_count)
-        # for elem in items:
-        #     process_struct_e(elem, subcommand, openai_key, lang, mathml_version, overwrite)
-        with ThreadPoolExecutor(max_workers=10) as executor:
-            futures = [
-                executor.submit(
-                    process_struct_element,
-                    pdfix,
-                    group,
-                    subcommand,
-                    openai_key,
-                    model,
-                    lang,
-                    mathml_version,
-                    overwrite,
-                    prompt_creator,
-                )
-                for group in groups
-            ]
-        for future in futures:
-            future.result()  # Wait for completion (optional)
-    except Exception:
+        # Process first group if there is openai authentication error
+        process_struct_element(
+            pdfix, groups[0], subcommand, openai_key, model, lang, mathml_version, overwrite, prompt_creator
+        )
+    except OpenAIAuthenticationException:
         raise
+    except Exception:
+        pass
+    # for group in groups:
+    #     process_struct_element(pdfix, group, subcommand, openai_key, model, lang, mathml_version, overwrite,
+    #         prompt_creator)
+    exception: Optional[OpenAIAuthenticationException] = None
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        futures = [
+            executor.submit(
+                process_struct_element,
+                pdfix,
+                group,
+                subcommand,
+                openai_key,
+                model,
+                lang,
+                mathml_version,
+                overwrite,
+                prompt_creator,
+            )
+            # Skip first group as it was already processed
+            for group in groups[1:]
+        ]
+    for future in futures:
+        try:
+            # Wait for completion and catch exceptions
+            future.result()
+        except OpenAIAuthenticationException as e:
+            # Let other threads finish before throwing exception up
+            exception = e
+        except Exception:
+            pass
+
+    if exception:
+        raise exception
 
     if not doc.Save(output_path, kSaveFull):
         raise PdfixFailedToSaveException(pdfix, output_path)
@@ -249,8 +270,11 @@ def process_struct_element(
         else:
             raise ArgumentUnknownCommandException(subcommand)
 
-    except ExpectedException:
+    except OpenAIAuthenticationException:
         raise
+    except ExpectedException as ee:
+        # Write error and continue to other element
+        logger.exception(f"Expected exception for [{id}]: {str(ee)}")
     except Exception as e:
         # Write error and continue to other element
         logger.exception(f"Unexpected exception for [{id}]: {str(e)}")
