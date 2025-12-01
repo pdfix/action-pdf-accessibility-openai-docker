@@ -9,7 +9,7 @@
             "version": "v0.0.0",
             "icon": "add_photo_alternate",
             "category": "Tags",
-            "local": "False",
+            "local": false,
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt_path}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
@@ -198,7 +198,7 @@
             "icon": "add_photo_alternate",
             "category": "Tags",
             "subtype": "generate_alt_text_img_to_txt",
-            "local": "False",
+            "local": false,
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --model \"${model}\" --prompt \"${prompt_path}\" --lang \"${lang}\"",
             "args": [
                 {
@@ -366,7 +366,7 @@
             "icon": "add_photo_alternate",
             "category": "Tags",
             "subtype": "generate_alt_text_xml_to_txt",
-            "local": "False",
+            "local": false,
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_xml}\" -o \"${output_txt}\" --model \"${model}\" --prompt \"${prompt_path}\" --lang \"${lang}\"",
             "args": [
                 {
@@ -533,7 +533,7 @@
             "version": "v0.0.0",
             "icon": "table_view",
             "category": "Table",
-            "local": "False",
+            "local": false,
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt_path}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
@@ -722,7 +722,7 @@
             "icon": "table_view",
             "category": "Table",
             "subtype": "generate_table_summary_img_to_txt",
-            "local": "False",
+            "local": false,
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --model \"${model}\" --prompt \"${prompt_path}\" --lang \"${lang}\"",
             "args": [
                 {
@@ -889,7 +889,7 @@
             "version": "v0.0.0",
             "icon": "calculate",
             "category": "Tags",
-            "local": "False",
+            "local": false,
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt_path}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
@@ -1017,7 +1017,7 @@
             "icon": "calculate",
             "category": "Tags",
             "subtype": "generate_formula_mathml_img_to_xml",
-            "local": "False",
+            "local": false,
             "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_xml}\" --model \"${model}\" --prompt \"${prompt_path}\" --mathml-version \"${mathml_version}\"",
             "args": [
                 {
