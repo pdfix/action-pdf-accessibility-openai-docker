@@ -1,4 +1,6 @@
 CONFIG_FILE = "config.json"
-DOCKER_IMAGE = "pdfix/pdf-accessibility-openai"
+DOCKER_NAMESPACE = "pdfix"
+DOCKER_REPOSITORY = "pdf-accessibility-openai"
+DOCKER_IMAGE = f"{DOCKER_NAMESPACE}/{DOCKER_REPOSITORY}"
 IMAGE_FILE_EXT_REGEX = r"\.(jpg|jpeg|png|bmp)$"
 SUPPORTED_IMAGE_EXT = ".jpg .jpeg .png .bmp"
