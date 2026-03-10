@@ -187,7 +187,8 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate."
+                "30": "OpenAI Api Key failed to authenticate.",
+                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
             }
         },
         {
@@ -355,7 +356,8 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate."
+                "30": "OpenAI Api Key failed to authenticate.",
+                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
             }
         },
         {
@@ -523,7 +525,8 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate."
+                "30": "OpenAI Api Key failed to authenticate.",
+                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
             }
         },
         {
@@ -711,7 +714,8 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate."
+                "30": "OpenAI Api Key failed to authenticate.",
+                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
             }
         },
         {
@@ -879,7 +883,8 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate."
+                "30": "OpenAI Api Key failed to authenticate.",
+                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
             }
         },
         {
@@ -1006,7 +1011,8 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate."
+                "30": "OpenAI Api Key failed to authenticate.",
+                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
             }
         },
         {
@@ -1120,7 +1126,8 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate."
+                "30": "OpenAI Api Key failed to authenticate.",
+                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
             }
         }
     ]

@@ -1,10 +1,10 @@
 import logging
 
 import httpx
-from openai import AuthenticationError, OpenAI
+from openai import AuthenticationError, OpenAI, RateLimitError
 from openai.types.chat.chat_completion import ChatCompletion, Choice
 
-from exceptions import OpenAIAuthenticationException
+from exceptions import OpenAIAuthenticationException, OpenAIRateLimitException
 from logger import get_logger
 from prompt import PromptCreator
 
@@ -59,6 +59,8 @@ def openai_prompt_with_image(
         )
     except AuthenticationError as e:
         raise OpenAIAuthenticationException(e.message)
+    except RateLimitError as e:
+        raise OpenAIRateLimitException(e.message)
 
     logger.debug(f" Responses: {len(response.choices)}")
     for choice in response.choices:
@@ -119,6 +121,8 @@ def openai_prompt_with_xml(
         )
     except AuthenticationError as e:
         raise OpenAIAuthenticationException(e.message)
+    except RateLimitError as e:
+        raise OpenAIRateLimitException(e.message)
 
     # Test if ok
     client.close()
