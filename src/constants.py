@@ -3,4 +3,7 @@ DOCKER_NAMESPACE: str = "pdfix"
 DOCKER_REPOSITORY: str = "pdf-accessibility-openai"
 DOCKER_IMAGE: str = f"{DOCKER_NAMESPACE}/{DOCKER_REPOSITORY}"
 IMAGE_FILE_EXT_REGEX: str = r"\.(jpg|jpeg|png|bmp)$"
+PROGRESS_FIRST_STEP: int = 50  # Initialize (open document, find out elements to process, etc.)
+PROGRESS_SECOND_STEP: int = 900  # Run AI heavy workload (+ rendering)
+PROGRESS_THIRD_STEP: int = 50  # Save document
 SUPPORTED_IMAGE_EXT: str = ".jpg .jpeg .png .bmp"

@@ -14,8 +14,10 @@ from pdfixsdk.Pdfix import (
     PdsStructTree,
     kSaveFull,
 )
+from tqdm import tqdm
 
 from ai import openai_prompt_with_image
+from constants import PROGRESS_FIRST_STEP, PROGRESS_SECOND_STEP, PROGRESS_THIRD_STEP
 from exceptions import (
     ArgumentUnknownCommandException,
     ExpectedException,
@@ -84,49 +86,45 @@ def process_pdf(
         prompt_creator (PromptCreator): Prompt creator for OpenAI.
         surround_tags_count (int): Number of surrounding tags to include for context.
     """
-    pdfix: Optional[Pdfix] = GetPdfix()
-    if pdfix is None:
-        raise PdfixInitializeException()
+    total_progress_count: int = PROGRESS_FIRST_STEP + PROGRESS_SECOND_STEP + PROGRESS_THIRD_STEP
+    with tqdm(total=total_progress_count) as progress_bar:
+        progress_bar.set_description("Initializing")
 
-    authorize_sdk(pdfix, license_name, license_key)
+        pdfix: Optional[Pdfix] = GetPdfix()
+        if pdfix is None:
+            raise PdfixInitializeException()
 
-    # Open doc
-    doc: Optional[PdfDoc] = pdfix.OpenDoc(input_path, "")
-    if doc is None:
-        raise PdfixFailedToOpenException(pdfix, input_path)
+        authorize_sdk(pdfix, license_name, license_key)
 
-    struct_tree: Optional[PdsStructTree] = doc.GetStructTree()
-    if struct_tree is None:
-        raise PdfixNoTagsException(pdfix)
+        # Open doc
+        doc: Optional[PdfDoc] = pdfix.OpenDoc(input_path, "")
+        if doc is None:
+            raise PdfixFailedToOpenException(pdfix, input_path)
 
-    child_object: Optional[PdsObject] = struct_tree.GetChildObject(0)
-    if child_object is None:
-        raise PdfixNoTagsException(pdfix)
+        struct_tree: Optional[PdsStructTree] = doc.GetStructTree()
+        if struct_tree is None:
+            raise PdfixNoTagsException(pdfix)
 
-    child_element: Optional[PdsStructElement] = struct_tree.GetStructElementFromObject(child_object)
-    if child_element is None:
-        raise PdfixNoTagsException(pdfix)
+        child_object: Optional[PdsObject] = struct_tree.GetChildObject(0)
+        if child_object is None:
+            raise PdfixNoTagsException(pdfix)
 
-    groups: list[PdfTagGroup] = create_groups_of_tags_recursively(child_element, regex_tag, surround_tags_count)
-    try:
-        # Process first group if there is openai authentication error
-        process_struct_element(
-            pdfix, groups[0], subcommand, openai_key, model, lang, mathml_version, overwrite, prompt_creator
-        )
-    except OpenAIAuthenticationException:
-        raise
-    except Exception:
-        pass
-    # for group in groups:
-    #     process_struct_element(pdfix, group, subcommand, openai_key, model, lang, mathml_version, overwrite,
-    #         prompt_creator)
-    exception: Optional[OpenAIAuthenticationException] = None
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        futures = [
-            executor.submit(
-                process_struct_element,
+        child_element: Optional[PdsStructElement] = struct_tree.GetStructElementFromObject(child_object)
+        if child_element is None:
+            raise PdfixNoTagsException(pdfix)
+
+        progress_bar.update(PROGRESS_FIRST_STEP)
+        progress_bar.set_description("Processing elements")
+
+        groups: list[PdfTagGroup] = create_groups_of_tags_recursively(child_element, regex_tag, surround_tags_count)
+
+        step: float = float(PROGRESS_SECOND_STEP) / len(groups)
+
+        try:
+            # Process first group if there is openai authentication error
+            process_struct_element(
                 pdfix,
-                group,
+                groups[0],
                 subcommand,
                 openai_key,
                 model,
@@ -134,25 +132,61 @@ def process_pdf(
                 mathml_version,
                 overwrite,
                 prompt_creator,
+                progress_bar,
+                step,
             )
-            # Skip first group as it was already processed
-            for group in groups[1:]
-        ]
-    for future in futures:
-        try:
-            # Wait for completion and catch exceptions
-            future.result()
-        except OpenAIAuthenticationException as e:
-            # Let other threads finish before throwing exception up
-            exception = e
+        except OpenAIAuthenticationException:
+            raise
         except Exception:
             pass
 
-    if exception:
-        raise exception
+        # for group in groups:
+        #     process_struct_element(pdfix, group, subcommand, openai_key, model, lang, mathml_version, overwrite,
+        #         prompt_creator)
 
-    if not doc.Save(output_path, kSaveFull):
-        raise PdfixFailedToSaveException(pdfix, output_path)
+        exception: Optional[OpenAIAuthenticationException] = None
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            futures = [
+                executor.submit(
+                    process_struct_element,
+                    pdfix,
+                    group,
+                    subcommand,
+                    openai_key,
+                    model,
+                    lang,
+                    mathml_version,
+                    overwrite,
+                    prompt_creator,
+                    progress_bar,
+                    step,
+                )
+                # Skip first group as it was already processed
+                for group in groups[1:]
+            ]
+        for future in futures:
+            try:
+                # Wait for completion and catch exceptions
+                future.result()
+            except OpenAIAuthenticationException as e:
+                # Let other threads finish before throwing exception up
+                exception = e
+            except Exception:
+                pass
+
+        if exception:
+            raise exception
+
+        progress_bar.n = PROGRESS_FIRST_STEP + PROGRESS_SECOND_STEP
+        progress_bar.set_description("Saving document")
+        progress_bar.refresh()
+
+        if not doc.Save(output_path, kSaveFull):
+            raise PdfixFailedToSaveException(pdfix, output_path)
+
+        progress_bar.n = total_progress_count
+        progress_bar.set_description("Done")
+        progress_bar.refresh()
 
 
 def process_struct_element(
@@ -165,6 +199,8 @@ def process_struct_element(
     math_ml_version: str,
     overwrite: bool,
     prompt_creator: PromptCreator,
+    progress_bar: tqdm,
+    total_units_for_element_processing: float,
 ) -> None:
     """
     Processes a structure element in a PDF document by generating alternate text or table
@@ -187,6 +223,8 @@ def process_struct_element(
         math_ml_version (str): MathML version for the response.
         overwrite (bool): Whether to overwrite previous alternate text.
         prompt_creator (PromptCreator): Prompt creator for OpenAI.
+        progress_bar (tqdm): Progress bar.
+        total_units_for_element_processing (float): How many units progress bar needs to update.
     """
     try:
         element: PdsStructElement = group.tags[group.target_index]
@@ -278,3 +316,7 @@ def process_struct_element(
     except Exception as e:
         # Write error and continue to other element
         logger.exception(f"Unexpected exception for [{id}]: {str(e)}")
+    finally:
+        # For now update when everything is over as it runs in threads and can be misleading when fractured
+        # into finer steps
+        progress_bar.update(total_units_for_element_processing)

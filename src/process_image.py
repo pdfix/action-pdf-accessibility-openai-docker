@@ -2,6 +2,7 @@ import base64
 from typing import Optional
 
 from openai.types.chat.chat_completion import Choice
+from tqdm import tqdm
 
 from ai import openai_prompt_with_image
 from exceptions import ArgumentFailedToReadImageException
@@ -33,18 +34,30 @@ def process_image(
         mathml_version (str): MathML version for the response.
         prompt_creator (PromptCreator): Prompt creator for OpenAI.
     """
-    data: Optional[bytes] = get_image_bytes(input_path)
+    with tqdm(total=100) as progress_bar:
+        progress_bar.set_description("Processing")
 
-    if data is None:
-        raise ArgumentFailedToReadImageException(input_path)
-    else:
-        image_data: bytes = data
+        data: Optional[bytes] = get_image_bytes(input_path)
 
-    base64_image: str = f"data:image/jpeg;base64,{base64.b64encode(image_data).decode('utf-8')}"
-    response: Choice = openai_prompt_with_image(base64_image, openai_key, model, lang, mathml_version, prompt_creator)
-    output: str = response.message.content if response.message.content else ""
-    if subcommand == "generate-mathml":
-        output = add_mathml_metadata(output)
+        if data is None:
+            raise ArgumentFailedToReadImageException(input_path)
+        else:
+            image_data: bytes = data
 
-    with open(output_path, "w", encoding="utf-8") as output_file:
-        output_file.write(output)
+        progress_bar.update(10)
+
+        base64_image: str = f"data:image/jpeg;base64,{base64.b64encode(image_data).decode('utf-8')}"
+        response: Choice = openai_prompt_with_image(
+            base64_image, openai_key, model, lang, mathml_version, prompt_creator
+        )
+        output: str = response.message.content if response.message.content else ""
+        if subcommand == "generate-mathml":
+            progress_bar.update(50)
+            output = add_mathml_metadata(output)
+
+        with open(output_path, "w", encoding="utf-8") as output_file:
+            output_file.write(output)
+
+        progress_bar.n = 100
+        progress_bar.set_description("Done")
+        progress_bar.refresh()

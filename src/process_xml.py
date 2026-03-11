@@ -1,4 +1,5 @@
 from openai.types.chat.chat_completion import Choice
+from tqdm import tqdm
 
 from ai import openai_prompt_with_xml
 from prompt import PromptCreator
@@ -18,12 +19,20 @@ def process_xml(
         lang (str): Language for the response.
         prompt_creator (PromptCreator): Prompt creator for OpenAI.
     """
+    with tqdm(total=100) as progress_bar:
+        progress_bar.set_description("Processing")
 
-    with open(input_path, "r", encoding="utf-8") as file:
-        xml_data: str = file.read()
+        with open(input_path, "r", encoding="utf-8") as file:
+            xml_data: str = file.read()
 
-    response: Choice = openai_prompt_with_xml(xml_data, openai_key, model, lang, prompt_creator)
-    output: str = response.message.content if response.message.content else ""
+        progress_bar.update(10)
 
-    with open(output_path, "w", encoding="utf-8") as output_file:
-        output_file.write(output)
+        response: Choice = openai_prompt_with_xml(xml_data, openai_key, model, lang, prompt_creator)
+        output: str = response.message.content if response.message.content else ""
+
+        with open(output_path, "w", encoding="utf-8") as output_file:
+            output_file.write(output)
+
+        progress_bar.n = 100
+        progress_bar.set_description("Done")
+        progress_bar.refresh()

@@ -191,7 +191,8 @@
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
                 "33": "OpenAI service is temporarily unavailable. Please try again later."
-            }
+            },
+            "progress_regex": "^[^:]+:\\s+(?<progress>\\d{1,3})%"
         },
         {
             "title": "Set Alternate Description (OpenAI)",
@@ -362,7 +363,8 @@
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
                 "33": "OpenAI service is temporarily unavailable. Please try again later."
-            }
+            },
+            "progress_regex": "^[^:]+:\\s+(?<progress>\\d{1,3})%"
         },
         {
             "title": "Set Alternate Description from MathML (OpenAI)",
@@ -533,7 +535,8 @@
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
                 "33": "OpenAI service is temporarily unavailable. Please try again later."
-            }
+            },
+            "progress_regex": "^[^:]+:\\s+(?<progress>\\d{1,3})%"
         },
         {
             "title": "Set Table Summary  (OpenAI)",
@@ -724,7 +727,8 @@
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
                 "33": "OpenAI service is temporarily unavailable. Please try again later."
-            }
+            },
+            "progress_regex": "^[^:]+:\\s+(?<progress>\\d{1,3})%"
         },
         {
             "title": "Set Table Summary (OpenAI)",
@@ -895,7 +899,8 @@
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
                 "33": "OpenAI service is temporarily unavailable. Please try again later."
-            }
+            },
+            "progress_regex": "^[^:]+:\\s+(?<progress>\\d{1,3})%"
         },
         {
             "title": "Set Formula MathML  (OpenAI)",
@@ -1025,7 +1030,8 @@
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
                 "33": "OpenAI service is temporarily unavailable. Please try again later."
-            }
+            },
+            "progress_regex": "^[^:]+:\\s+(?<progress>\\d{1,3})%"
         },
         {
             "title": "Set Formula MathML (OpenAI)",
@@ -1142,7 +1148,8 @@
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
                 "33": "OpenAI service is temporarily unavailable. Please try again later."
-            }
+            },
+            "progress_regex": "^[^:]+:\\s+(?<progress>\\d{1,3})%"
         }
     ]
 }
