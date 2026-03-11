@@ -14,8 +14,10 @@ EC_PDFIX_FAILED_TO_OPEN = 24
 EC_PDFIX_FAILED_TO_SAVE = 25
 EC_PDFIX_NO_TAGS = 26
 
-EC_OPENAI_AUTHENTICATION_FAILED = 30
-EC_OPENAI_RATE_LIMIT_ERROR = 31
+EC_OPENAI_GENERAL_ERROR = 30
+EC_OPENAI_AUTHENTICATION_FAILED = 31
+EC_OPENAI_RATE_LIMIT_ERROR = 32
+EC_OPENAI_SERVICE_UNAVAILABLE = 33
 
 MESSAGE_ARG_GENERAL = "Failed to parse arguments. Please check the usage and try again."
 MESSAGE_ARG_NOT_RECOGNIZED_COMMAND = "Not recognized command. Please see --help."
@@ -31,8 +33,10 @@ MESSAGE_PDFIX_FAILED_TO_OPEN = "Failed to open PDF document."
 MESSAGE_PDFIX_FAILED_TO_SAVE = "Failed to save PDF document."
 MESSAGE_PDFIX_NO_TAGS = "PDF document has no tags."
 
+MESSAGE_OPENAI_GENERAL_ERROR = "OpenAI service error occurred while processing the request."
 MESSAGE_OPENAI_AUTHENTICATION_FAILED = "OpenAI Api Key failed to authenticate."
 MESSAGE_OPENAI_RATE_LIMIT_ERROR = "You exceeded your current quota, please check your OpenAI plan and billing details."
+MESSAGE_OPENAI_SERVICE_UNAVAILABLE = "OpenAI service is temporarily unavailable. Please try again later."
 
 
 class ExpectedException(BaseException):
@@ -120,6 +124,12 @@ class PdfixNoTagsException(PdfixException):
         self.error_code = EC_PDFIX_NO_TAGS
 
 
+class OpenAIGeneralException(ExpectedException):
+    def __init__(self, message: str = "") -> None:
+        super().__init__(EC_OPENAI_GENERAL_ERROR)
+        self.add_note(f"{MESSAGE_OPENAI_GENERAL_ERROR} {message}")
+
+
 class OpenAIAuthenticationException(ExpectedException):
     def __init__(self, message: str = "") -> None:
         super().__init__(EC_OPENAI_AUTHENTICATION_FAILED)
@@ -128,5 +138,11 @@ class OpenAIAuthenticationException(ExpectedException):
 
 class OpenAIRateLimitException(ExpectedException):
     def __init__(self, message: str = "") -> None:
-        super().__init__(EC_OPENAI_AUTHENTICATION_FAILED)
-        self.add_note(f"{MESSAGE_OPENAI_AUTHENTICATION_FAILED} {message}")
+        super().__init__(EC_OPENAI_RATE_LIMIT_ERROR)
+        self.add_note(f"{MESSAGE_OPENAI_RATE_LIMIT_ERROR} {message}")
+
+
+class OpenAIServiceUnavailableException(ExpectedException):
+    def __init__(self, message: str = "") -> None:
+        super().__init__(EC_OPENAI_SERVICE_UNAVAILABLE)
+        self.add_note(f"{MESSAGE_OPENAI_SERVICE_UNAVAILABLE} {message}")

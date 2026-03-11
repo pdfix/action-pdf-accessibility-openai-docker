@@ -187,8 +187,10 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate.",
-                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
+                "30": "OpenAI service error occurred while processing the request.",
+                "31": "OpenAI Api Key failed to authenticate.",
+                "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
+                "33": "OpenAI service is temporarily unavailable. Please try again later."
             }
         },
         {
@@ -356,8 +358,10 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate.",
-                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
+                "30": "OpenAI service error occurred while processing the request.",
+                "31": "OpenAI Api Key failed to authenticate.",
+                "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
+                "33": "OpenAI service is temporarily unavailable. Please try again later."
             }
         },
         {
@@ -525,8 +529,10 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate.",
-                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
+                "30": "OpenAI service error occurred while processing the request.",
+                "31": "OpenAI Api Key failed to authenticate.",
+                "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
+                "33": "OpenAI service is temporarily unavailable. Please try again later."
             }
         },
         {
@@ -714,8 +720,10 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate.",
-                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
+                "30": "OpenAI service error occurred while processing the request.",
+                "31": "OpenAI Api Key failed to authenticate.",
+                "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
+                "33": "OpenAI service is temporarily unavailable. Please try again later."
             }
         },
         {
@@ -883,8 +891,10 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate.",
-                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
+                "30": "OpenAI service error occurred while processing the request.",
+                "31": "OpenAI Api Key failed to authenticate.",
+                "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
+                "33": "OpenAI service is temporarily unavailable. Please try again later."
             }
         },
         {
@@ -1011,8 +1021,10 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate.",
-                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
+                "30": "OpenAI service error occurred while processing the request.",
+                "31": "OpenAI Api Key failed to authenticate.",
+                "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
+                "33": "OpenAI service is temporarily unavailable. Please try again later."
             }
         },
         {
@@ -1126,8 +1138,10 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
-                "30": "OpenAI Api Key failed to authenticate.",
-                "31": "You exceeded your current quota, please check your OpenAI plan and billing details."
+                "30": "OpenAI service error occurred while processing the request.",
+                "31": "OpenAI Api Key failed to authenticate.",
+                "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
+                "33": "OpenAI service is temporarily unavailable. Please try again later."
             }
         }
     ]
