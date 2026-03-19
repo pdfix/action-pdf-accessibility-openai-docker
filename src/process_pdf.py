@@ -184,12 +184,13 @@ def process_pdf(
             if exception:
                 raise exception
 
-            progress_bar.n = PROGRESS_FIRST_STEP + PROGRESS_SECOND_STEP
-            progress_bar.set_description("Saving document")
-            progress_bar.refresh()
+        # Document needs to be saved even if there is no change
+        progress_bar.n = PROGRESS_FIRST_STEP + PROGRESS_SECOND_STEP
+        progress_bar.set_description("Saving document")
+        progress_bar.refresh()
 
-            if not doc.Save(output_path, kSaveFull):
-                raise PdfixFailedToSaveException(pdfix, output_path)
+        if not doc.Save(output_path, kSaveFull):
+            raise PdfixFailedToSaveException(pdfix, output_path)
 
         progress_bar.n = total_progress_count
         progress_bar.set_description("Done")
