@@ -118,39 +118,20 @@ def process_pdf(
 
         groups: list[PdfTagGroup] = create_groups_of_tags_recursively(child_element, regex_tag, surround_tags_count)
 
-        step: float = float(PROGRESS_SECOND_STEP) / len(groups)
+        if len(groups) > 0:
+            step: float = float(PROGRESS_SECOND_STEP) / len(groups)
 
-        try:
-            # Process first group if there is openai authentication error
-            process_struct_element(
-                pdfix,
-                groups[0],
-                subcommand,
-                openai_key,
-                model,
-                lang,
-                mathml_version,
-                overwrite,
-                prompt_creator,
-                progress_bar,
-                step,
-            )
-        except OpenAIAuthenticationException:
-            raise
-        except Exception:
-            pass
+            # for group in groups:
+            #     process_struct_element(pdfix, group, subcommand, openai_key, model, lang, mathml_version, overwrite,
+            #         prompt_creator)
 
-        # for group in groups:
-        #     process_struct_element(pdfix, group, subcommand, openai_key, model, lang, mathml_version, overwrite,
-        #         prompt_creator)
+            exception: Optional[ExpectedException] = None
 
-        exception: Optional[OpenAIAuthenticationException] = None
-        with ThreadPoolExecutor(max_workers=10) as executor:
-            futures = [
-                executor.submit(
-                    process_struct_element,
+            try:
+                # Process first group if there is openai authentication error
+                process_struct_element(
                     pdfix,
-                    group,
+                    groups[0],
                     subcommand,
                     openai_key,
                     model,
@@ -161,28 +142,54 @@ def process_pdf(
                     progress_bar,
                     step,
                 )
-                # Skip first group as it was already processed
-                for group in groups[1:]
-            ]
-        for future in futures:
-            try:
-                # Wait for completion and catch exceptions
-                future.result()
-            except OpenAIAuthenticationException as e:
-                # Let other threads finish before throwing exception up
+            except OpenAIAuthenticationException:
+                raise
+            except ExpectedException as e:
                 exception = e
             except Exception:
                 pass
 
-        if exception:
-            raise exception
+            with ThreadPoolExecutor(max_workers=10) as executor:
+                futures = [
+                    executor.submit(
+                        process_struct_element,
+                        pdfix,
+                        group,
+                        subcommand,
+                        openai_key,
+                        model,
+                        lang,
+                        mathml_version,
+                        overwrite,
+                        prompt_creator,
+                        progress_bar,
+                        step,
+                    )
+                    # Skip first group as it was already processed
+                    for group in groups[1:]
+                ]
+            for future in futures:
+                try:
+                    # Wait for completion and catch exceptions
+                    future.result()
+                except OpenAIAuthenticationException as e:
+                    # Let other threads finish before throwing exception up
+                    exception = e
+                except ExpectedException as e:
+                    exception = e
+                except Exception:
+                    pass
 
-        progress_bar.n = PROGRESS_FIRST_STEP + PROGRESS_SECOND_STEP
-        progress_bar.set_description("Saving document")
-        progress_bar.refresh()
+            # Throw last expected exception up
+            if exception:
+                raise exception
 
-        if not doc.Save(output_path, kSaveFull):
-            raise PdfixFailedToSaveException(pdfix, output_path)
+            progress_bar.n = PROGRESS_FIRST_STEP + PROGRESS_SECOND_STEP
+            progress_bar.set_description("Saving document")
+            progress_bar.refresh()
+
+            if not doc.Save(output_path, kSaveFull):
+                raise PdfixFailedToSaveException(pdfix, output_path)
 
         progress_bar.n = total_progress_count
         progress_bar.set_description("Done")
