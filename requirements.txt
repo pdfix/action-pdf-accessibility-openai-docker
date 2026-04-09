@@ -2,6 +2,6 @@ httpx==0.27.0
 openai==1.37.0
 Pillow==12.1.1
 pdfix-sdk==8.4.3
-requests==2.32.4
+requests==2.33.1
 tqdm==4.67.1
-types-requests==2.32.0.20250515
+types-requests==2.33.0.20260408
