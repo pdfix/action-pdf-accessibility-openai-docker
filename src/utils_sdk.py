@@ -192,7 +192,7 @@ def check_if_table_summary_exists(element: PdsStructElement) -> bool:
         True if the table summary attribute dictionary exists, False otherwise.
     """
     attribute_dictionary: Optional[PdsDictionary] = find_table_summary_attribute_dictionary(element)
-    return bool(attribute_dictionary and attribute_dictionary.GetString("Summary"))
+    return bool(attribute_dictionary and attribute_dictionary.GetText("Summary"))
 
 
 def set_table_summary(element: PdsStructElement, table_summary: str) -> None:
