@@ -80,69 +80,69 @@ class PdfixInitializeException(ExpectedException):
         self._add_note(MESSAGE_PDFIX_INITIALIZE)
 
 
-class PdfixException(Exception):
-    def __init__(self, pdfix: Pdfix, message: str = "") -> None:
-        error_code = pdfix.GetErrorType()
-        error = str(pdfix.GetError())
-        self.errno = error_code
-        self.add_note(f"[{error_code}] [{error}]: {message}" if len(message) > 0 else f"[{error_code}] {error}")
+class PdfixException(ExpectedException):
+    def __init__(self, pdfix: Pdfix, error_code: int, message: str = "") -> None:
+        super().__init__(error_code)
+        pdfix_error_code: int = pdfix.GetErrorType()
+        pdfix_error: str = str(pdfix.GetError())
+        self.add_note(
+            f"[{pdfix_error_code}] [{pdfix_error}]: {message}"
+            if len(message) > 0
+            else f"[{pdfix_error_code}] {pdfix_error}"
+        )
 
 
 class PdfixActivationException(PdfixException):
     def __init__(self, pdfix: Pdfix) -> None:
-        super().__init__(pdfix, MESSAGE_PDFIX_ACTIVATION_FAILED)
-        self.error_code = EC_PDFIX_ACTIVATION_FAILED
+        super().__init__(pdfix, EC_PDFIX_ACTIVATION_FAILED, MESSAGE_PDFIX_ACTIVATION_FAILED)
 
 
 class PdfixAuthorizationException(PdfixException):
     def __init__(self, pdfix: Pdfix) -> None:
-        super().__init__(pdfix, MESSAGE_PDFIX_AUTHORIZATION_FAILED)
-        self.error_code = EC_PDFIX_AUTHORIZATION_FAILED
+        super().__init__(pdfix, EC_PDFIX_AUTHORIZATION_FAILED, MESSAGE_PDFIX_AUTHORIZATION_FAILED)
 
 
 class PdfixFailedToRenderException(PdfixException):
     def __init__(self, pdfix: Pdfix, message: str = "") -> None:
-        super().__init__(pdfix, f"{MESSAGE_PDFIX_FAILED_TO_RENDER} {message}")
-        self.error_code = EC_PDFIX_FAILED_TO_RENDER
+        super().__init__(pdfix, EC_PDFIX_FAILED_TO_RENDER, f"{MESSAGE_PDFIX_FAILED_TO_RENDER} {message}")
 
 
 class PdfixFailedToOpenException(PdfixException):
     def __init__(self, pdfix: Pdfix, pdf_path: str = "") -> None:
-        super().__init__(pdfix, f"{MESSAGE_PDFIX_FAILED_TO_OPEN} {pdf_path}")
-        self.error_code = EC_PDFIX_FAILED_TO_OPEN
+        super().__init__(pdfix, EC_PDFIX_FAILED_TO_OPEN, f"{MESSAGE_PDFIX_FAILED_TO_OPEN} {pdf_path}")
 
 
 class PdfixFailedToSaveException(PdfixException):
     def __init__(self, pdfix: Pdfix, message: str = "") -> None:
-        super().__init__(pdfix, f"{MESSAGE_PDFIX_FAILED_TO_SAVE} {message}")
-        self.error_code = EC_PDFIX_FAILED_TO_SAVE
+        super().__init__(pdfix, EC_PDFIX_FAILED_TO_SAVE, f"{MESSAGE_PDFIX_FAILED_TO_SAVE} {message}")
 
 
 class PdfixNoTagsException(PdfixException):
     def __init__(self, pdfix: Pdfix, message: str = "") -> None:
-        super().__init__(pdfix, f"{MESSAGE_PDFIX_NO_TAGS} {message}")
-        self.error_code = EC_PDFIX_NO_TAGS
+        super().__init__(pdfix, EC_PDFIX_NO_TAGS, f"{MESSAGE_PDFIX_NO_TAGS} {message}")
 
 
-class OpenAIGeneralException(ExpectedException):
+class OpenAIException(ExpectedException):
+    def __init__(self, error_code: int, message: str) -> None:
+        super().__init__(error_code)
+        self._add_note(message)
+
+
+class OpenAIGeneralException(OpenAIException):
     def __init__(self, message: str = "") -> None:
-        super().__init__(EC_OPENAI_GENERAL_ERROR)
-        self.add_note(f"{MESSAGE_OPENAI_GENERAL_ERROR} {message}")
+        super().__init__(EC_OPENAI_GENERAL_ERROR, f"{MESSAGE_OPENAI_GENERAL_ERROR} {message}")
 
 
-class OpenAIAuthenticationException(ExpectedException):
+class OpenAIAuthenticationException(OpenAIException):
     def __init__(self, message: str = "") -> None:
-        super().__init__(EC_OPENAI_AUTHENTICATION_FAILED)
-        self.add_note(f"{MESSAGE_OPENAI_AUTHENTICATION_FAILED} {message}")
+        super().__init__(EC_OPENAI_AUTHENTICATION_FAILED, f"{MESSAGE_OPENAI_AUTHENTICATION_FAILED} {message}")
 
 
-class OpenAIRateLimitException(ExpectedException):
+class OpenAIRateLimitException(OpenAIException):
     def __init__(self, message: str = "") -> None:
-        super().__init__(EC_OPENAI_RATE_LIMIT_ERROR)
-        self.add_note(f"{MESSAGE_OPENAI_RATE_LIMIT_ERROR} {message}")
+        super().__init__(EC_OPENAI_RATE_LIMIT_ERROR, f"{MESSAGE_OPENAI_RATE_LIMIT_ERROR} {message}")
 
 
-class OpenAIServiceUnavailableException(ExpectedException):
+class OpenAIServiceUnavailableException(OpenAIException):
     def __init__(self, message: str = "") -> None:
-        super().__init__(EC_OPENAI_SERVICE_UNAVAILABLE)
-        self.add_note(f"{MESSAGE_OPENAI_SERVICE_UNAVAILABLE} {message}")
+        super().__init__(EC_OPENAI_SERVICE_UNAVAILABLE, f"{MESSAGE_OPENAI_SERVICE_UNAVAILABLE} {message}")
