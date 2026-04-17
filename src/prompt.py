@@ -65,6 +65,7 @@ class PromptCreator:
         prompt: str = self._get_the_prompt()
         formatted_prompt: str = prompt.format(lang=lang, math_ml_version=math_ml_version)
         if self.group:
+            logger.info("Adding surrounding tags to prompt.")
             formatted_prompt += f"\n{self._craft_json_of_surrounding_tags(self.group)}"
 
         return formatted_prompt
@@ -74,11 +75,18 @@ class PromptCreator:
         Returns the prompt based on the subcommand and whether it is XML or not.
         """
         if self._is_path(self.path_or_prompt):
+            logger.info("Taking prompt from file.")
             prompt_path: Path = Path(self.path_or_prompt).resolve()
             prompt: str = self._extract_prompt_from_file(prompt_path)
         elif self.path_or_prompt:
+            logger.info("Taking prompt from user input.")
             prompt = self._filter_prompt_placeholders(self.path_or_prompt, keep={"lang", "math_ml_version"})
         else:
+            logger.info("Taking default prompt.")
+            prompt = self._get_default_prompt()
+
+        if prompt == "":
+            logger.info("No prompt provided, using default prompt instead.")
             prompt = self._get_default_prompt()
 
         return prompt
