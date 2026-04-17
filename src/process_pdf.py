@@ -279,11 +279,11 @@ def process_struct_element(
                 logger.info(f"Alternate text already exists for {id}")
                 return
         elif subcommand == "generate-table-summary":
-            if check_if_table_summary_exists(element):
+            if not overwrite and check_if_table_summary_exists(element):
                 logger.info(f"Table summary already exists for {id}")
                 return
         # elif subcommand == "generate-mathml":
-        #   if element.GetDictionary("AF"):
+        #   if not overwrite and element.GetDictionary("AF"):
         #       logger.info((f"MathML already exists for {id}"))
         #       return
 
