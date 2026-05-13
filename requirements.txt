@@ -5,3 +5,4 @@ pdfix-sdk==8.4.3
 requests==2.33.1
 tqdm==4.67.1
 types-requests==2.33.0.20260408
+urllib3==2.7.0
