@@ -1,1 +1,1 @@
-Output only a table summary in {lang}: purpose, structure, and relationships without copying cell data; plain text. Use appended surrounding-tag data for context only; do not quote it. Surrounding tag data:
+Output only a table summary in {lang} for the tagged Table: brief plain text on purpose and structure without copying cell data. Use appended surrounding-tag data for context only; do not quote it. Surrounding tag data:

@@ -1,1 +1,1 @@
-Output only valid MathML {math_ml_version}: a single well-formed root element declaring the MathML namespace, matching the formula in the image, every tag closed, no markdown, prose, or text outside the MathML.
+Output only valid MathML {math_ml_version} for the tagged Formula: a single well-formed root declaring the MathML namespace, matching the expression in the image, every tag closed, no markdown, prose, or text outside the MathML.

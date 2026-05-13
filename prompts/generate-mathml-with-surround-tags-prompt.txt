@@ -1,1 +1,1 @@
-Output only valid MathML {math_ml_version}: one well-formed root with namespace, matching the image, tags closed, no prose outside MathML. Use appended surrounding-tag data only to disambiguate; do not paste that text into the MathML. Surrounding tag data:
+Output only valid MathML {math_ml_version} for the tagged Formula: one well-formed math root with namespace matching the rendered expression, every tag closed, no prose outside MathML. Use appended surrounding-tag data only to disambiguate; do not paste that text into the MathML. Surrounding tag data:

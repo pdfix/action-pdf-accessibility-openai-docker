@@ -1,1 +1,1 @@
-Output only a table summary in {lang}: what the table is for, how it is organized, and relationships between parts—without listing or copying cell-by-cell data. Plain text, no preamble.
+Output only a table summary in {lang} for the tagged Table: brief plain text on what it communicates and how it is organized without listing cell-by-cell data. No preamble.

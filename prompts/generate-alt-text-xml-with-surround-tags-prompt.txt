@@ -1,1 +1,1 @@
-Output only plain-language alt text in {lang} for the formula in the supplied MathML: short, no markup in your reply. Use appended surrounding-tag data for meaning only; do not quote it. Surrounding tag data:
+Output only plain-language alt text in {lang} for the tagged Formula in the supplied MathML: one or two short sentences for screen readers, no markup in your reply. Use appended surrounding-tag data for meaning only; do not quote it. Surrounding tag data:

@@ -78,7 +78,18 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate alternate text.",
                     "type": "string",
-                    "value": "Output only alt text in {lang} for screen readers: short prose on subject and visual role. Use the appended surrounding-tag data for context only; do not quote or repeat that text. No prefix or markdown. Surrounding tag data:"
+                    "value": "Output only alt text in {lang} for screen readers for the tagged Figure or Formula: one or two short sentences on subject and visual role. Use appended surrounding-tag data for context only; do not quote or repeat it. No prefix or markdown. Surrounding tag data:",
+                    "set": [
+                        {
+                            "value": "Output only alt text in {lang} for screen readers for the tagged Figure or Formula: one or two short sentences on subject and visual role. Use appended surrounding-tag data for context only; do not quote or repeat it. No prefix or markdown. Surrounding tag data:"
+                        },
+                        {
+                            "value": "Output only alt text in {lang} for the tagged Figure or Formula. Use appended surrounding-tag data for context only; do not quote it. Objective description: layout, key objects, readable text summarized, important color or material cues if visible. Allow several sentences for complex figures; avoid subjective mood unless clearly shown. Do not start with Image of or Picture of. No prefix or markdown. Surrounding tag data:"
+                        },
+                        {
+                            "value": "Output only alt text in {lang} for the tagged Figure or Formula. Use appended surrounding-tag data only to infer topic; do not quote it. Factual description woven with concise topical keywords and proper nouns visible in the image so search and assistive tools capture the main entities and purpose. Do not start with Image of or Picture of. No prefix or markdown. Surrounding tag data:"
+                        }
+                    ]
                 },
                 {
                     "title": "Language",
@@ -274,7 +285,18 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate alternate text.",
                     "type": "string",
-                    "value": "Output only the alt text in {lang} for screen readers: short prose on subject, layout, and purpose; quote visible text only if needed for meaning. No prefix, markdown, labels, or extra commentary."
+                    "value": "Output only the alt text in {lang} for screen readers for the tagged Figure or Formula: one or two short sentences on subject, layout, and purpose; quote visible text only if needed for meaning. Do not start with Image of or Picture of. No prefix, markdown, labels, or extra commentary.",
+                    "set": [
+                        {
+                            "value": "Output only the alt text in {lang} for screen readers for the tagged Figure or Formula: one or two short sentences on subject, layout, and purpose; quote visible text only if needed for meaning. Do not start with Image of or Picture of. No prefix, markdown, labels, or extra commentary."
+                        },
+                        {
+                            "value": "Output only alt text in {lang} for screen readers for the tagged Figure or Formula: vivid objective description including composition, notable colors or lighting, materials, actions, readable text summarized as needed. Allow richer length for complex scenes; avoid invented emotions. Do not start with Image of or Picture of. No prefix or markdown."
+                        },
+                        {
+                            "value": "Output only alt text in {lang} for screen readers for the tagged Figure or Formula: factual description with natural topical keywords and proper nouns readable in the image so search and assistive systems retain main topics, roles, and data highlights. Do not start with Image of or Picture of. No prefix or markdown."
+                        }
+                    ]
                 },
                 {
                     "title": "Language",
@@ -449,7 +471,18 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate alternate text.",
                     "type": "string",
-                    "value": "Output only plain-language alt text in {lang} for the formula in the supplied MathML: one short description for screen readers, no markup, prefixes, or formatting in your reply."
+                    "value": "Output only plain-language alt text in {lang} for the tagged Formula in the supplied MathML: one or two short sentences for screen readers, no markup or labels in your reply.",
+                    "set": [
+                        {
+                            "value": "Output only plain-language alt text in {lang} for the tagged Formula in the supplied MathML: one or two short sentences for screen readers, no markup or labels in your reply."
+                        },
+                        {
+                            "value": "Output only plain-language alt text in {lang} for the tagged Formula described by the supplied MathML: objective reading of structure, variables, operators, and relations; paraphrase readable values briefly. Allow several sentences for complex expressions. No markup, prefixes, or headings in your reply."
+                        },
+                        {
+                            "value": "Output only plain-language alt text in {lang} for the tagged Formula in the supplied MathML: weave standard math vocabulary, notation names, and domain terms that appear or are clearly implied so retrieval tools capture meaning; stay factual. No markup in your reply."
+                        }
+                    ]
                 },
                 {
                     "title": "Language",
@@ -630,7 +663,18 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate table summary.",
                     "type": "string",
-                    "value": "Output only a table summary in {lang}: purpose, structure, and relationships without copying cell data; plain text. Use appended surrounding-tag data for context only; do not quote it. Surrounding tag data:"
+                    "value": "Output only a table summary in {lang} for the tagged Table: brief plain text on purpose and structure without copying cell data. Use appended surrounding-tag data for context only; do not quote it. Surrounding tag data:",
+                    "set": [
+                        {
+                            "value": "Output only a table summary in {lang} for the tagged Table: brief plain text on purpose and structure without copying cell data. Use appended surrounding-tag data for context only; do not quote it. Surrounding tag data:"
+                        },
+                        {
+                            "value": "Output only a table summary in {lang} for the tagged Table: explain scope, column and row roles, units, trends, and comparisons without transcribing every cell. Use appended surrounding-tag data for context only; do not quote it. Surrounding tag data:"
+                        },
+                        {
+                            "value": "Output only a table summary in {lang} for the tagged Table: concise keywords for dataset, topic, geography, time period, metrics, and axes woven into readable prose; no raw cell dump. Use appended surrounding-tag data for hints only; do not quote it. Surrounding tag data:"
+                        }
+                    ]
                 },
                 {
                     "title": "Language",
@@ -819,7 +863,18 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate table summary.",
                     "type": "string",
-                    "value": "Output only a table summary in {lang}: what the table is for, how it is organized, and relationships between parts—without listing or copying cell-by-cell data. Plain text, no preamble."
+                    "value": "Output only a table summary in {lang} for the tagged Table: brief plain text on what it communicates and how it is organized without listing cell-by-cell data. No preamble.",
+                    "set": [
+                        {
+                            "value": "Output only a table summary in {lang} for the tagged Table: brief plain text on what it communicates and how it is organized without listing cell-by-cell data. No preamble."
+                        },
+                        {
+                            "value": "Output only a table summary in {lang} for the tagged Table: detail purpose, structure, headers, units, and notable patterns or comparisons visible without copying the entire grid. Plain text, no preamble."
+                        },
+                        {
+                            "value": "Output only a table summary in {lang} for the tagged Table: weave factual topical keywords for subject, metrics, geography, or time with a clear synopsis; do not dump cells. Plain text, no preamble."
+                        }
+                    ]
                 },
                 {
                     "title": "Language",
@@ -993,7 +1048,18 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate formula's MathML.",
                     "type": "string",
-                    "value": "Output only valid MathML {math_ml_version}: one well-formed root with namespace, matching the image, tags closed, no prose outside MathML. Use appended surrounding-tag data only to disambiguate; do not paste that text into the MathML. Surrounding tag data:"
+                    "value": "Output only valid MathML {math_ml_version} for the tagged Formula: one well-formed math root with namespace matching the rendered expression, every tag closed, no prose outside MathML. Use appended surrounding-tag data only to disambiguate; do not paste that text into the MathML. Surrounding tag data:",
+                    "set": [
+                        {
+                            "value": "Output only valid MathML {math_ml_version} for the tagged Formula: one well-formed math root with namespace matching the rendered expression, every tag closed, no prose outside MathML. Use appended surrounding-tag data only to disambiguate; do not paste that text into the MathML. Surrounding tag data:"
+                        },
+                        {
+                            "value": "Output only valid MathML {math_ml_version} for the tagged Formula: prefer explicit mrow, mfrac, msup, msub, munder, mover, and munderover so structure is fully spelled out; well-formed, namespace-correct, complete, matching the image. Use surrounding-tag data only to disambiguate; do not insert that text. Surrounding tag data:"
+                        },
+                        {
+                            "value": "Output only valid MathML {math_ml_version} for the tagged Formula: unambiguous, operator-explicit markup mirroring the image for parsers and downstream tools; well-formed single math root with namespace, no commentary. Use surrounding-tag data for disambiguation only; do not include that text in output. Surrounding tag data:"
+                        }
+                    ]
                 },
                 {
                     "title": "Tag Name",
@@ -1128,7 +1194,18 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate formula's MathML.",
                     "type": "string",
-                    "value": "Output only valid MathML {math_ml_version}: a single well-formed root element declaring the MathML namespace, matching the formula in the image, every tag closed, no markdown, prose, or text outside the MathML."
+                    "value": "Output only valid MathML {math_ml_version} for the tagged Formula: a single well-formed root declaring the MathML namespace, matching the expression in the image, every tag closed, no markdown, prose, or text outside the MathML.",
+                    "set": [
+                        {
+                            "value": "Output only valid MathML {math_ml_version} for the tagged Formula: a single well-formed root declaring the MathML namespace, matching the expression in the image, every tag closed, no markdown, prose, or text outside the MathML."
+                        },
+                        {
+                            "value": "Output only valid MathML {math_ml_version} for the tagged Formula: one complete well-formed math root with namespace; expand implicit operations into explicit mrow, mfrac, msup, msub, munder, mover, or munderover where needed for clarity; match the image fully. No text outside MathML."
+                        },
+                        {
+                            "value": "Output only valid MathML {math_ml_version} for the tagged Formula: explicit operator-rich, well-formed MathML mirroring the image for maximal machine interpretability; namespace-correct single math root, no commentary."
+                        }
+                    ]
                 },
                 {
                     "title": "MathML Version",

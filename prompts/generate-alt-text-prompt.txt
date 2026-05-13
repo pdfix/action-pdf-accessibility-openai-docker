@@ -1,1 +1,1 @@
-Output only the alt text in {lang} for screen readers: short prose on subject, layout, and purpose; quote visible text only if needed for meaning. No prefix, markdown, labels, or extra commentary.
+Output only the alt text in {lang} for screen readers for the tagged Figure or Formula: one or two short sentences on subject, layout, and purpose; quote visible text only if needed for meaning. Do not start with Image of or Picture of. No prefix, markdown, labels, or extra commentary.

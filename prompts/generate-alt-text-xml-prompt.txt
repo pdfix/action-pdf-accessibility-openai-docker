@@ -1,1 +1,1 @@
-Output only plain-language alt text in {lang} for the formula in the supplied MathML: one short description for screen readers, no markup, prefixes, or formatting in your reply.
+Output only plain-language alt text in {lang} for the tagged Formula in the supplied MathML: one or two short sentences for screen readers, no markup or labels in your reply.

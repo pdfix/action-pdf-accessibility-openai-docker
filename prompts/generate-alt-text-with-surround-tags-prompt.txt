@@ -1,1 +1,1 @@
-Output only alt text in {lang} for screen readers: short prose on subject and visual role. Use the appended surrounding-tag data for context only; do not quote or repeat that text. No prefix or markdown. Surrounding tag data:
+Output only alt text in {lang} for screen readers for the tagged Figure or Formula: one or two short sentences on subject and visual role. Use appended surrounding-tag data for context only; do not quote or repeat it. No prefix or markdown. Surrounding tag data:
