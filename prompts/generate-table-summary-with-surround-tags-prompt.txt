@@ -1,5 +1,1 @@
-Describe the table in {lang} language concisely without repeating its data. Keep the response brief and focus on structure and content. Provide only the response without any additional explanation or context.
-
-The table is part of a PDF document. Use the surrounding tags to understand its context and purpose, but do not repeat their text verbatim. Focus on summarizing what the table represents and how it relates to the surrounding content.
-
-Here are the surrounding PDF tags for context:
+Output only a table summary in {lang}: purpose, structure, and relationships without copying cell data; plain text. Use appended surrounding-tag data for context only; do not quote it. Surrounding tag data:

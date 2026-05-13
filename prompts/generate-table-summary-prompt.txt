@@ -1,1 +1,1 @@
-Describe the table in {lang} language concisely without repeating its data. Keep the response brief and focus on structure, and content. Provide only the response without any additional explanation or context.
+Output only a table summary in {lang}: what the table is for, how it is organized, and relationships between parts—without listing or copying cell-by-cell data. Plain text, no preamble.

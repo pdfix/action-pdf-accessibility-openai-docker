@@ -1,1 +1,1 @@
-Provide only the alt text for the MathML formula in attached XML file in {lang} language. Keep the description brief but informative. Response should not be formatted. It will be used by screen readers.
+Output only plain-language alt text in {lang} for the formula in the supplied MathML: one short description for screen readers, no markup, prefixes, or formatting in your reply.

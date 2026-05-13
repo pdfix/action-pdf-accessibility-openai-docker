@@ -78,7 +78,7 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate alternate text.",
                     "type": "string",
-                    "value": "You are creating alt text for an image used in a tagged PDF document.   Instructions:   - Provide only the alt text, in {lang} language.   - Describe the image clearly and concisely, focusing on its main content and purpose.   - Use the surrounding PDF structure to infer the image’s context, but do not restate the surrounding text verbatim.   - If the image represents a concept already described nearby, summarize its visual role (e.g., “Flowchart showing data processing steps”).   - Avoid unnecessary detail or interpretation.   Here are the surrounding PDF tags (for context):"
+                    "value": "Output only alt text in {lang} for screen readers: short prose on subject and visual role. Use the appended surrounding-tag data for context only; do not quote or repeat that text. No prefix or markdown. Surrounding tag data:"
                 },
                 {
                     "title": "Language",
@@ -274,7 +274,7 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate alternate text.",
                     "type": "string",
-                    "value": "Provide only the alt text for the image in {lang} language, describing the content in a concise, clear, and meaningful way.  Focus on the essential details, conveying the purpose of the image for screen readers.   Include relevant information about the image's context, objects, people, and any key actions or emotions, while keeping the description brief but informative."
+                    "value": "Output only the alt text in {lang} for screen readers: short prose on subject, layout, and purpose; quote visible text only if needed for meaning. No prefix, markdown, labels, or extra commentary."
                 },
                 {
                     "title": "Language",
@@ -449,7 +449,7 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate alternate text.",
                     "type": "string",
-                    "value": "Provide only the alt text for the MathML formula in attached XML file in {lang} language. Keep the description brief but informative. Response should not be formatted. It will be used by screen readers."
+                    "value": "Output only plain-language alt text in {lang} for the formula in the supplied MathML: one short description for screen readers, no markup, prefixes, or formatting in your reply."
                 },
                 {
                     "title": "Language",
@@ -630,7 +630,7 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate table summary.",
                     "type": "string",
-                    "value": "Describe the table in {lang} language concisely without repeating its data. Keep the response brief and focus on structure and content. Provide only the response without any additional explanation or context.   The table is part of a PDF document. Use the surrounding tags to understand its context and purpose, but do not repeat their text verbatim. Focus on summarizing what the table represents and how it relates to the surrounding content.   Here are the surrounding PDF tags for context:"
+                    "value": "Output only a table summary in {lang}: purpose, structure, and relationships without copying cell data; plain text. Use appended surrounding-tag data for context only; do not quote it. Surrounding tag data:"
                 },
                 {
                     "title": "Language",
@@ -819,7 +819,7 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate table summary.",
                     "type": "string",
-                    "value": "Describe the table in {lang} language concisely without repeating its data. Keep the response brief and focus on structure, and content. Provide only the response without any additional explanation or context."
+                    "value": "Output only a table summary in {lang}: what the table is for, how it is organized, and relationships between parts—without listing or copying cell-by-cell data. Plain text, no preamble."
                 },
                 {
                     "title": "Language",
@@ -993,7 +993,7 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate formula's MathML.",
                     "type": "string",
-                    "value": "Return only the full and valid XML representation of the mathematical expression in MathML {math_ml_version} format, with no markdown, no comments, and no explanation.   The output must:   - Begin with the opening <math> tag with the correct namespace.   - Do not stop generating until every opened XML tag is properly closed, ending with </math>.   - If the XML would be truncated, continue until the <math> element is fully closed.   - Contain valid and well-formed XML.   - Not include any incomplete or truncated tags or elements.   - Be a complete representation of the expression shown in the image.   Do not include any text before or after the XML.   Only output the MathML content.   The formula is part of a PDF document. Use the surrounding tags to help interpret and reconstruct the expression accurately, but do not include any of their content in the output.   Here are the surrounding PDF tags for context:"
+                    "value": "Output only valid MathML {math_ml_version}: one well-formed root with namespace, matching the image, tags closed, no prose outside MathML. Use appended surrounding-tag data only to disambiguate; do not paste that text into the MathML. Surrounding tag data:"
                 },
                 {
                     "title": "Tag Name",
@@ -1128,7 +1128,7 @@
                     "name": "prompt",
                     "desc": "Prompt used to generate formula's MathML.",
                     "type": "string",
-                    "value": "Return only the full and valid XML representation of the mathematical expression in MathML {math_ml_version} format, with no markdown, no comments, and no explanation.   The output must:   - Begin with the opening <math> tag with the correct namespace.   - Do not stop generating until every opened XML tag is properly closed, ending with </math>.   - If the XML would be truncated, continue until the <math> element is fully closed.   - Contain valid and well-formed XML.   - Not include any incomplete or truncated tags or elements.   - Be a complete representation of the expression shown in the image.   Do not include any text before or after the XML.   Only output the MathML content."
+                    "value": "Output only valid MathML {math_ml_version}: a single well-formed root element declaring the MathML namespace, matching the formula in the image, every tag closed, no markdown, prose, or text outside the MathML."
                 },
                 {
                     "title": "MathML Version",

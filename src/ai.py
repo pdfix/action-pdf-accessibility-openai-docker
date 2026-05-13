@@ -60,7 +60,7 @@ def openai_prompt_with_image(
                     ],
                 },
             ],
-            max_tokens=100,
+            max_tokens=2048,
         )
     except AuthenticationError as e:
         raise OpenAIAuthenticationException(e.message)
