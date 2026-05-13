@@ -14,7 +14,7 @@
                 "name": "pdfix/pdf-accessibility-openai",
                 "tag": "latest"
             },
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt_path}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
                     "name": "input_pdf",
@@ -75,11 +75,10 @@
                 },
                 {
                     "title": "Prompt",
-                    "name": "prompt_path",
-                    "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for alternate text generation",
-                    "type": "file_path",
-                    "ext": "txt",
-                    "value": ""
+                    "name": "prompt",
+                    "desc": "Prompt used to generate alternate text.",
+                    "type": "string",
+                    "value": "You are creating alt text for an image used in a tagged PDF document.   Instructions:   - Provide only the alt text, in {lang} language.   - Describe the image clearly and concisely, focusing on its main content and purpose.   - Use the surrounding PDF structure to infer the image’s context, but do not restate the surrounding text verbatim.   - If the image represents a concept already described nearby, summarize its visual role (e.g., “Flowchart showing data processing steps”).   - Avoid unnecessary detail or interpretation.   Here are the surrounding PDF tags (for context):"
                 },
                 {
                     "title": "Language",
@@ -211,7 +210,7 @@
                 "name": "pdfix/pdf-accessibility-openai",
                 "tag": "latest"
             },
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --model \"${model}\" --prompt \"${prompt_path}\" --lang \"${lang}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --model \"${model}\" --prompt \"${prompt}\" --lang \"${lang}\"",
             "args": [
                 {
                     "name": "input_jpg",
@@ -272,11 +271,10 @@
                 },
                 {
                     "title": "Prompt",
-                    "name": "prompt_path",
-                    "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for alternate text generation",
-                    "type": "file_path",
-                    "ext": "txt",
-                    "value": ""
+                    "name": "prompt",
+                    "desc": "Prompt used to generate alternate text.",
+                    "type": "string",
+                    "value": "Provide only the alt text for the image in {lang} language, describing the content in a concise, clear, and meaningful way.  Focus on the essential details, conveying the purpose of the image for screen readers.   Include relevant information about the image's context, objects, people, and any key actions or emotions, while keeping the description brief but informative."
                 },
                 {
                     "title": "Language",
@@ -387,7 +385,7 @@
                 "name": "pdfix/pdf-accessibility-openai",
                 "tag": "latest"
             },
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_xml}\" -o \"${output_txt}\" --model \"${model}\" --prompt \"${prompt_path}\" --lang \"${lang}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_xml}\" -o \"${output_txt}\" --model \"${model}\" --prompt \"${prompt}\" --lang \"${lang}\"",
             "args": [
                 {
                     "name": "input_xml",
@@ -448,11 +446,10 @@
                 },
                 {
                     "title": "Prompt",
-                    "name": "prompt_path",
-                    "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for alternate text generation",
-                    "type": "file_path",
-                    "ext": "txt",
-                    "value": ""
+                    "name": "prompt",
+                    "desc": "Prompt used to generate alternate text.",
+                    "type": "string",
+                    "value": "Provide only the alt text for the MathML formula in attached XML file in {lang} language. Keep the description brief but informative. Response should not be formatted. It will be used by screen readers."
                 },
                 {
                     "title": "Language",
@@ -562,7 +559,7 @@
                 "name": "pdfix/pdf-accessibility-openai",
                 "tag": "latest"
             },
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt_path}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
                     "name": "input_pdf",
@@ -630,11 +627,10 @@
                 },
                 {
                     "title": "Prompt",
-                    "name": "prompt_path",
-                    "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for table summary generation",
-                    "type": "file_path",
-                    "ext": "txt",
-                    "value": ""
+                    "name": "prompt",
+                    "desc": "Prompt used to generate table summary.",
+                    "type": "string",
+                    "value": "Describe the table in {lang} language concisely without repeating its data. Keep the response brief and focus on structure and content. Provide only the response without any additional explanation or context.   The table is part of a PDF document. Use the surrounding tags to understand its context and purpose, but do not repeat their text verbatim. Focus on summarizing what the table represents and how it relates to the surrounding content.   Here are the surrounding PDF tags for context:"
                 },
                 {
                     "title": "Language",
@@ -759,7 +755,7 @@
                 "name": "pdfix/pdf-accessibility-openai",
                 "tag": "latest"
             },
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --model \"${model}\" --prompt \"${prompt_path}\" --lang \"${lang}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_txt}\" --model \"${model}\" --prompt \"${prompt}\" --lang \"${lang}\"",
             "args": [
                 {
                     "name": "input_jpg",
@@ -820,11 +816,10 @@
                 },
                 {
                     "title": "Prompt",
-                    "name": "prompt_path",
-                    "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for table summary generation",
-                    "type": "file_path",
-                    "ext": "txt",
-                    "value": ""
+                    "name": "prompt",
+                    "desc": "Prompt used to generate table summary.",
+                    "type": "string",
+                    "value": "Describe the table in {lang} language concisely without repeating its data. Keep the response brief and focus on structure, and content. Provide only the response without any additional explanation or context."
                 },
                 {
                     "title": "Language",
@@ -934,7 +929,7 @@
                 "name": "pdfix/pdf-accessibility-openai",
                 "tag": "latest"
             },
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt_path}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
                     "name": "input_pdf",
@@ -995,11 +990,10 @@
                 },
                 {
                     "title": "Prompt",
-                    "name": "prompt_path",
-                    "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for MathML generation",
-                    "type": "file_path",
-                    "ext": "txt",
-                    "value": ""
+                    "name": "prompt",
+                    "desc": "Prompt used to generate formula's MathML.",
+                    "type": "string",
+                    "value": "Return only the full and valid XML representation of the mathematical expression in MathML {math_ml_version} format, with no markdown, no comments, and no explanation.   The output must:   - Begin with the opening <math> tag with the correct namespace.   - Do not stop generating until every opened XML tag is properly closed, ending with </math>.   - If the XML would be truncated, continue until the <math> element is fully closed.   - Contain valid and well-formed XML.   - Not include any incomplete or truncated tags or elements.   - Be a complete representation of the expression shown in the image.   Do not include any text before or after the XML.   Only output the MathML content.   The formula is part of a PDF document. Use the surrounding tags to help interpret and reconstruct the expression accurately, but do not include any of their content in the output.   Here are the surrounding PDF tags for context:"
                 },
                 {
                     "title": "Tag Name",
@@ -1070,7 +1064,7 @@
                 "name": "pdfix/pdf-accessibility-openai",
                 "tag": "latest"
             },
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_xml}\" --model \"${model}\" --prompt \"${prompt_path}\" --mathml-version \"${mathml_version}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_jpg}\" -o \"${output_xml}\" --model \"${model}\" --prompt \"${prompt}\" --mathml-version \"${mathml_version}\"",
             "args": [
                 {
                     "name": "input_jpg",
@@ -1131,11 +1125,10 @@
                 },
                 {
                     "title": "Prompt",
-                    "name": "prompt_path",
-                    "desc": "Path to a text file containing custom prompt that will be used to ask OpenAI for MathML generation",
-                    "type": "file_path",
-                    "ext": "txt",
-                    "value": ""
+                    "name": "prompt",
+                    "desc": "Prompt used to generate formula's MathML.",
+                    "type": "string",
+                    "value": "Return only the full and valid XML representation of the mathematical expression in MathML {math_ml_version} format, with no markdown, no comments, and no explanation.   The output must:   - Begin with the opening <math> tag with the correct namespace.   - Do not stop generating until every opened XML tag is properly closed, ending with </math>.   - If the XML would be truncated, continue until the <math> element is fully closed.   - Contain valid and well-formed XML.   - Not include any incomplete or truncated tags or elements.   - Be a complete representation of the expression shown in the image.   Do not include any text before or after the XML.   Only output the MathML content."
                 },
                 {
                     "title": "MathML Version",

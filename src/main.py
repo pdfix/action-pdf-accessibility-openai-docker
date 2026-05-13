@@ -1,4 +1,5 @@
 import argparse
+import logging
 import re
 import sys
 import threading
@@ -17,18 +18,19 @@ from exceptions import (
     ExpectedException,
 )
 from image_update import DockerImageContainerUpdateChecker
-from logger import get_logger
+from logger import get_logger, set_console_level
 from process_image import process_image
 from process_pdf import process_pdf
 from process_xml import process_xml
 from prompt import PromptCreator
 
-DEFAULT_LANG = "en"
-DEFAULT_MATHML_VERSION = "mathml-4"
-DEFAULT_OVERWRITE = False
-DEFAULT_TAGS_COUNT = 2
+DEFAULT_LANG: str = "en"
+DEFAULT_MATHML_VERSION: str = "mathml-4"
+DEFAULT_OVERWRITE: bool = False
+DEFAULT_TAGS_COUNT: int = 2
+DEFAULT_VERBOSE: bool = False
 
-logger = get_logger()
+logger: logging.Logger = get_logger()
 
 
 def str2bool(value: Any) -> bool:
@@ -113,7 +115,7 @@ def set_arguments(
                     "--prompt",
                     type=str,
                     default="",
-                    help="Path to the prompt file or prompt itself. If not provided, default prompt will be used.",
+                    help="Prompt used for generating response. If not provided, default prompt will be used.",
                 )
             case "tags":
                 parser.add_argument("--tags", type=str, help="Tag names to process")
@@ -124,6 +126,8 @@ def set_arguments(
                     default=DEFAULT_TAGS_COUNT,
                     help="How many surrounding tags information is used in prompt (works only with pdf files).",
                 )
+            case "verbose":
+                parser.add_argument("-v", "--verbose", type=str2bool, default=DEFAULT_VERBOSE, help="Verbose output")
 
 
 def run_config_subcommand(args) -> None:
@@ -149,6 +153,10 @@ def get_pdfix_config(path: str) -> None:
 
 
 def run_subcommand(args) -> None:
+    # Print everything into console
+    if args.verbose:
+        set_console_level(logging.DEBUG)
+
     # Properly set default tag base on command when no tags are provided
     argument_tags: Optional[str] = str(getattr(args, "tags", None))
     if argument_tags and argument_tags != "None":
@@ -192,7 +200,7 @@ def process_cli(
     mathml_version: str,
     overwrite: bool,
     regex_tag: str,
-    path_or_prompt: str,
+    prompt: str,
     surround_tags_count: int,
 ) -> None:
     """
@@ -211,14 +219,14 @@ def process_cli(
         mathml_version (str): MathML version.
         overwrite (bool): Whether to overwrite previous alternate text.
         regex_tag (str): Regular expression for matching tags that should be processed.
-        path_or_prompt (str): Either path to prompt, or prompt itself.
+        prompt (str): Prompt used for generating respons`.
         surround_tags_count (int): Number of tags included into prompt.
     """
     if not openai_key:
         raise ArgumentOpenAIKeyException()
 
     is_xml_input: bool = input.lower().endswith(".xml")
-    prompt_creator: PromptCreator = PromptCreator(path_or_prompt, subcommand, is_xml_input)
+    prompt_creator: PromptCreator = PromptCreator(prompt, subcommand, is_xml_input)
 
     if input.lower().endswith(".pdf") and output.lower().endswith(".pdf"):
         return process_pdf(
@@ -271,6 +279,7 @@ def main():
             "overwrite",
             "prompt",
             "tags-count",
+            "verbose",
         ],
     )
     parser_generate_table_summary.set_defaults(func=run_subcommand)
@@ -295,6 +304,7 @@ def main():
             "overwrite",
             "prompt",
             "tags-count",
+            "verbose",
         ],
         True,
         "PDF or image or XML",
@@ -320,6 +330,7 @@ def main():
             "overwrite",
             "prompt",
             "tags-count",
+            "verbose",
         ],
     )
     parser_generate_mathml.set_defaults(func=run_subcommand)

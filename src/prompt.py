@@ -19,16 +19,16 @@ class PromptCreator:
     MAX_PROMPT_LENGT: int = 4000
     # IDEAL_PROMPT_LENGT: int = 300
 
-    def __init__(self, path_or_prompt: str, subcommand: str, is_xml: bool) -> None:
+    def __init__(self, prompt: str, subcommand: str, is_xml: bool) -> None:
         """
         Initializes the PromptCreator with a path to a prompt file or prompt itself, subcommand, and whether it is XML.
 
         Args:
-            path (Optional[str]): Path to the prompt file. If None, a default prompt will be used.
+            prompt (str): Prompt used for generating response.
             subcommand (str): Subcommand to determine the type of processing.
             is_xml (bool): Whether the prompt is for XML processing.
         """
-        self.path_or_prompt: str = path_or_prompt
+        self.prompt: str = prompt
         self.subcommand: str = subcommand
         self.is_xml: bool = is_xml
         self.group: Optional[PdfTagGroup] = None
@@ -74,19 +74,11 @@ class PromptCreator:
         """
         Returns the prompt based on the subcommand and whether it is XML or not.
         """
-        if self._is_path(self.path_or_prompt):
-            logger.info("Taking prompt from file.")
-            prompt_path: Path = Path(self.path_or_prompt).resolve()
-            prompt: str = self._extract_prompt_from_file(prompt_path)
-        elif self.path_or_prompt:
+        if self.prompt:
             logger.info("Taking prompt from user input.")
-            prompt = self._filter_prompt_placeholders(self.path_or_prompt, keep={"lang", "math_ml_version"})
+            prompt = self._filter_prompt_placeholders(self.prompt, keep={"lang", "math_ml_version"})
         else:
             logger.info("Taking default prompt.")
-            prompt = self._get_default_prompt()
-
-        if prompt == "":
-            logger.info("No prompt provided, using default prompt instead.")
             prompt = self._get_default_prompt()
 
         return prompt

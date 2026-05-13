@@ -45,3 +45,18 @@ def get_logger(name: str = "app_logger") -> logging.Logger:
         logger.addHandler(console_handler)
 
     return logger
+
+
+def set_console_level(level: int) -> None:
+    """
+    Sets the console level for the logger.
+
+    Args:
+        level (int): The level to set the console to.
+    """
+    logger: logging.Logger = get_logger()
+
+    for handler in logger.handlers:
+        if isinstance(handler, logging.StreamHandler):
+            handler.setLevel(level)
+            break
