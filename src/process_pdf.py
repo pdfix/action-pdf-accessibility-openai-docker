@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Optional
 
 from openai.types.chat.chat_completion import Choice
-from pdfixsdk.Pdfix import (
+from pdfixsdk import (
     GetPdfix,
     PdfDoc,
     Pdfix,

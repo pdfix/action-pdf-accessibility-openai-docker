@@ -2,8 +2,7 @@ import ctypes
 import re
 from typing import Optional
 
-from pdfixsdk.Pdfix import (
-    GetPdfix,
+from pdfixsdk import (
     PdfDoc,
     Pdfix,
     PdsArray,
@@ -34,7 +33,7 @@ def authorize_sdk(pdfix: Pdfix, license_name: Optional[str], license_key: Option
         if not authorization.Authorize(license_name, license_key):
             raise PdfixAuthorizationException(pdfix)
     elif license_key:
-        if not pdfix.GetStandarsAuthorization().Activate(license_key):
+        if not pdfix.GetStandardAuthorization().Activate(license_key):
             raise PdfixActivationException(pdfix)
     else:
         print("No license name or key provided. Using PDFix SDK trial")
@@ -158,7 +157,13 @@ def add_associated_file(element: PdsStructElement, associated_file_data: PdsDict
     associated_file_dictionary: Optional[PdsDictionary] = element_object.GetDictionary("AF")
     if associated_file_dictionary:
         # convert dict to an array
-        associated_file_array: Optional[PdsArray] = GetPdfix().CreateArrayObject(False)
+        struct_tree: Optional[PdsStructTree] = element.GetStructTree()
+        if struct_tree is None:
+            return
+        document: Optional[PdfDoc] = struct_tree.GetDoc()
+        if document is None:
+            return
+        associated_file_array: Optional[PdsArray] = document.CreateArrayObject(False)
         if associated_file_array:
             associated_file_array.Put(0, associated_file_dictionary.Clone(False))
             element_object.Put("AF", associated_file_array)
