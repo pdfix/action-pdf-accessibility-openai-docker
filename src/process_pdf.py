@@ -236,9 +236,16 @@ def process_struct_element(
     """
     try:
         element: PdsStructElement = group.tags[group.target_index]
-        struct_tree: PdsStructTree = element.GetStructTree()
-        document: PdfDoc = struct_tree.GetDoc()
-        element_object_id: int = element.GetObject().GetId()
+        struct_tree: Optional[PdsStructTree] = element.GetStructTree()
+        if struct_tree is None:
+            return
+        document: Optional[PdfDoc] = struct_tree.GetDoc()
+        if document is None:
+            return
+        element_obj: Optional[PdsObject] = element.GetObject()
+        if element_obj is None:
+            return
+        element_object_id: int = element_obj.GetId()
         element_id: str = element.GetId()
         element_type: str = element.GetType(False)
         # element_type_mapped = elem.GetType(True)

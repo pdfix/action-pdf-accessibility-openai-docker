@@ -12,6 +12,7 @@ from pdfixsdk import (
     PdsStructElement,
     PdsStructTree,
     PsAccountAuthorization,
+    PsStandardAuthorization,
     kPdsStructChildElement,
 )
 
@@ -29,11 +30,12 @@ def authorize_sdk(pdfix: Pdfix, license_name: Optional[str], license_key: Option
         license_key (string): Pdfix sdk license key
     """
     if license_name and license_key:
-        authorization: PsAccountAuthorization = pdfix.GetAccountAuthorization()
-        if not authorization.Authorize(license_name, license_key):
+        authorization: Optional[PsAccountAuthorization] = pdfix.GetAccountAuthorization()
+        if authorization is None or not authorization.Authorize(license_name, license_key):
             raise PdfixAuthorizationException(pdfix)
     elif license_key:
-        if not pdfix.GetStandardAuthorization().Activate(license_key):
+        standard_authorization: Optional[PsStandardAuthorization] = pdfix.GetStandardAuthorization()
+        if standard_authorization is None or not standard_authorization.Activate(license_key):
             raise PdfixActivationException(pdfix)
     else:
         print("No license name or key provided. Using PDFix SDK trial")
@@ -153,7 +155,10 @@ def add_associated_file(element: PdsStructElement, associated_file_data: PdsDict
         element (PdsStructElement): The structure element to add the associated file to.
         associated_file_data (PdsDictionary): The associated file data to add.
     """
-    element_object: PdsDictionary = PdsDictionary(element.GetObject().obj)
+    element_obj: Optional[PdsObject] = element.GetObject()
+    if element_obj is None:
+        return
+    element_object: PdsDictionary = PdsDictionary(element_obj.obj)
     associated_file_dictionary: Optional[PdsDictionary] = element_object.GetDictionary("AF")
     if associated_file_dictionary:
         # convert dict to an array
@@ -165,11 +170,14 @@ def add_associated_file(element: PdsStructElement, associated_file_data: PdsDict
             return
         associated_file_array: Optional[PdsArray] = document.CreateArrayObject(False)
         if associated_file_array:
-            associated_file_array.Put(0, associated_file_dictionary.Clone(False))
+            cloned: Optional[PdsObject] = associated_file_dictionary.Clone(False)
+            if cloned is None:
+                return
+            associated_file_array.Put(0, cloned)
             element_object.Put("AF", associated_file_array)
 
     associated_file_array = element_object.GetArray("AF")
-    if not associated_file_array:
+    if associated_file_array is None:
         associated_file_array = element_object.PutArray("AF")
     if associated_file_array:
         associated_file_array.Put(associated_file_array.GetNumObjects(), associated_file_data)
