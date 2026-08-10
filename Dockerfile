@@ -12,7 +12,6 @@ RUN apt-get install -y \
 
 WORKDIR /usr/alt-text-openai/
 
-
 # Create a virtual environment and install dependencies
 ENV VIRTUAL_ENV=venv
 RUN python3 -m venv venv
@@ -20,11 +19,12 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 COPY requirements.txt /usr/alt-text-openai/
 RUN pip install --no-cache-dir -r requirements.txt 
 
-
 # Copy default prompts, the source code and config.json into the container
 COPY prompts/ /usr/alt-text-openai/prompts/
 COPY src/ /usr/alt-text-openai/src/
 COPY config.json /usr/alt-text-openai/
 
+# License
+LABEL license="https://pdfix.net/terms (PDFix SDK); OpenAI API usage subject to OpenAI policies"
 
 ENTRYPOINT ["/usr/alt-text-openai/venv/bin/python3", "/usr/alt-text-openai/src/main.py"]
