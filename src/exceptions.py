@@ -35,7 +35,9 @@ MESSAGE_PDFIX_NO_TAGS: str = "PDF document has no tags."
 
 MESSAGE_OPENAI_GENERAL_ERROR: str = "OpenAI service error occurred while processing the request."
 MESSAGE_OPENAI_AUTHENTICATION_FAILED: str = "OpenAI Api Key failed to authenticate."
-MESSAGE_OPENAI_RATE_LIMIT_ERROR: str = "You exceeded your current quota, please check your OpenAI plan and billing details."
+MESSAGE_OPENAI_RATE_LIMIT_ERROR: str = (
+    "You exceeded your current quota, please check your OpenAI plan and billing details."
+)
 MESSAGE_OPENAI_SERVICE_UNAVAILABLE: str = "OpenAI service is temporarily unavailable. Please try again later."
 
 
