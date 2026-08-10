@@ -1,42 +1,42 @@
 from pdfixsdk import Pdfix
 
-EC_ARG_GENERAL = 10
-EC_ARG_NOT_RECOGNIZED_COMMAND = 11
-EC_ARG_OPENAI_KEY = 12
-EC_ARG_INPUT_OUTPUT_NOT_ALLOWED = 13
-EC_ARG_FAILED_TO_READ_IMAGE = 14
+EC_ARG_GENERAL: int = 10
+EC_ARG_NOT_RECOGNIZED_COMMAND: int = 11
+EC_ARG_OPENAI_KEY: int = 12
+EC_ARG_INPUT_OUTPUT_NOT_ALLOWED: int = 13
+EC_ARG_FAILED_TO_READ_IMAGE: int = 14
 
-EC_PDFIX_INITIALIZE = 20
-EC_PDFIX_ACTIVATION_FAILED = 21
-EC_PDFIX_AUTHORIZATION_FAILED = 22
-EC_PDFIX_FAILED_TO_RENDER = 23
-EC_PDFIX_FAILED_TO_OPEN = 24
-EC_PDFIX_FAILED_TO_SAVE = 25
-EC_PDFIX_NO_TAGS = 26
+EC_PDFIX_INITIALIZE: int = 20
+EC_PDFIX_ACTIVATION_FAILED: int = 21
+EC_PDFIX_AUTHORIZATION_FAILED: int = 22
+EC_PDFIX_FAILED_TO_RENDER: int = 23
+EC_PDFIX_FAILED_TO_OPEN: int = 24
+EC_PDFIX_FAILED_TO_SAVE: int = 25
+EC_PDFIX_NO_TAGS: int = 26
 
-EC_OPENAI_GENERAL_ERROR = 30
-EC_OPENAI_AUTHENTICATION_FAILED = 31
-EC_OPENAI_RATE_LIMIT_ERROR = 32
-EC_OPENAI_SERVICE_UNAVAILABLE = 33
+EC_OPENAI_GENERAL_ERROR: int = 30
+EC_OPENAI_AUTHENTICATION_FAILED: int = 31
+EC_OPENAI_RATE_LIMIT_ERROR: int = 32
+EC_OPENAI_SERVICE_UNAVAILABLE: int = 33
 
-MESSAGE_ARG_GENERAL = "Failed to parse arguments. Please check the usage and try again."
-MESSAGE_ARG_NOT_RECOGNIZED_COMMAND = "Not recognized command. Please see --help."
-MESSAGE_ARG_OPENAI_KEY = "Invalid or missing arguments for OpenAI Api Key."
-MESSAGE_ARG_INPUT_OUTPUT_NOT_ALLOWED = "Not allowed input output file combination. Please see --help."
-MESSAGE_ARG_FAILED_TO_READ_IMAGE = "Failed to read image data from input."
+MESSAGE_ARG_GENERAL: str = "Failed to parse arguments. Please check the usage and try again."
+MESSAGE_ARG_NOT_RECOGNIZED_COMMAND: str = "Not recognized command. Please see --help."
+MESSAGE_ARG_OPENAI_KEY: str = "Invalid or missing arguments for OpenAI Api Key."
+MESSAGE_ARG_INPUT_OUTPUT_NOT_ALLOWED: str = "Not allowed input output file combination. Please see --help."
+MESSAGE_ARG_FAILED_TO_READ_IMAGE: str = "Failed to read image data from input."
 
-MESSAGE_PDFIX_INITIALIZE = "Failed to initialize PDFix SDK."
-MESSAGE_PDFIX_ACTIVATION_FAILED = "Failed to activate PDFix SDK acount."
-MESSAGE_PDFIX_AUTHORIZATION_FAILED = "Failed to authorize PDFix SDK acount."
-MESSAGE_PDFIX_FAILED_TO_RENDER = "Failed to render PDF Page into image."
-MESSAGE_PDFIX_FAILED_TO_OPEN = "Failed to open PDF document."
-MESSAGE_PDFIX_FAILED_TO_SAVE = "Failed to save PDF document."
-MESSAGE_PDFIX_NO_TAGS = "PDF document has no tags."
+MESSAGE_PDFIX_INITIALIZE: str = "Failed to initialize PDFix SDK."
+MESSAGE_PDFIX_ACTIVATION_FAILED: str = "Failed to activate PDFix SDK account."
+MESSAGE_PDFIX_AUTHORIZATION_FAILED: str = "Failed to authorize PDFix SDK account."
+MESSAGE_PDFIX_FAILED_TO_RENDER: str = "Failed to render PDF Page into image."
+MESSAGE_PDFIX_FAILED_TO_OPEN: str = "Failed to open PDF document."
+MESSAGE_PDFIX_FAILED_TO_SAVE: str = "Failed to save PDF document."
+MESSAGE_PDFIX_NO_TAGS: str = "PDF document has no tags."
 
-MESSAGE_OPENAI_GENERAL_ERROR = "OpenAI service error occurred while processing the request."
-MESSAGE_OPENAI_AUTHENTICATION_FAILED = "OpenAI Api Key failed to authenticate."
-MESSAGE_OPENAI_RATE_LIMIT_ERROR = "You exceeded your current quota, please check your OpenAI plan and billing details."
-MESSAGE_OPENAI_SERVICE_UNAVAILABLE = "OpenAI service is temporarily unavailable. Please try again later."
+MESSAGE_OPENAI_GENERAL_ERROR: str = "OpenAI service error occurred while processing the request."
+MESSAGE_OPENAI_AUTHENTICATION_FAILED: str = "OpenAI Api Key failed to authenticate."
+MESSAGE_OPENAI_RATE_LIMIT_ERROR: str = "You exceeded your current quota, please check your OpenAI plan and billing details."
+MESSAGE_OPENAI_SERVICE_UNAVAILABLE: str = "OpenAI service is temporarily unavailable. Please try again later."
 
 
 class ExpectedException(BaseException):
@@ -85,7 +85,7 @@ class PdfixException(ExpectedException):
         super().__init__(error_code)
         pdfix_error_code: int = pdfix.GetErrorType()
         pdfix_error: str = str(pdfix.GetError())
-        self.add_note(
+        self._add_note(
             f"[{pdfix_error_code}] [{pdfix_error}]: {message}"
             if len(message) > 0
             else f"[{pdfix_error_code}] {pdfix_error}"

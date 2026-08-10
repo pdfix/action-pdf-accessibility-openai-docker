@@ -94,3 +94,4 @@ For PDFix SDK licensing or issues, contact `support@pdfix.net`.
 
 - [PDFix Terms](https://pdfix.net/terms)
 - [OpenAI policies](https://openai.com/policies/)
+
