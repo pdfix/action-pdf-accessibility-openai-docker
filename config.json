@@ -240,6 +240,14 @@
                     "value": ""
                 },
                 {
+                    "title": "Rendering Zoom Level",
+                    "name": "zoom",
+                    "desc": "Zoom level used to render the selected tag into an image.",
+                    "flags": 128,
+                    "type": "float",
+                    "value": "2.0"
+                },
+                {
                     "title": "OpenAI API Key",
                     "name": "openai_key",
                     "desc": "OpenAI API Key",
@@ -818,6 +826,14 @@
                     "value": ""
                 },
                 {
+                    "title": "Rendering Zoom Level",
+                    "name": "zoom",
+                    "desc": "Zoom level used to render the selected table into an image.",
+                    "flags": 128,
+                    "type": "float",
+                    "value": "2.0"
+                },
+                {
                     "title": "OpenAI API Key",
                     "name": "openai_key",
                     "desc": "OpenAI API Key",
@@ -1147,6 +1163,14 @@
                     "type": "file_path",
                     "ext": "xml",
                     "value": ""
+                },
+                {
+                    "title": "Rendering Zoom Level",
+                    "name": "zoom",
+                    "desc": "Zoom level used to render the selected formula into an image.",
+                    "flags": 128,
+                    "type": "float",
+                    "value": "2.0"
                 },
                 {
                     "title": "OpenAI API Key",
