@@ -1,5 +1,4 @@
 import ctypes
-import re
 from typing import Optional
 
 from pdfixsdk import (
@@ -13,11 +12,9 @@ from pdfixsdk import (
     PdsStructTree,
     PsAccountAuthorization,
     PsStandardAuthorization,
-    kPdsStructChildElement,
 )
 
 from exceptions import PdfixActivationException, PdfixAuthorizationException
-from pdf_tag_group import PdfTagGroup
 
 
 def authorize_sdk(pdfix: Pdfix, license_name: Optional[str], license_key: Optional[str]) -> None:
@@ -39,50 +36,6 @@ def authorize_sdk(pdfix: Pdfix, license_name: Optional[str], license_key: Option
             raise PdfixActivationException(pdfix)
     else:
         print("No license name or key provided. Using PDFix SDK trial")
-
-
-def create_groups_of_tags_recursively(
-    element: PdsStructElement, regex_tag: str, surround_tags_count: int
-) -> list[PdfTagGroup]:
-    """
-    Recursively browses through the structure elements of a PDF document and processes
-    elements that match the specified tags.
-
-    Description:
-    This function recursively browses through the structure elements of a PDF document
-    starting from the specified parent element. It checks each child element to see if it
-    matches the specified tags using a regular expression. If a match is found, the element
-    is processed using the `process_struct_elem` function. If no match is found, the function
-    calls itself recursively on the child element.
-
-    Args:
-        element (PdsStructElement): The parent structure element to start browsing from.
-        regex_tag (str): The regular expression to match tags.
-        surround_tags_count (int): Number of surrounding tags to include for context.
-    """
-    tags_from_left: int = int(surround_tags_count / 2)
-    result: list[PdfTagGroup] = []
-    count: int = element.GetNumChildren()
-    structure_tree: Optional[PdsStructTree] = element.GetStructTree()
-    if structure_tree is None:
-        return result
-
-    for i in range(0, count):
-        if element.GetChildType(i) != kPdsStructChildElement:
-            continue
-        child_object: Optional[PdsObject] = element.GetChildObject(i)
-        if child_object is None:
-            continue
-        child_element: Optional[PdsStructElement] = structure_tree.GetStructElementFromObject(child_object)
-        if child_element is None:
-            continue
-        if re.match(regex_tag, child_element.GetType(True)) or re.match(regex_tag, child_element.GetType(False)):
-            # process element
-            new_group: PdfTagGroup = PdfTagGroup(element, i, tags_from_left)
-            result.append(new_group)
-        else:
-            result.extend(create_groups_of_tags_recursively(child_element, regex_tag, surround_tags_count))
-    return result
 
 
 def set_associated_file_math_ml(element: PdsStructElement, math_ml: str, math_ml_version: str) -> None:
