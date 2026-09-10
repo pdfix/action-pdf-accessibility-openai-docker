@@ -1,7 +1,9 @@
 import argparse
+import json
 import logging
 import re
 import sys
+import tempfile
 import threading
 import time
 from datetime import datetime
@@ -16,9 +18,11 @@ from exceptions import (
     ArgumentInputOutputNotAllowedException,
     ArgumentOpenAIKeyException,
     ExpectedException,
+    InvalidRegexOrTemplateException,
 )
 from image_update import DockerImageContainerUpdateChecker
 from logger import get_logger, set_console_level
+from params_parser import ParamsParser
 from process_image import process_image
 from process_pdf import process_pdf
 from process_xml import process_xml
@@ -29,6 +33,9 @@ DEFAULT_MATHML_VERSION: str = "mathml-4"
 DEFAULT_OVERWRITE: bool = False
 DEFAULT_TAGS_COUNT: int = 2
 DEFAULT_VERBOSE: bool = False
+DEFAULT_TAGS_ALT_TEXT: str = "Figure|Formula"
+DEFAULT_TAGS_TABLE: str = "Table"
+DEFAULT_TAGS_MATHML: str = "Formula"
 
 logger: logging.Logger = get_logger()
 
@@ -110,6 +117,13 @@ def set_arguments(
                 parser.add_argument(
                     "--overwrite", type=str2bool, default=DEFAULT_OVERWRITE, help="Overwrite previous Alt text"
                 )
+            case "params":
+                parser.add_argument(
+                    "--params",
+                    type=str,
+                    required=False,
+                    help="Path to JSON file with tag filter parameters (required for PDF → PDF).",
+                )
             case "prompt":
                 parser.add_argument(
                     "--prompt",
@@ -117,8 +131,6 @@ def set_arguments(
                     default="",
                     help="Prompt used for generating response. If not provided, default prompt will be used.",
                 )
-            case "tags":
-                parser.add_argument("--tags", type=str, help="Tag names to process")
             case "tags-count":
                 parser.add_argument(
                     "--tags-count",
@@ -152,25 +164,70 @@ def get_pdfix_config(path: str) -> None:
                 out.write(file.read())
 
 
+def default_tags_for_command(command: str) -> str:
+    """
+    Return the default tag regex for a command when --params is omitted.
+
+    Args:
+        command (str): Subcommand name.
+
+    Returns:
+        Default ECMAScript regular expression for tag names.
+    """
+    if command == "generate-table-summary":
+        return DEFAULT_TAGS_TABLE
+    if command == "generate-mathml":
+        return DEFAULT_TAGS_MATHML
+    return DEFAULT_TAGS_ALT_TEXT
+
+
+def resolve_regex_template(args) -> str | Path | dict:
+    """
+    Resolve tag filter from --params (regex or template) or command defaults.
+
+    Args:
+        args: Parsed CLI arguments.
+
+    Returns:
+        Either a regex string, a template dict, or (via caller) a Path to template JSON.
+    """
+    params_path: Optional[str] = getattr(args, "params", None)
+    if not params_path:
+        return default_tags_for_command(args.command)
+
+    params_parser = ParamsParser(params_path)
+    params_parser.parse()
+    tag_names: Any = params_parser.params.get("tag_names")
+    if isinstance(tag_names, str):
+        return tag_names
+    if isinstance(tag_names, dict):
+        return tag_names
+    raise InvalidRegexOrTemplateException()
+
+
 def run_subcommand(args) -> None:
     # Print everything into console
     if args.verbose:
         set_console_level(logging.DEBUG)
 
-    # Properly set default tag base on command when no tags are provided
-    argument_tags: Optional[str] = str(getattr(args, "tags", None))
-    if argument_tags and argument_tags != "None":
-        tags: str = argument_tags
+    tag_filter: str | Path | dict = resolve_regex_template(args)
+    if isinstance(tag_filter, dict):
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", suffix=".json") as template_file:
+            with open(template_file.name, "w", encoding="utf-8") as template_file_write:
+                json.dump(tag_filter, template_file_write)
+            process_cli_from_args(args, Path(template_file.name))
     else:
-        if args.command == "generate-table-summary":
-            tags = "Table"
-        elif args.command == "generate-mathml":
-            tags = "Formula"
-        elif args.command == "generate-alt-text":
-            tags = "Figure|Formula"
-        else:
-            tags = "Figure"
+        process_cli_from_args(args, tag_filter)
 
+
+def process_cli_from_args(args, regex_template: str | Path) -> None:
+    """
+    Run process_cli using parsed argparse namespace and resolved tag filter.
+
+    Args:
+        args: Parsed CLI arguments.
+        regex_template (str | Path): Regex or path to template JSON.
+    """
     process_cli(
         args.command,
         getattr(args, "name", None),
@@ -182,7 +239,7 @@ def run_subcommand(args) -> None:
         getattr(args, "lang", DEFAULT_LANG),
         getattr(args, "mathml_version", DEFAULT_MATHML_VERSION),
         getattr(args, "overwrite", DEFAULT_OVERWRITE),
-        tags,
+        regex_template,
         args.prompt,
         getattr(args, "tags_count", DEFAULT_TAGS_COUNT),
     )
@@ -199,7 +256,7 @@ def process_cli(
     lang: str,
     mathml_version: str,
     overwrite: bool,
-    regex_tag: str,
+    regex_template: str | Path,
     prompt: str,
     surround_tags_count: int,
 ) -> None:
@@ -218,8 +275,8 @@ def process_cli(
         lang (str): Language setting.
         mathml_version (str): MathML version.
         overwrite (bool): Whether to overwrite previous alternate text.
-        regex_tag (str): Regular expression for matching tags that should be processed.
-        prompt (str): Prompt used for generating respons`.
+        regex_template (str | Path): Regex or path to template JSON for matching tags.
+        prompt (str): Prompt used for generating response.
         surround_tags_count (int): Number of tags included into prompt.
     """
     if not openai_key:
@@ -240,7 +297,7 @@ def process_cli(
             lang,
             mathml_version,
             overwrite,
-            regex_tag,
+            regex_template,
             prompt_creator,
             surround_tags_count,
         )
@@ -275,7 +332,7 @@ def main():
             "output",
             "model",
             "lang",
-            "tags",
+            "params",
             "overwrite",
             "prompt",
             "tags-count",
@@ -300,7 +357,7 @@ def main():
             "output",
             "model",
             "lang",
-            "tags",
+            "params",
             "overwrite",
             "prompt",
             "tags-count",
@@ -325,7 +382,7 @@ def main():
             "input",
             "output",
             "model",
-            "tags",
+            "params",
             "mathml-version",
             "overwrite",
             "prompt",

@@ -9,6 +9,7 @@ Utilizes OpenAI models (cloud-based) to describe images and formulas. Requires a
   - [Usage](#usage)
   - [Commands](#commands)
   - [Arguments](#arguments)
+  - [Params JSON](#params-json)
   - [Examples](#examples)
   - [Help \& support](#help--support)
   - [Licenses](#licenses)
@@ -42,7 +43,7 @@ docker run --rm -v "$(pwd)":/data -w /data pdfix/pdf-accessibility-openai:latest
 | `--output`, `-o` | yes | Path to output `.pdf`, `.txt`, or `.xml` as supported | Output file |
 | `--model` | no | One of the supported model names (default: `gpt-4o-mini`) | OpenAI model |
 | `--prompt` | no | Prompt text or path to a `.txt` file | Custom prompt |
-| `--tags` | no | Regular expression string; if omitted, command defaults apply | Tag names to process |
+| `--params` | for PDF → PDF | Path to a `.json` file | Tag filter parameters (see [Params JSON](#params-json)) |
 | `--tags-count` | no | Integer (default **2**); PDF only | Surrounding tags in prompt |
 | `--name` | no | String (PDFix account license name) | PDFix license name |
 | `--key` | no | String (PDFix account license key) | PDFix license key |
@@ -54,7 +55,7 @@ docker run --rm -v "$(pwd)":/data -w /data pdfix/pdf-accessibility-openai:latest
 | `--lang` | no | Language code string (default: `en`) | Output language |
 | `--overwrite` | no | Boolean string (default: `false`) | Overwrite existing Alt text |
 
-Default when `--tags` is omitted: `Figure|Formula`.
+Default tag filter when `--params` is omitted: `Figure|Formula`.
 
 ### `generate-table-summary`
 
@@ -63,7 +64,7 @@ Default when `--tags` is omitted: `Figure|Formula`.
 | `--lang` | no | Language code string (default: `en`) | Output language |
 | `--overwrite` | no | Boolean string (default: `false`) | Overwrite existing summary |
 
-Default when `--tags` is omitted: `Table`.
+Default tag filter when `--params` is omitted: `Table`.
 
 ### `generate-mathml`
 
@@ -72,7 +73,43 @@ Default when `--tags` is omitted: `Table`.
 | `--mathml-version` | no | One of: `mathml-1`, `mathml-2`, `mathml-3`, `mathml-4` (default: `mathml-4`) | MathML version |
 | `--overwrite` | no | Boolean string (default: `false`) | Overwrite existing output |
 
-Default when `--tags` is omitted: `Formula`.
+Default tag filter when `--params` is omitted: `Formula`.
+
+## Params JSON
+
+`--params` points to a JSON array of parameter objects. Each object has at least `name` and `value`; the CLI reads those fields to decide which tags to process (PDF → PDF only).
+
+### `tag_names`
+
+`tag_names` is an ECMAScript regular expression matching tag names, or a template `tag_update` object.
+
+Example (`tests/params_alt_text.json`) — match `Figure` or `Formula` tags:
+
+```json
+[
+    {
+        "title": "Tags",
+        "desc": "Specify the tags using a ECMAScript regular expression or define them by template tag_update",
+        "name": "tag_names",
+        "type": "tag",
+        "value": "Figure|Formula",
+        "values": [
+            {
+                "desc": "All tags",
+                "value": ".*"
+            }
+        ]
+    }
+]
+```
+
+Use `"value": ".*"` to match all tags. Command-specific defaults:
+
+| Command | Default `tag_names` |
+|---|---|
+| `generate-alt-text` | `Figure\|Formula` |
+| `generate-table-summary` | `Table` |
+| `generate-mathml` | `Formula` |
 
 ## Examples
 
@@ -83,7 +120,7 @@ docker run --rm -v "$(pwd)":/data -w /data pdfix/pdf-accessibility-openai:latest
   generate-alt-text --openai-key "${OPENAI_API_KEY}" \
   --name "${LICENSE_NAME}" --key "${LICENSE_KEY}" \
   --input /data/document.pdf --output /data/out.pdf \
-  --tags "Figure|Formula" --lang en --overwrite true
+  --params /data/tests/params_alt_text.json --lang en --overwrite true
 ```
 
 ## Help & support
@@ -94,4 +131,3 @@ For PDFix SDK licensing or issues, contact `support@pdfix.net`.
 
 - [PDFix Terms](https://pdfix.net/terms)
 - [OpenAI policies](https://openai.com/policies/)
-

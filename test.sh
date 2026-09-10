@@ -62,7 +62,7 @@ else
 fi
 
 info "Test #03: Run gen alt text pdf->pdf"
-docker run --rm $PLATFORM -v $(pwd):/data -w /data $DOCKER_IMAGE generate-alt-text --openai-key $OPENAI_API_KEY -i example/air_quality-tagged.pdf -o $TEMPORARY_DIRECTORY/air_quality-tagged-alt-text.pdf --overwrite true > /dev/null
+docker run --rm $PLATFORM -v $(pwd):/data -w /data $DOCKER_IMAGE generate-alt-text --openai-key $OPENAI_API_KEY -i example/air_quality-tagged.pdf -o $TEMPORARY_DIRECTORY/air_quality-tagged-alt-text.pdf --overwrite true --params tests/params_alt_text.json > /dev/null
 if [ -f "$(pwd)/$TEMPORARY_DIRECTORY/air_quality-tagged-alt-text.pdf" ]; then
     success "passed"
 else
@@ -80,7 +80,7 @@ else
 fi
 
 info "Test #05: Run mathml pdf->pdf"
-docker run --rm $PLATFORM -v $(pwd):/data -w /data $DOCKER_IMAGE generate-mathml --openai-key $OPENAI_API_KEY -i example/air_quality-tagged.pdf -o $TEMPORARY_DIRECTORY/air_quality-mathml.pdf --overwrite true > /dev/null
+docker run --rm $PLATFORM -v $(pwd):/data -w /data $DOCKER_IMAGE generate-mathml --openai-key $OPENAI_API_KEY -i example/air_quality-tagged.pdf -o $TEMPORARY_DIRECTORY/air_quality-mathml.pdf --overwrite true --params tests/params_mathml.json > /dev/null
 if [ -f "$(pwd)/$TEMPORARY_DIRECTORY/air_quality-mathml.pdf" ]; then
     success "passed"
 else
@@ -107,7 +107,7 @@ else
 fi
 
 info "Test #08: Run table summary pdf->pdf"
-docker run --rm $PLATFORM -v $(pwd):/data -w /data $DOCKER_IMAGE generate-table-summary --openai-key $OPENAI_API_KEY -i example/food_fact_sheet-tagged.pdf -o $TEMPORARY_DIRECTORY/food_fact_sheet-tagged-table.pdf --overwrite true  > /dev/null
+docker run --rm $PLATFORM -v $(pwd):/data -w /data $DOCKER_IMAGE generate-table-summary --openai-key $OPENAI_API_KEY -i example/food_fact_sheet-tagged.pdf -o $TEMPORARY_DIRECTORY/food_fact_sheet-tagged-table.pdf --overwrite true --params tests/params_table.json > /dev/null
 if [ -f "$(pwd)/$TEMPORARY_DIRECTORY/food_fact_sheet-tagged-table.pdf" ]; then
     success "passed"
 else

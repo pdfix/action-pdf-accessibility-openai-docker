@@ -14,7 +14,7 @@
                 "name": "pdfix/pdf-accessibility-openai",
                 "tag": "latest"
             },
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-alt-text --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt}\" --params \"${params}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
                     "name": "input_pdf",
@@ -174,18 +174,26 @@
                     "value": false
                 },
                 {
-                    "title": "Tag Name",
-                    "name": "tag_name",
-                    "desc": "Tag name defined by a regular expression",
-                    "type": "string",
-                    "value": "Figure|Formula"
-                },
-                {
                     "title": "Surrounding Tag Count",
                     "name": "tag_count",
                     "desc": "How many surrounding tags are included into prompt for AI. For Number 2 1 before and 1 after is taken. Custom prompt does not fill surrounding tags.",
                     "type": "int",
                     "value": "2"
+                }
+            ],
+            "params": [
+                {
+                    "title": "Tags",
+                    "desc": "Specify the tags using a ECMAScript regular expression or define them by template tag_update",
+                    "name": "tag_names",
+                    "type": "tag",
+                    "value": "Figure|Formula",
+                    "values": [
+                        {
+                            "desc": "All tags",
+                            "value": ".*"
+                        }
+                    ]
                 }
             ],
             "errors": {
@@ -194,6 +202,7 @@
                 "12": "Invalid or missing arguments for OpenAI Api Key.",
                 "13": "Not allowed input output file combination. Please see --help.",
                 "14": "Failed to read image data from input.",
+                "15": "Invalid regex or template. Please check the usage and try again.",
                 "20": "Failed to initialize PDFix SDK.",
                 "21": "Failed to activate PDFix SDK account.",
                 "22": "Failed to authorize PDFix SDK account.",
@@ -201,6 +210,7 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
+                "27": "Failed to load template file.",
                 "30": "OpenAI service error occurred while processing the request.",
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
@@ -396,6 +406,7 @@
                 "12": "Invalid or missing arguments for OpenAI Api Key.",
                 "13": "Not allowed input output file combination. Please see --help.",
                 "14": "Failed to read image data from input.",
+                "15": "Invalid regex or template. Please check the usage and try again.",
                 "20": "Failed to initialize PDFix SDK.",
                 "21": "Failed to activate PDFix SDK account.",
                 "22": "Failed to authorize PDFix SDK account.",
@@ -403,6 +414,7 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
+                "27": "Failed to load template file.",
                 "30": "OpenAI service error occurred while processing the request.",
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
@@ -590,6 +602,7 @@
                 "12": "Invalid or missing arguments for OpenAI Api Key.",
                 "13": "Not allowed input output file combination. Please see --help.",
                 "14": "Failed to read image data from input.",
+                "15": "Invalid regex or template. Please check the usage and try again.",
                 "20": "Failed to initialize PDFix SDK.",
                 "21": "Failed to activate PDFix SDK account.",
                 "22": "Failed to authorize PDFix SDK account.",
@@ -597,6 +610,7 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
+                "27": "Failed to load template file.",
                 "30": "OpenAI service error occurred while processing the request.",
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
@@ -616,7 +630,7 @@
                 "name": "pdfix/pdf-accessibility-openai",
                 "tag": "latest"
             },
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt}\" --tags \"${tag_name}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-table-summary --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt}\" --params \"${params}\" --lang \"${lang}\" --overwrite \"${overwrite}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
                     "name": "input_pdf",
@@ -641,13 +655,6 @@
                     "flags": 96,
                     "type": "string",
                     "value": ""
-                },
-                {
-                    "title": "Tag Name",
-                    "name": "tag_name",
-                    "desc": "Tag name defined by a regular expression",
-                    "type": "string",
-                    "value": "Table"
                 },
                 {
                     "title": "Model",
@@ -790,12 +797,28 @@
                     "value": "2"
                 }
             ],
+            "params": [
+                {
+                    "title": "Tags",
+                    "desc": "Specify the tags using a ECMAScript regular expression or define them by template tag_update",
+                    "name": "tag_names",
+                    "type": "tag",
+                    "value": "Table",
+                    "values": [
+                        {
+                            "desc": "All tags",
+                            "value": ".*"
+                        }
+                    ]
+                }
+            ],
             "errors": {
                 "10": "Failed to parse arguments. Please check the usage and try again.",
                 "11": "Not recognized command. Please see --help.",
                 "12": "Invalid or missing arguments for OpenAI Api Key.",
                 "13": "Not allowed input output file combination. Please see --help.",
                 "14": "Failed to read image data from input.",
+                "15": "Invalid regex or template. Please check the usage and try again.",
                 "20": "Failed to initialize PDFix SDK.",
                 "21": "Failed to activate PDFix SDK account.",
                 "22": "Failed to authorize PDFix SDK account.",
@@ -803,6 +826,7 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
+                "27": "Failed to load template file.",
                 "30": "OpenAI service error occurred while processing the request.",
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
@@ -998,6 +1022,7 @@
                 "12": "Invalid or missing arguments for OpenAI Api Key.",
                 "13": "Not allowed input output file combination. Please see --help.",
                 "14": "Failed to read image data from input.",
+                "15": "Invalid regex or template. Please check the usage and try again.",
                 "20": "Failed to initialize PDFix SDK.",
                 "21": "Failed to activate PDFix SDK account.",
                 "22": "Failed to authorize PDFix SDK account.",
@@ -1005,6 +1030,7 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
+                "27": "Failed to load template file.",
                 "30": "OpenAI service error occurred while processing the request.",
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
@@ -1024,7 +1050,7 @@
                 "name": "pdfix/pdf-accessibility-openai",
                 "tag": "latest"
             },
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt}\" --tags \"${tag_name}\" --mathml-version \"${mathml_version}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt}\" --params \"${params}\" --mathml-version \"${mathml_version}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
                     "name": "input_pdf",
@@ -1102,13 +1128,6 @@
                     ]
                 },
                 {
-                    "title": "Tag Name",
-                    "name": "tag_name",
-                    "desc": "Tag name defined by a regular expression",
-                    "type": "string",
-                    "value": "Formula"
-                },
-                {
                     "title": "MathML Version",
                     "name": "mathml_version",
                     "desc": "Tag version of MathML",
@@ -1137,12 +1156,28 @@
                     "value": "2"
                 }
             ],
+            "params": [
+                {
+                    "title": "Tags",
+                    "desc": "Specify the tags using a ECMAScript regular expression or define them by template tag_update",
+                    "name": "tag_names",
+                    "type": "tag",
+                    "value": "Formula",
+                    "values": [
+                        {
+                            "desc": "All tags",
+                            "value": ".*"
+                        }
+                    ]
+                }
+            ],
             "errors": {
                 "10": "Failed to parse arguments. Please check the usage and try again.",
                 "11": "Not recognized command. Please see --help.",
                 "12": "Invalid or missing arguments for OpenAI Api Key.",
                 "13": "Not allowed input output file combination. Please see --help.",
                 "14": "Failed to read image data from input.",
+                "15": "Invalid regex or template. Please check the usage and try again.",
                 "20": "Failed to initialize PDFix SDK.",
                 "21": "Failed to activate PDFix SDK account.",
                 "22": "Failed to authorize PDFix SDK account.",
@@ -1150,6 +1185,7 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
+                "27": "Failed to load template file.",
                 "30": "OpenAI service error occurred while processing the request.",
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",
@@ -1291,6 +1327,7 @@
                 "12": "Invalid or missing arguments for OpenAI Api Key.",
                 "13": "Not allowed input output file combination. Please see --help.",
                 "14": "Failed to read image data from input.",
+                "15": "Invalid regex or template. Please check the usage and try again.",
                 "20": "Failed to initialize PDFix SDK.",
                 "21": "Failed to activate PDFix SDK account.",
                 "22": "Failed to authorize PDFix SDK account.",
@@ -1298,6 +1335,7 @@
                 "24": "Failed to open PDF document.",
                 "25": "Failed to save PDF document.",
                 "26": "PDF document has no tags.",
+                "27": "Failed to load template file.",
                 "30": "OpenAI service error occurred while processing the request.",
                 "31": "OpenAI Api Key failed to authenticate.",
                 "32": "You exceeded your current quota, please check your OpenAI plan and billing details.",

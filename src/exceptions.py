@@ -5,6 +5,7 @@ EC_ARG_NOT_RECOGNIZED_COMMAND: int = 11
 EC_ARG_OPENAI_KEY: int = 12
 EC_ARG_INPUT_OUTPUT_NOT_ALLOWED: int = 13
 EC_ARG_FAILED_TO_READ_IMAGE: int = 14
+EC_ARG_INVALID_REGEX_OR_TEMPLATE: int = 15
 
 EC_PDFIX_INITIALIZE: int = 20
 EC_PDFIX_ACTIVATION_FAILED: int = 21
@@ -13,6 +14,7 @@ EC_PDFIX_FAILED_TO_RENDER: int = 23
 EC_PDFIX_FAILED_TO_OPEN: int = 24
 EC_PDFIX_FAILED_TO_SAVE: int = 25
 EC_PDFIX_NO_TAGS: int = 26
+EC_PDFIX_FAILED_TO_LOAD_TEMPLATE: int = 27
 
 EC_OPENAI_GENERAL_ERROR: int = 30
 EC_OPENAI_AUTHENTICATION_FAILED: int = 31
@@ -24,6 +26,7 @@ MESSAGE_ARG_NOT_RECOGNIZED_COMMAND: str = "Not recognized command. Please see --
 MESSAGE_ARG_OPENAI_KEY: str = "Invalid or missing arguments for OpenAI Api Key."
 MESSAGE_ARG_INPUT_OUTPUT_NOT_ALLOWED: str = "Not allowed input output file combination. Please see --help."
 MESSAGE_ARG_FAILED_TO_READ_IMAGE: str = "Failed to read image data from input."
+MESSAGE_ARG_INVALID_REGEX_OR_TEMPLATE: str = "Invalid regex or template. Please check the usage and try again."
 
 MESSAGE_PDFIX_INITIALIZE: str = "Failed to initialize PDFix SDK."
 MESSAGE_PDFIX_ACTIVATION_FAILED: str = "Failed to activate PDFix SDK account."
@@ -32,6 +35,7 @@ MESSAGE_PDFIX_FAILED_TO_RENDER: str = "Failed to render PDF Page into image."
 MESSAGE_PDFIX_FAILED_TO_OPEN: str = "Failed to open PDF document."
 MESSAGE_PDFIX_FAILED_TO_SAVE: str = "Failed to save PDF document."
 MESSAGE_PDFIX_NO_TAGS: str = "PDF document has no tags."
+MESSAGE_PDFIX_FAILED_TO_LOAD_TEMPLATE: str = "Failed to load template file."
 
 MESSAGE_OPENAI_GENERAL_ERROR: str = "OpenAI service error occurred while processing the request."
 MESSAGE_OPENAI_AUTHENTICATION_FAILED: str = "OpenAI Api Key failed to authenticate."
@@ -74,6 +78,11 @@ class ArgumentInputOutputNotAllowedException(ArgumentException):
 class ArgumentFailedToReadImageException(ArgumentException):
     def __init__(self, path: str) -> None:
         super().__init__(f"{MESSAGE_ARG_FAILED_TO_READ_IMAGE} {path}", EC_ARG_FAILED_TO_READ_IMAGE)
+
+
+class InvalidRegexOrTemplateException(ArgumentException):
+    def __init__(self) -> None:
+        super().__init__(MESSAGE_ARG_INVALID_REGEX_OR_TEMPLATE, EC_ARG_INVALID_REGEX_OR_TEMPLATE)
 
 
 class PdfixInitializeException(ExpectedException):
@@ -122,6 +131,11 @@ class PdfixFailedToSaveException(PdfixException):
 class PdfixNoTagsException(PdfixException):
     def __init__(self, pdfix: Pdfix, message: str = "") -> None:
         super().__init__(pdfix, EC_PDFIX_NO_TAGS, f"{MESSAGE_PDFIX_NO_TAGS} {message}")
+
+
+class PdfixFailedToLoadTemplateException(PdfixException):
+    def __init__(self, pdfix: Pdfix, message: str = "") -> None:
+        super().__init__(pdfix, EC_PDFIX_FAILED_TO_LOAD_TEMPLATE, f"{MESSAGE_PDFIX_FAILED_TO_LOAD_TEMPLATE} {message}")
 
 
 class OpenAIException(ExpectedException):

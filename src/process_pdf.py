@@ -1,6 +1,6 @@
 import base64
 import logging
-import re
+from pathlib import Path
 from typing import Optional
 
 from openai.types.chat.chat_completion import Choice
@@ -10,13 +10,17 @@ from pdfixsdk import (
     Pdfix,
     PdfRect,
     PdfStructElemEnumProcType,
+    PdfTemplateQuery,
     PdsObject,
     PdsStructElement,
     PdsStructTree,
+    PsFileStream,
+    kDataFormatJson,
     kEnumNone,
     kEnumResultContinue,
     kEnumResultContinueSkip,
     kPdsStructChildElement,
+    kPsReadOnly,
     kSaveFull,
 )
 from tqdm import tqdm
@@ -27,6 +31,7 @@ from exceptions import (
     ArgumentUnknownCommandException,
     ExpectedException,
     OpenAIAuthenticationException,
+    PdfixFailedToLoadTemplateException,
     PdfixFailedToOpenException,
     PdfixFailedToSaveException,
     PdfixInitializeException,
@@ -59,7 +64,7 @@ def process_pdf(
     lang: str,
     mathml_version: str,
     overwrite: bool,
-    regex_tag: str,
+    regex_template: str | Path,
     prompt_creator: PromptCreator,
     surround_tags_count: int,
 ) -> None:
@@ -74,7 +79,7 @@ def process_pdf(
         lang,
         mathml_version,
         overwrite,
-        regex_tag,
+        regex_template,
         prompt_creator,
         surround_tags_count,
     ).process()
@@ -95,7 +100,7 @@ class ProcessPdf:
         lang: str,
         mathml_version: str,
         overwrite: bool,
-        regex_tag: str,
+        regex_template: str | Path,
         prompt_creator: PromptCreator,
         surround_tags_count: int,
     ) -> None:
@@ -113,7 +118,7 @@ class ProcessPdf:
             lang (str): The language to use.
             mathml_version (str): The MathML version to use.
             overwrite (bool): Whether to overwrite existing output.
-            regex_tag (str): The regex tag to use.
+            regex_template (str | Path): Regex or path to template JSON for matching tags.
             prompt_creator (PromptCreator): The prompt creator.
             surround_tags_count (int): The number of tags to surround.
         """
@@ -127,13 +132,14 @@ class ProcessPdf:
         self.lang: str = lang
         self.mathml_version: str = mathml_version
         self.overwrite: bool = overwrite
-        self.regex_tag: str = regex_tag
+        self.regex_template: str | Path = regex_template
         self.prompt_creator: PromptCreator = prompt_creator
         self.tags_from_left: int = int(surround_tags_count / 2)
 
         self.pdfix: Optional[Pdfix] = None
         self.doc: Optional[PdfDoc] = None
         self.struct_tree: Optional[PdsStructTree] = None
+        self.template_query: Optional[PdfTemplateQuery] = None
         self.enumeration_exception: Optional[BaseException] = None
 
     def process(self) -> None:
@@ -158,6 +164,8 @@ class ProcessPdf:
             if self.struct_tree is None:
                 raise PdfixNoTagsException(self.pdfix)
 
+            self.template_query = self._load_template_query(self.doc)
+
             progress_bar.update(PROGRESS_FIRST_STEP)
             progress_bar.set_description("Processing elements")
 
@@ -167,6 +175,7 @@ class ProcessPdf:
                 self.doc.EnumStructTree(None, kEnumNone, enum_proc, None)
             finally:
                 self.struct_tree = None
+                self.template_query = None
 
             if self.enumeration_exception is not None:
                 raise self.enumeration_exception
@@ -182,6 +191,36 @@ class ProcessPdf:
             progress_bar.n = total_progress_count
             progress_bar.set_description("Done")
             progress_bar.refresh()
+
+    def _load_template_query(self, doc: PdfDoc) -> PdfTemplateQuery:
+        """
+        Load a PdfTemplateQuery from a regex string or a template JSON file.
+
+        Args:
+            doc (PdfDoc): Open PDF document.
+
+        Returns:
+            Loaded template query used to test structure elements.
+        """
+        if self.pdfix is None:
+            raise PdfixInitializeException()
+
+        template_query: Optional[PdfTemplateQuery] = doc.CreateTemplateQuery()
+        if template_query is None:
+            raise PdfixFailedToLoadTemplateException(self.pdfix, "Failed to create Template query")
+
+        if isinstance(self.regex_template, str):
+            if not template_query.LoadFromRegex(self.regex_template):
+                raise PdfixFailedToLoadTemplateException(self.pdfix, "Failed to load template from regex")
+        else:
+            string_path: str = str(self.regex_template)
+            stream: Optional[PsFileStream] = self.pdfix.CreateFileStream(string_path, kPsReadOnly)
+            if stream is None:
+                raise PdfixFailedToLoadTemplateException(self.pdfix, "Failed to create file stream for template")
+            if not template_query.LoadFromStream(stream, kDataFormatJson):
+                raise PdfixFailedToLoadTemplateException(self.pdfix, "Failed to load template from stream")
+
+        return template_query
 
     def enumerate_struct_tree(self, document_pointer: int, parent_pointer: int, index: int, client_data: int) -> int:
         """
@@ -203,7 +242,11 @@ class ProcessPdf:
         if parent is None or element is None:
             return kEnumResultContinue
 
-        if not (re.match(self.regex_tag, element.GetType(True)) or re.match(self.regex_tag, element.GetType(False))):
+        if self.template_query is None:
+            logger.error("Template query is not initialized")
+            return kEnumResultContinue
+
+        if not self.template_query.TestStructElement(element):
             return kEnumResultContinue
 
         try:
