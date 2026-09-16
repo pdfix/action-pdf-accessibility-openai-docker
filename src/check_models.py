@@ -47,9 +47,7 @@ def main() -> None:
     data_url: str = f"data:image/png;base64,{create_dummy_image_base64()}"
 
     model_ids: list[str] = sorted(
-        m.id
-        for m in client.models.list().data
-        if not any(m.id.startswith(prefix) for prefix in SKIP_PREFIXES)
+        m.id for m in client.models.list().data if not any(m.id.startswith(prefix) for prefix in SKIP_PREFIXES)
     )
 
     text_ok: list[str] = []
