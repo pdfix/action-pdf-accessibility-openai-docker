@@ -5,7 +5,7 @@
         {
             "title": "Set Alternate Description  (OpenAI)",
             "name": "pdfix_generate_alternate_text_openai",
-            "desc": "Automatically generates alternate text for Figure and Formula tags using OpenAI, embedding it into each tag’s Alt attribute [Cloud]",
+            "desc": "Automatically generates alternate text for Figure and Formula tags using OpenAI, embedding it into each tag\u2019s Alt attribute [Cloud]",
             "version": "v0.0.0",
             "icon": "add_photo_alternate",
             "category": "Tags",
@@ -48,13 +48,10 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
+                            "value": "chat-latest"
+                        },
+                        {
                             "value": "gpt-4-turbo"
-                        },
-                        {
-                            "value": "gpt-4o"
-                        },
-                        {
-                            "value": "gpt-4o-mini"
                         },
                         {
                             "value": "gpt-4.1"
@@ -66,7 +63,58 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
+                            "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-5"
+                        },
+                        {
+                            "value": "gpt-5-mini"
+                        },
+                        {
+                            "value": "gpt-5-nano"
+                        },
+                        {
                             "value": "gpt-5-search-api"
+                        },
+                        {
+                            "value": "gpt-5.2"
+                        },
+                        {
+                            "value": "gpt-5.4-mini"
+                        },
+                        {
+                            "value": "gpt-5.4-nano"
+                        },
+                        {
+                            "value": "gpt-5.5"
+                        },
+                        {
+                            "value": "gpt-5.6-luna"
+                        },
+                        {
+                            "value": "gpt-5.6-sol"
+                        },
+                        {
+                            "value": "gpt-5.6-terra"
+                        },
+                        {
+                            "value": "gpt-6-astra"
+                        },
+                        {
+                            "value": "o1"
+                        },
+                        {
+                            "value": "o3"
+                        },
+                        {
+                            "value": "o3-mini"
+                        },
+                        {
+                            "value": "o4-mini"
                         }
                     ]
                 },
@@ -102,16 +150,16 @@
                             "value": "Deutsch"
                         },
                         {
-                            "value": "Español"
+                            "value": "Espa\u00f1ol"
                         },
                         {
-                            "value": "Français"
+                            "value": "Fran\u00e7ais"
                         },
                         {
                             "value": "Italiano"
                         },
                         {
-                            "value": "Português"
+                            "value": "Portugu\u00eas"
                         },
                         {
                             "value": "Nederlands"
@@ -120,19 +168,19 @@
                             "value": "Polski"
                         },
                         {
-                            "value": "Русский"
+                            "value": "\u0420\u0443\u0441\u0441\u043a\u0438\u0439"
                         },
                         {
-                            "value": "中文"
+                            "value": "\u4e2d\u6587"
                         },
                         {
-                            "value": "日本語"
+                            "value": "\u65e5\u672c\u8a9e"
                         },
                         {
-                            "value": "한국어"
+                            "value": "\ud55c\uad6d\uc5b4"
                         },
                         {
-                            "value": "Türkçe"
+                            "value": "T\u00fcrk\u00e7e"
                         },
                         {
                             "value": "Svenska"
@@ -144,22 +192,22 @@
                             "value": "Suomi"
                         },
                         {
-                            "value": "Čeština"
+                            "value": "\u010ce\u0161tina"
                         },
                         {
                             "value": "Magyar"
                         },
                         {
-                            "value": "Slovenčina"
+                            "value": "Sloven\u010dina"
                         },
                         {
-                            "value": "Українська"
+                            "value": "\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430"
                         },
                         {
-                            "value": "Ελληνικά"
+                            "value": "\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac"
                         },
                         {
-                            "value": "Română"
+                            "value": "Rom\u00e2n\u0103"
                         }
                     ]
                 },
@@ -270,13 +318,10 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
+                            "value": "chat-latest"
+                        },
+                        {
                             "value": "gpt-4-turbo"
-                        },
-                        {
-                            "value": "gpt-4o"
-                        },
-                        {
-                            "value": "gpt-4o-mini"
                         },
                         {
                             "value": "gpt-4.1"
@@ -288,7 +333,58 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
+                            "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-5"
+                        },
+                        {
+                            "value": "gpt-5-mini"
+                        },
+                        {
+                            "value": "gpt-5-nano"
+                        },
+                        {
                             "value": "gpt-5-search-api"
+                        },
+                        {
+                            "value": "gpt-5.2"
+                        },
+                        {
+                            "value": "gpt-5.4-mini"
+                        },
+                        {
+                            "value": "gpt-5.4-nano"
+                        },
+                        {
+                            "value": "gpt-5.5"
+                        },
+                        {
+                            "value": "gpt-5.6-luna"
+                        },
+                        {
+                            "value": "gpt-5.6-sol"
+                        },
+                        {
+                            "value": "gpt-5.6-terra"
+                        },
+                        {
+                            "value": "gpt-6-astra"
+                        },
+                        {
+                            "value": "o1"
+                        },
+                        {
+                            "value": "o3"
+                        },
+                        {
+                            "value": "o3-mini"
+                        },
+                        {
+                            "value": "o4-mini"
                         }
                     ]
                 },
@@ -324,16 +420,16 @@
                             "value": "Deutsch"
                         },
                         {
-                            "value": "Español"
+                            "value": "Espa\u00f1ol"
                         },
                         {
-                            "value": "Français"
+                            "value": "Fran\u00e7ais"
                         },
                         {
                             "value": "Italiano"
                         },
                         {
-                            "value": "Português"
+                            "value": "Portugu\u00eas"
                         },
                         {
                             "value": "Nederlands"
@@ -342,19 +438,19 @@
                             "value": "Polski"
                         },
                         {
-                            "value": "Русский"
+                            "value": "\u0420\u0443\u0441\u0441\u043a\u0438\u0439"
                         },
                         {
-                            "value": "中文"
+                            "value": "\u4e2d\u6587"
                         },
                         {
-                            "value": "日本語"
+                            "value": "\u65e5\u672c\u8a9e"
                         },
                         {
-                            "value": "한국어"
+                            "value": "\ud55c\uad6d\uc5b4"
                         },
                         {
-                            "value": "Türkçe"
+                            "value": "T\u00fcrk\u00e7e"
                         },
                         {
                             "value": "Svenska"
@@ -366,22 +462,22 @@
                             "value": "Suomi"
                         },
                         {
-                            "value": "Čeština"
+                            "value": "\u010ce\u0161tina"
                         },
                         {
                             "value": "Magyar"
                         },
                         {
-                            "value": "Slovenčina"
+                            "value": "Sloven\u010dina"
                         },
                         {
-                            "value": "Українська"
+                            "value": "\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430"
                         },
                         {
-                            "value": "Ελληνικά"
+                            "value": "\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac"
                         },
                         {
-                            "value": "Română"
+                            "value": "Rom\u00e2n\u0103"
                         }
                     ]
                 },
@@ -463,13 +559,10 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
+                            "value": "chat-latest"
+                        },
+                        {
                             "value": "gpt-4-turbo"
-                        },
-                        {
-                            "value": "gpt-4o"
-                        },
-                        {
-                            "value": "gpt-4o-mini"
                         },
                         {
                             "value": "gpt-4.1"
@@ -481,7 +574,58 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
+                            "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-5"
+                        },
+                        {
+                            "value": "gpt-5-mini"
+                        },
+                        {
+                            "value": "gpt-5-nano"
+                        },
+                        {
                             "value": "gpt-5-search-api"
+                        },
+                        {
+                            "value": "gpt-5.2"
+                        },
+                        {
+                            "value": "gpt-5.4-mini"
+                        },
+                        {
+                            "value": "gpt-5.4-nano"
+                        },
+                        {
+                            "value": "gpt-5.5"
+                        },
+                        {
+                            "value": "gpt-5.6-luna"
+                        },
+                        {
+                            "value": "gpt-5.6-sol"
+                        },
+                        {
+                            "value": "gpt-5.6-terra"
+                        },
+                        {
+                            "value": "gpt-6-astra"
+                        },
+                        {
+                            "value": "o1"
+                        },
+                        {
+                            "value": "o3"
+                        },
+                        {
+                            "value": "o3-mini"
+                        },
+                        {
+                            "value": "o4-mini"
                         }
                     ]
                 },
@@ -517,16 +661,16 @@
                             "value": "Deutsch"
                         },
                         {
-                            "value": "Español"
+                            "value": "Espa\u00f1ol"
                         },
                         {
-                            "value": "Français"
+                            "value": "Fran\u00e7ais"
                         },
                         {
                             "value": "Italiano"
                         },
                         {
-                            "value": "Português"
+                            "value": "Portugu\u00eas"
                         },
                         {
                             "value": "Nederlands"
@@ -535,19 +679,19 @@
                             "value": "Polski"
                         },
                         {
-                            "value": "Русский"
+                            "value": "\u0420\u0443\u0441\u0441\u043a\u0438\u0439"
                         },
                         {
-                            "value": "中文"
+                            "value": "\u4e2d\u6587"
                         },
                         {
-                            "value": "日本語"
+                            "value": "\u65e5\u672c\u8a9e"
                         },
                         {
-                            "value": "한국어"
+                            "value": "\ud55c\uad6d\uc5b4"
                         },
                         {
-                            "value": "Türkçe"
+                            "value": "T\u00fcrk\u00e7e"
                         },
                         {
                             "value": "Svenska"
@@ -559,22 +703,22 @@
                             "value": "Suomi"
                         },
                         {
-                            "value": "Čeština"
+                            "value": "\u010ce\u0161tina"
                         },
                         {
                             "value": "Magyar"
                         },
                         {
-                            "value": "Slovenčina"
+                            "value": "Sloven\u010dina"
                         },
                         {
-                            "value": "Українська"
+                            "value": "\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430"
                         },
                         {
-                            "value": "Ελληνικά"
+                            "value": "\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac"
                         },
                         {
-                            "value": "Română"
+                            "value": "Rom\u00e2n\u0103"
                         }
                     ]
                 },
@@ -612,7 +756,7 @@
         {
             "title": "Set Table Summary  (OpenAI)",
             "name": "pdfix_generate_table_summary_openai",
-            "desc": "Automatically generates table summaries for Table tags using OpenAI, inserting them into each tag’s Summary attribute [Cloud]",
+            "desc": "Automatically generates table summaries for Table tags using OpenAI, inserting them into each tag\u2019s Summary attribute [Cloud]",
             "version": "v0.0.0",
             "icon": "table_view",
             "category": "Table",
@@ -655,13 +799,10 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
+                            "value": "chat-latest"
+                        },
+                        {
                             "value": "gpt-4-turbo"
-                        },
-                        {
-                            "value": "gpt-4o"
-                        },
-                        {
-                            "value": "gpt-4o-mini"
                         },
                         {
                             "value": "gpt-4.1"
@@ -673,7 +814,58 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
+                            "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-5"
+                        },
+                        {
+                            "value": "gpt-5-mini"
+                        },
+                        {
+                            "value": "gpt-5-nano"
+                        },
+                        {
                             "value": "gpt-5-search-api"
+                        },
+                        {
+                            "value": "gpt-5.2"
+                        },
+                        {
+                            "value": "gpt-5.4-mini"
+                        },
+                        {
+                            "value": "gpt-5.4-nano"
+                        },
+                        {
+                            "value": "gpt-5.5"
+                        },
+                        {
+                            "value": "gpt-5.6-luna"
+                        },
+                        {
+                            "value": "gpt-5.6-sol"
+                        },
+                        {
+                            "value": "gpt-5.6-terra"
+                        },
+                        {
+                            "value": "gpt-6-astra"
+                        },
+                        {
+                            "value": "o1"
+                        },
+                        {
+                            "value": "o3"
+                        },
+                        {
+                            "value": "o3-mini"
+                        },
+                        {
+                            "value": "o4-mini"
                         }
                     ]
                 },
@@ -709,16 +901,16 @@
                             "value": "Deutsch"
                         },
                         {
-                            "value": "Español"
+                            "value": "Espa\u00f1ol"
                         },
                         {
-                            "value": "Français"
+                            "value": "Fran\u00e7ais"
                         },
                         {
                             "value": "Italiano"
                         },
                         {
-                            "value": "Português"
+                            "value": "Portugu\u00eas"
                         },
                         {
                             "value": "Nederlands"
@@ -727,19 +919,19 @@
                             "value": "Polski"
                         },
                         {
-                            "value": "Русский"
+                            "value": "\u0420\u0443\u0441\u0441\u043a\u0438\u0439"
                         },
                         {
-                            "value": "中文"
+                            "value": "\u4e2d\u6587"
                         },
                         {
-                            "value": "日本語"
+                            "value": "\u65e5\u672c\u8a9e"
                         },
                         {
-                            "value": "한국어"
+                            "value": "\ud55c\uad6d\uc5b4"
                         },
                         {
-                            "value": "Türkçe"
+                            "value": "T\u00fcrk\u00e7e"
                         },
                         {
                             "value": "Svenska"
@@ -751,22 +943,22 @@
                             "value": "Suomi"
                         },
                         {
-                            "value": "Čeština"
+                            "value": "\u010ce\u0161tina"
                         },
                         {
                             "value": "Magyar"
                         },
                         {
-                            "value": "Slovenčina"
+                            "value": "Sloven\u010dina"
                         },
                         {
-                            "value": "Українська"
+                            "value": "\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430"
                         },
                         {
-                            "value": "Ελληνικά"
+                            "value": "\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac"
                         },
                         {
-                            "value": "Română"
+                            "value": "Rom\u00e2n\u0103"
                         }
                     ]
                 },
@@ -877,13 +1069,10 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
+                            "value": "chat-latest"
+                        },
+                        {
                             "value": "gpt-4-turbo"
-                        },
-                        {
-                            "value": "gpt-4o"
-                        },
-                        {
-                            "value": "gpt-4o-mini"
                         },
                         {
                             "value": "gpt-4.1"
@@ -895,7 +1084,58 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
+                            "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-5"
+                        },
+                        {
+                            "value": "gpt-5-mini"
+                        },
+                        {
+                            "value": "gpt-5-nano"
+                        },
+                        {
                             "value": "gpt-5-search-api"
+                        },
+                        {
+                            "value": "gpt-5.2"
+                        },
+                        {
+                            "value": "gpt-5.4-mini"
+                        },
+                        {
+                            "value": "gpt-5.4-nano"
+                        },
+                        {
+                            "value": "gpt-5.5"
+                        },
+                        {
+                            "value": "gpt-5.6-luna"
+                        },
+                        {
+                            "value": "gpt-5.6-sol"
+                        },
+                        {
+                            "value": "gpt-5.6-terra"
+                        },
+                        {
+                            "value": "gpt-6-astra"
+                        },
+                        {
+                            "value": "o1"
+                        },
+                        {
+                            "value": "o3"
+                        },
+                        {
+                            "value": "o3-mini"
+                        },
+                        {
+                            "value": "o4-mini"
                         }
                     ]
                 },
@@ -931,16 +1171,16 @@
                             "value": "Deutsch"
                         },
                         {
-                            "value": "Español"
+                            "value": "Espa\u00f1ol"
                         },
                         {
-                            "value": "Français"
+                            "value": "Fran\u00e7ais"
                         },
                         {
                             "value": "Italiano"
                         },
                         {
-                            "value": "Português"
+                            "value": "Portugu\u00eas"
                         },
                         {
                             "value": "Nederlands"
@@ -949,19 +1189,19 @@
                             "value": "Polski"
                         },
                         {
-                            "value": "Русский"
+                            "value": "\u0420\u0443\u0441\u0441\u043a\u0438\u0439"
                         },
                         {
-                            "value": "中文"
+                            "value": "\u4e2d\u6587"
                         },
                         {
-                            "value": "日本語"
+                            "value": "\u65e5\u672c\u8a9e"
                         },
                         {
-                            "value": "한국어"
+                            "value": "\ud55c\uad6d\uc5b4"
                         },
                         {
-                            "value": "Türkçe"
+                            "value": "T\u00fcrk\u00e7e"
                         },
                         {
                             "value": "Svenska"
@@ -973,22 +1213,22 @@
                             "value": "Suomi"
                         },
                         {
-                            "value": "Čeština"
+                            "value": "\u010ce\u0161tina"
                         },
                         {
                             "value": "Magyar"
                         },
                         {
-                            "value": "Slovenčina"
+                            "value": "Sloven\u010dina"
                         },
                         {
-                            "value": "Українська"
+                            "value": "\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430"
                         },
                         {
-                            "value": "Ελληνικά"
+                            "value": "\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac"
                         },
                         {
-                            "value": "Română"
+                            "value": "Rom\u00e2n\u0103"
                         }
                     ]
                 },
@@ -1069,13 +1309,10 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
+                            "value": "chat-latest"
+                        },
+                        {
                             "value": "gpt-4-turbo"
-                        },
-                        {
-                            "value": "gpt-4o"
-                        },
-                        {
-                            "value": "gpt-4o-mini"
                         },
                         {
                             "value": "gpt-4.1"
@@ -1087,7 +1324,58 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
+                            "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-5"
+                        },
+                        {
+                            "value": "gpt-5-mini"
+                        },
+                        {
+                            "value": "gpt-5-nano"
+                        },
+                        {
                             "value": "gpt-5-search-api"
+                        },
+                        {
+                            "value": "gpt-5.2"
+                        },
+                        {
+                            "value": "gpt-5.4-mini"
+                        },
+                        {
+                            "value": "gpt-5.4-nano"
+                        },
+                        {
+                            "value": "gpt-5.5"
+                        },
+                        {
+                            "value": "gpt-5.6-luna"
+                        },
+                        {
+                            "value": "gpt-5.6-sol"
+                        },
+                        {
+                            "value": "gpt-5.6-terra"
+                        },
+                        {
+                            "value": "gpt-6-astra"
+                        },
+                        {
+                            "value": "o1"
+                        },
+                        {
+                            "value": "o3"
+                        },
+                        {
+                            "value": "o3-mini"
+                        },
+                        {
+                            "value": "o4-mini"
                         }
                     ]
                 },
@@ -1230,13 +1518,10 @@
                     "value": "gpt-4o-mini",
                     "set": [
                         {
+                            "value": "chat-latest"
+                        },
+                        {
                             "value": "gpt-4-turbo"
-                        },
-                        {
-                            "value": "gpt-4o"
-                        },
-                        {
-                            "value": "gpt-4o-mini"
                         },
                         {
                             "value": "gpt-4.1"
@@ -1248,7 +1533,58 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
+                            "value": "gpt-4o"
+                        },
+                        {
+                            "value": "gpt-4o-mini"
+                        },
+                        {
+                            "value": "gpt-5"
+                        },
+                        {
+                            "value": "gpt-5-mini"
+                        },
+                        {
+                            "value": "gpt-5-nano"
+                        },
+                        {
                             "value": "gpt-5-search-api"
+                        },
+                        {
+                            "value": "gpt-5.2"
+                        },
+                        {
+                            "value": "gpt-5.4-mini"
+                        },
+                        {
+                            "value": "gpt-5.4-nano"
+                        },
+                        {
+                            "value": "gpt-5.5"
+                        },
+                        {
+                            "value": "gpt-5.6-luna"
+                        },
+                        {
+                            "value": "gpt-5.6-sol"
+                        },
+                        {
+                            "value": "gpt-5.6-terra"
+                        },
+                        {
+                            "value": "gpt-6-astra"
+                        },
+                        {
+                            "value": "o1"
+                        },
+                        {
+                            "value": "o3"
+                        },
+                        {
+                            "value": "o3-mini"
+                        },
+                        {
+                            "value": "o4-mini"
                         }
                     ]
                 },

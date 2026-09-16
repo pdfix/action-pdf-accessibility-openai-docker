@@ -10,7 +10,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
-from constants import CONFIG_FILE, IMAGE_FILE_EXT_REGEX, SUPPORTED_IMAGE_EXT
+from constants import (
+    CONFIG_FILE,
+    DEFAULT_OPENAI_MODEL,
+    IMAGE_FILE_EXT_REGEX,
+    OPENAI_MODELS,
+    SUPPORTED_IMAGE_EXT,
+)
 from exceptions import (
     EC_ARG_GENERAL,
     MESSAGE_ARG_GENERAL,
@@ -92,16 +98,8 @@ def set_arguments(
                 parser.add_argument(
                     "--model",
                     type=str,
-                    choices=[
-                        "gpt-4-turbo",
-                        "gpt-4o",
-                        "gpt-4o-mini",
-                        "gpt-4.1",
-                        "gpt-4.1-mini",
-                        "gpt-4.1-nano",
-                        "gpt-5-search-api",
-                    ],
-                    default="gpt-4o-mini",
+                    choices=list(OPENAI_MODELS),
+                    default=DEFAULT_OPENAI_MODEL,
                     help="OpenAI model to use for processing",
                 )
             case "name":
