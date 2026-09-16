@@ -57,9 +57,6 @@
                             "value": "gpt-4o-mini"
                         },
                         {
-                            "value": "chatgpt-4o-latest"
-                        },
-                        {
                             "value": "gpt-4.1"
                         },
                         {
@@ -69,7 +66,7 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
-                            "value": "gpt-5-chat-latest"
+                            "value": "gpt-5-search-api"
                         }
                     ]
                 },
@@ -282,9 +279,6 @@
                             "value": "gpt-4o-mini"
                         },
                         {
-                            "value": "chatgpt-4o-latest"
-                        },
-                        {
                             "value": "gpt-4.1"
                         },
                         {
@@ -294,7 +288,7 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
-                            "value": "gpt-5-chat-latest"
+                            "value": "gpt-5-search-api"
                         }
                     ]
                 },
@@ -478,9 +472,6 @@
                             "value": "gpt-4o-mini"
                         },
                         {
-                            "value": "chatgpt-4o-latest"
-                        },
-                        {
                             "value": "gpt-4.1"
                         },
                         {
@@ -490,7 +481,7 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
-                            "value": "gpt-5-chat-latest"
+                            "value": "gpt-5-search-api"
                         }
                     ]
                 },
@@ -673,9 +664,6 @@
                             "value": "gpt-4o-mini"
                         },
                         {
-                            "value": "chatgpt-4o-latest"
-                        },
-                        {
                             "value": "gpt-4.1"
                         },
                         {
@@ -685,7 +673,7 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
-                            "value": "gpt-5-chat-latest"
+                            "value": "gpt-5-search-api"
                         }
                     ]
                 },
@@ -898,9 +886,6 @@
                             "value": "gpt-4o-mini"
                         },
                         {
-                            "value": "chatgpt-4o-latest"
-                        },
-                        {
                             "value": "gpt-4.1"
                         },
                         {
@@ -910,7 +895,7 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
-                            "value": "gpt-5-chat-latest"
+                            "value": "gpt-5-search-api"
                         }
                     ]
                 },
@@ -1093,9 +1078,6 @@
                             "value": "gpt-4o-mini"
                         },
                         {
-                            "value": "chatgpt-4o-latest"
-                        },
-                        {
                             "value": "gpt-4.1"
                         },
                         {
@@ -1105,7 +1087,7 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
-                            "value": "gpt-5-chat-latest"
+                            "value": "gpt-5-search-api"
                         }
                     ]
                 },
@@ -1257,9 +1239,6 @@
                             "value": "gpt-4o-mini"
                         },
                         {
-                            "value": "chatgpt-4o-latest"
-                        },
-                        {
                             "value": "gpt-4.1"
                         },
                         {
@@ -1269,7 +1248,7 @@
                             "value": "gpt-4.1-nano"
                         },
                         {
-                            "value": "gpt-5-chat-latest"
+                            "value": "gpt-5-search-api"
                         }
                     ]
                 },
