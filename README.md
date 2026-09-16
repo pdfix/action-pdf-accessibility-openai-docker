@@ -41,7 +41,7 @@ docker run --rm -v "$(pwd)":/data -w /data pdfix/pdf-accessibility-openai:latest
 | `--openai-key` | yes | String (OpenAI API key) | OpenAI API key |
 | `--input`, `-i` | yes | Path to `.pdf`, image, or `.xml` as supported by the command | Input file |
 | `--output`, `-o` | yes | Path to output `.pdf`, `.txt`, or `.xml` as supported | Output file |
-| `--model` | no | One of: `chat-latest`, `gpt-4-turbo`, `gpt-4.1`, `gpt-4.1-mini`, `gpt-4.1-nano`, `gpt-4o`, `gpt-4o-mini`, `gpt-5`, `gpt-5-mini`, `gpt-5-nano`, `gpt-5-search-api`, `gpt-5.2`, `gpt-5.4-mini`, `gpt-5.4-nano`, `gpt-5.5`, `gpt-5.6-luna`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-6-astra`, `o1`, `o3`, `o3-mini`, `o4-mini` (default: `gpt-4o-mini`) | OpenAI model |
+| `--model` | no | One of: `chat-latest`, `gpt-4-turbo`, `gpt-4.1`, `gpt-4.1-mini`, `gpt-4.1-nano`, `gpt-4o`, `gpt-4o-mini`, `gpt-5`, `gpt-5-mini`, `gpt-5-nano`, `gpt-5.2`, `gpt-5.4-mini`, `gpt-5.4-nano`, `gpt-5.5`, `gpt-5.6-luna`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-6-astra`, `o1`, `o3`, `o3-mini`, `o4-mini` (default: `gpt-4o-mini`) | OpenAI model |
 | `--prompt` | no | Prompt text or path to a `.txt` file | Custom prompt |
 | `--params` | for PDF → PDF | Path to a `.json` file | Tag filter parameters (see [Params JSON](#params-json)) |
 | `--tags-count` | no | Integer (default **2**); PDF only | Surrounding tags in prompt |

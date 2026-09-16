@@ -78,9 +78,6 @@
                             "value": "gpt-5-nano"
                         },
                         {
-                            "value": "gpt-5-search-api"
-                        },
-                        {
                             "value": "gpt-5.2"
                         },
                         {
@@ -348,9 +345,6 @@
                             "value": "gpt-5-nano"
                         },
                         {
-                            "value": "gpt-5-search-api"
-                        },
-                        {
                             "value": "gpt-5.2"
                         },
                         {
@@ -589,9 +583,6 @@
                             "value": "gpt-5-nano"
                         },
                         {
-                            "value": "gpt-5-search-api"
-                        },
-                        {
                             "value": "gpt-5.2"
                         },
                         {
@@ -827,9 +818,6 @@
                         },
                         {
                             "value": "gpt-5-nano"
-                        },
-                        {
-                            "value": "gpt-5-search-api"
                         },
                         {
                             "value": "gpt-5.2"
@@ -1099,9 +1087,6 @@
                             "value": "gpt-5-nano"
                         },
                         {
-                            "value": "gpt-5-search-api"
-                        },
-                        {
                             "value": "gpt-5.2"
                         },
                         {
@@ -1339,9 +1324,6 @@
                             "value": "gpt-5-nano"
                         },
                         {
-                            "value": "gpt-5-search-api"
-                        },
-                        {
                             "value": "gpt-5.2"
                         },
                         {
@@ -1546,9 +1528,6 @@
                         },
                         {
                             "value": "gpt-5-nano"
-                        },
-                        {
-                            "value": "gpt-5-search-api"
                         },
                         {
                             "value": "gpt-5.2"
