@@ -71,7 +71,7 @@ Default tag filter when `--params` is omitted: `Table`.
 | Option | Required | Type / expected value | Description |
 |---|:---:|---|---|
 | `--mathml-version` | no | One of: `mathml-1`, `mathml-2`, `mathml-3`, `mathml-4` (default: `mathml-4`) | MathML version |
-| `--overwrite` | no | Boolean string (default: `false`) | Overwrite existing output |
+| `--overwrite` | no | Boolean string (default: `false`) | PDF → PDF only: replace existing MathML associated file when its name contains the selected `--mathml-version` |
 
 Default tag filter when `--params` is omitted: `Formula`.
 

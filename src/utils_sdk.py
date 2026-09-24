@@ -6,6 +6,7 @@ from pdfixsdk import (
     Pdfix,
     PdsArray,
     PdsDictionary,
+    PdsFileSpec,
     PdsObject,
     PdsStream,
     PdsStructElement,
@@ -15,6 +16,29 @@ from pdfixsdk import (
 )
 
 from exceptions import PdfixActivationException, PdfixAuthorizationException
+
+
+def index_of_associated_file(element: PdsStructElement, math_ml_version: str) -> int:
+    """
+    Find the index of an associated file whose name contains the MathML version marker.
+
+    Match is case-insensitive and uses substring containment (e.g. ``mathml-4`` and
+    ``mathml-4.xml`` both match ``mathml-4``).
+
+    Args:
+        element (PdsStructElement): Structure element to inspect.
+        math_ml_version (str): Version marker to look for in the filespec name.
+
+    Returns:
+        Index of the first matching associated file, or ``-1`` if none found.
+    """
+    for index in range(element.GetNumAssociatedFiles()):
+        file_spec: Optional[PdsFileSpec] = element.GetAssociatedFile(index)
+        if file_spec is None:
+            continue
+        if math_ml_version.lower() in file_spec.GetFileName().lower():
+            return index
+    return -1
 
 
 def authorize_sdk(pdfix: Pdfix, license_name: Optional[str], license_key: Optional[str]) -> None:
@@ -62,8 +86,9 @@ def set_associated_file_math_ml(element: PdsStructElement, math_ml: str, math_ml
         return
     associated_file_data.PutName("Type", "Filespec")
     associated_file_data.PutName("AFRelationshhip", "Supplement")
-    associated_file_data.PutString("F", math_ml_version)
-    associated_file_data.PutString("UF", math_ml_version)
+    file_name: str = f"{math_ml_version}.xml"
+    associated_file_data.PutString("F", file_name)
+    associated_file_data.PutString("UF", file_name)
     associated_file_data.PutString("Desc", math_ml_version)
 
     raw_data: ctypes.Array[ctypes.c_ubyte] = bytearray_to_data(bytearray(math_ml.encode("utf-8")))

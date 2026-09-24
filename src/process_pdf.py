@@ -45,6 +45,7 @@ from utils import add_mathml_metadata
 from utils_sdk import (
     authorize_sdk,
     check_if_table_summary_exists,
+    index_of_associated_file,
     set_alternate_text,
     set_associated_file_math_ml,
     set_table_summary,
@@ -312,6 +313,7 @@ class ProcessPdf:
             element_log_id = f"{element_type} [id: {element_id}]"
 
             # Check overwrite flag
+            af_index: int = -1
             if self.subcommand == "generate-alt-text":
                 original_alternate_text: str = element.GetAlt()
                 if not self.overwrite and original_alternate_text:
@@ -320,6 +322,15 @@ class ProcessPdf:
             elif self.subcommand == "generate-table-summary":
                 if not self.overwrite and check_if_table_summary_exists(element):
                     logger.info(f"Table summary already exists for {element_log_id}")
+                    return
+            elif self.subcommand == "generate-mathml":
+                af_index = index_of_associated_file(element, self.mathml_version)
+                has_mathml_af: bool = af_index > -1
+                if has_mathml_af and not self.overwrite:
+                    logger.info(
+                        f"MathML associated file already exists for {element_log_id} "
+                        f"({self.mathml_version})"
+                    )
                     return
 
             # Check PDFix instance
@@ -400,6 +411,9 @@ class ProcessPdf:
                 logger.info(f"Table summary set for {element_log_id} tag")
             elif self.subcommand == "generate-mathml":
                 content = add_mathml_metadata(content)
+                while af_index > -1:
+                    element.RemoveAssociatedFile(af_index)
+                    af_index = index_of_associated_file(element, self.mathml_version)
                 set_associated_file_math_ml(element, content, self.mathml_version)
                 logger.info(f"MathML set for {element_log_id} tag")
             else:

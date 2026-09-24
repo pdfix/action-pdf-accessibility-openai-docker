@@ -1260,7 +1260,7 @@
                 "name": "pdfix/pdf-accessibility-openai",
                 "tag": "latest"
             },
-            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt}\" --params \"${params}\" --mathml-version \"${mathml_version}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
+            "program": "docker run -v \"${working_directory}:/data\" -w /data --rm pdfix/pdf-accessibility-openai:latest generate-mathml --openai-key \"${openai_key}\" -i \"${input_pdf}\" -o \"${output_pdf}\" --model \"${model}\" --prompt \"${prompt}\" --params \"${params}\" --mathml-version \"${mathml_version}\" --overwrite \"${overwrite}\" --tags-count \"${tag_count}\" --name \"${license_name}\" --key \"${license_key}\"",
             "args": [
                 {
                     "name": "input_pdf",
@@ -1399,6 +1399,13 @@
                             "value": "mathml-4"
                         }
                     ]
+                },
+                {
+                    "title": "Overwrite",
+                    "name": "overwrite",
+                    "desc": "Replace the MathML associated file if one already exists for the selected MathML version",
+                    "type": "bool",
+                    "value": false
                 },
                 {
                     "title": "Surrounding Tag Count",
