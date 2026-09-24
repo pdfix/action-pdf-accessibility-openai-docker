@@ -327,10 +327,7 @@ class ProcessPdf:
                 af_index = index_of_associated_file(element, self.mathml_version)
                 has_mathml_af: bool = af_index > -1
                 if has_mathml_af and not self.overwrite:
-                    logger.info(
-                        f"MathML associated file already exists for {element_log_id} "
-                        f"({self.mathml_version})"
-                    )
+                    logger.info(f"MathML associated file already exists for {element_log_id} ({self.mathml_version})")
                     return
 
             # Check PDFix instance
