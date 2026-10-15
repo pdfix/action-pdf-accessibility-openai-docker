@@ -6,4 +6,4 @@ pdfix-sdk @ https://dl.pdfix.net/builds/pdfix-sdk/master/24a3408b0469970da0748b5
 requests==2.33.1
 tqdm==4.67.1
 types-requests==2.33.0.20260408
-urllib3==2.7.0
+urllib3==2.8.0
