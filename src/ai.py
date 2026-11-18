@@ -68,7 +68,8 @@ def openai_prompt_with_image(
         raise OpenAIRateLimitException(e.message)
     except InternalServerError as e:
         raise OpenAIServiceUnavailableException(e.message)
-    except OpenAIError:
+    except OpenAIError as openAiException:
+        logger.error(f"OpenAIError: {openAiException}")
         raise OpenAIGeneralException()
 
     logger.debug(f" Responses: {len(response.choices)}")
@@ -126,7 +127,6 @@ def openai_prompt_with_xml(
                 },
             ],
             max_completion_tokens=2000,  # for XML each character is token (prevent running out of tokens)
-            temperature=0,  # no randomness
         )
     except AuthenticationError as e:
         raise OpenAIAuthenticationException(e.message)
@@ -134,7 +134,8 @@ def openai_prompt_with_xml(
         raise OpenAIRateLimitException(e.message)
     except InternalServerError as e:
         raise OpenAIServiceUnavailableException(e.message)
-    except OpenAIError:
+    except OpenAIError as openAiException:
+        logger.error(f"OpenAIError: {openAiException}")
         raise OpenAIGeneralException()
 
     # Test if ok
